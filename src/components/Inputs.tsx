@@ -13,7 +13,8 @@ export const Input = ({ name, type, placeholder, label, className }: InputProps)
   const { register, formState: { errors } } = useFormContext(); // Utiliser useFormContext pour accéder à register et errors
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div className={`flex flex-col items-center  ${className}`}>
+      <div className="flex items-center gap-2">
       {label && <label htmlFor={name} className="text-sm font-light opacity-70 ">{label}</label>}
       <input
         id={name}
@@ -24,7 +25,7 @@ export const Input = ({ name, type, placeholder, label, className }: InputProps)
           errors[name] ? 'border-red-500 shadow-md shadow-red-500' : 'focus:border-emerald-600 focus:shadow-md focus:shadow-emerald-600'
         }`}
         aria-invalid={errors[name] ? 'true' : 'false'}
-      />
+      /></div>
       {errors[name] && <span role="alert" className="text-red-500 text-sm min-h-3">
         {errors[name]?.message || 'Erreur de validation'}
       </span>}
@@ -36,7 +37,8 @@ export const SelectInput = ({ name, options, label, className }: { name: string;
   const { register, formState: { errors } } = useFormContext();
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div className={`flex flex-col items-center  ${className}`}>
+      <div className="flex items-center gap-2"> 
       {label && <label htmlFor={name} className="font-light text-sm opacity-70">{label}</label>}
       <select
         id={name}
@@ -53,8 +55,9 @@ export const SelectInput = ({ name, options, label, className }: { name: string;
           <option key={option.id} value={option.id}>
             {option.name}
           </option>
-        ))}
-      </select>
+          ))}
+        </select>
+      </div>
       {errors[name] && <span role="alert" className="text-red-500 text-sm min-h-3">
         {errors[name]?.message || 'Erreur de validation'}
       </span>}

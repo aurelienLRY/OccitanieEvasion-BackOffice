@@ -8,10 +8,15 @@ import { Tooltip } from "antd";
 /*components*/ 
 import Modal from "@/components/Modal";
 import SessionDetailCard from "@/components/SessionDetailCard";
+import addCustomerOfSession from "@/components/form/addCustomerOfSession";
 /*icons*/
 import { RiCalendarCloseFill } from "react-icons/ri";
 import { TbListDetails } from "react-icons/tb";
 import { IoMdPersonAdd } from "react-icons/io";
+import { MdOutlineUpdate } from "react-icons/md";
+import AddCustomerOfSession from "@/components/form/addCustomerOfSession";
+
+
 
 
 
@@ -23,6 +28,8 @@ type Props = {
 function SessionCard({ customerSession }: Props) {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const handleCloseDetailsModal = () => setIsDetailsModalOpen(false);
+  const [isAddCustomerModalOpen, setIsAddCustomerModalOpen] = useState(false);
+
   return (
     <>
     <div className="flex flex-col gap-2 justify-evenly min-w-fit w-full max-w-[350px] bg-slate-700 dark:bg-sky-800 rounded-md px-3 pt-3 pb-1 text-white relative shadow-md shadow-slate-400 dark:shadow-sky-400">
@@ -62,7 +69,10 @@ function SessionCard({ customerSession }: Props) {
           <TbListDetails className="text-2xl hover:text-slate-200 cursor-pointer transition-all" onClick={() => setIsDetailsModalOpen(true)} />
         </Tooltip>
         <Tooltip title="Ajouter des participants">
-          <IoMdPersonAdd className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
+          <IoMdPersonAdd className="text-2xl hover:text-slate-200 cursor-pointer transition-all" onClick={() => setIsAddCustomerModalOpen(true)} />
+        </Tooltip>
+        <Tooltip title="Modifier la session">
+          <MdOutlineUpdate className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
         </Tooltip>
 
         <Tooltip
@@ -79,6 +89,7 @@ function SessionCard({ customerSession }: Props) {
     <Modal isOpen={isDetailsModalOpen} onClose={handleCloseDetailsModal}>
         <SessionDetailCard customerSession={customerSession} />
     </Modal>
+    <AddCustomerOfSession session={customerSession} isOpen={isAddCustomerModalOpen} onClose={() => setIsAddCustomerModalOpen(false)} />
     </> 
   );
 }

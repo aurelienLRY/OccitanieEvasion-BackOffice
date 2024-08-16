@@ -24,16 +24,16 @@ export default function Modal({ isOpen, onClose, children }: Props) {
         }`}
       >
         {/*modal*/}
-        <div className="bg-transparent dark:bg-sky-950 min-w-fit w-full max-w-[70vw] rounded-md  ">
+        <div className="bg-slate-500 dark:bg-sky-950 min-w-[300px] w-fit max-w-[70vw] rounded-md  ">
           <div className="flex justify-end">
             <Tooltip title="Fermer">
               <IoMdCloseCircle
-                className="text-2xl text-right h-7 w-7 p-1 hover:text-red-500 transition-all duration-300"
+                className="text-2xl text-white text-right h-7 w-7 p-1 hover:text-red-500 transition-all duration-300"
                 onClick={handleClose}
               />
             </Tooltip>
           </div>
-          <div className="px-4 pb-4">{children}</div>
+          <div className="px-4 pb-4 flex justify-center items-center">{children}</div>
         </div>
       </div>
     </>

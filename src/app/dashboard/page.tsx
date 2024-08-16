@@ -20,8 +20,7 @@ const Dashboard = ({}: Props) => {
     const fetchUsers = async () => {
       const req = await GET_SESSIONS_WITH_DETAILS();
       const result = await req;
-      setCustomerSessions(result);
-      console.log(result);
+      setCustomerSessions(result); 
     };
 
     fetchUsers();
@@ -29,7 +28,7 @@ const Dashboard = ({}: Props) => {
 
   return (
       <Suspense fallback={<div>Chargement...</div>}>
-        <AllSessionsCard customerSessions={customerSessions} />
+        <AllSessionsCard customerSessions={customerSessions}  />
       </Suspense>
 
   );

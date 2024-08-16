@@ -2,7 +2,7 @@ import mongoose, { Schema, model } from 'mongoose';
 
 export interface ISession extends Document {
     _id: string;
-    status: string;
+    status: 'Actif' | 'Archived' | 'Pending';
     date: Date;
     startTime: string;
     endTime: string;
@@ -13,7 +13,7 @@ export interface ISession extends Document {
 }
 
 const sessionSchema = new mongoose.Schema({
-    status: { type: String, required: true },
+    status: { type: String, required: true , default: 'Pending' },
     date: { type: Date, required: true },
     startTime: { type: String, required: true },
     endTime: { type: String, required: true },

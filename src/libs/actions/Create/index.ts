@@ -8,7 +8,7 @@ export async function CREATE_SESSION(formData: ISession): Promise<{ success?: bo
   try {
     // Nettoyage des entrées pour prévenir les attaques XSS
     const cleanData: ISession = {
-      status: "active",
+      status: "Actif",
       date: formData.date, // Les dates ne sont pas susceptibles aux attaques XSS
       startTime: xss(formData.startTime),
       endTime: xss(formData.endTime),
