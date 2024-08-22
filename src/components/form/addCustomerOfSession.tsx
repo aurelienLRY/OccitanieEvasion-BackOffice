@@ -15,9 +15,11 @@ import { ICustomerSession } from "@/libs/database/models/CustomerSession";
 /* Validation */
 const createDynamicSchema = (placesReserved: number) => {
 
-  for (let i = 0; i < placesReserved; i++) {
-   `size_${i}` = yup.number().required("La taille est obligatoire");
-  `weight_${i}` = yup.number().required("Le poids est obligatoire");
+  const people_list = {}
+
+  for (let i = 1; i < placesReserved; i++) {
+  people_list[`size_${i}`] = yup.number().required("La taille est obligatoire");
+  people_list[`weight_${i}`] = yup.number().required("Le poids est obligatoire");
   }
 
 
@@ -30,7 +32,8 @@ const createDynamicSchema = (placesReserved: number) => {
       .required("L'email est obligatoire"),
     phone: yup.string().required("Le numéro de téléphone est obligatoire"),
     size_0: yup.number().required("La taille est obligatoire"),
-    weight_: yup.number().required("Le poids est obligatoire"),
+    weight_0: yup.number().required("Le poids est obligatoire"),
+    ...people_list,
 
   });
 };

@@ -24,6 +24,7 @@ function AllSessionsCard({
 
 
   useEffect(() => {
+
     setIsLoading(customerSessions.length === 0);
     const resultFilter = filterSessions(customerSessions, filter, status);
     const resultSearch = SearchInSessions(resultFilter, search);
