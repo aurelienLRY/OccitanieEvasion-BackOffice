@@ -24,7 +24,6 @@ function AllSessionsCard({
 
 
   useEffect(() => {
-
     setIsLoading(customerSessions.length === 0);
     const resultFilter = filterSessions(customerSessions, filter, status);
     const resultSearch = SearchInSessions(resultFilter, search);
@@ -114,7 +113,7 @@ function AllSessionsCard({
                     ? "bg-blue-500 text-white"
                     : "bg-gray-200 text-gray-500"
                 )}
-                onClick={() => setStatus("pending")}
+                onClick={() => setStatus("Pending")}
               >
                 en attente
               </button>
@@ -122,11 +121,11 @@ function AllSessionsCard({
               <button
                 className={cn(
                   "px-2 rounded-md",
-                  status === "archived"
+                  status === "Archived"
                     ? "bg-blue-500 text-white"
                     : "bg-gray-200 text-gray-500"
                 )}
-                onClick={() => setStatus("archived")}
+                onClick={() => setStatus("Archived")}
               >
                 Archivée
               </button>

@@ -25,7 +25,8 @@
     "sass": "^1.77.8",
     "tailwind-merge": "^2.4.0",
     "xss": "^1.0.15",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

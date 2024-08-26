@@ -13,19 +13,16 @@ export const DELETE_SESSION = async (sessionId: string) => {
             throw new Error("Session not found")
         }
 
-        if (session.status !== "archived") {
+        if (session.status !== "Archived") {
             throw new Error("Session is not archived")
         }
-
-        else if (session.status === "archived") {
+        else if (session.status === "Archived") {
             const result = await Session.findByIdAndDelete(sessionId)
-            return result
+            return JSON.parse(JSON.stringify(result))
         }
-
     } catch (error) {
         console.log(error)
         return JSON.stringify(error)
-
     }
 
     finally {

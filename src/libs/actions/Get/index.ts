@@ -192,63 +192,8 @@ export async function GET_SESSIONS_WITH_DETAILS(): Promise<ISessionWithDetails[]
   }
 }
 
-export interface ISessionWithDetails extends Document {
-  _id: "string";
-  status: "string";
-  date: "string";
-  startTime: "string";
-  endTime: "string";
-  activity: {
-    _id: "string";
-    name: "string";
-    description: "string";
-    half_day: "boolean";
-    full_day: "boolean";
-    price_half_day: "number";
-    price_full_day: "number";
-    min_age: "number";
-    max_OfPeople: "number";
-    min_OfPeople: "number";
-  };
-  spot: {
-    _id: "string";
-    name: "string";
-    description: "string";
-    gpsCoordinates: "string";
-    practicedActivities: [
-      {
-        activityName: "string";
-        activityId: "string";
-      }
-    ];
-    photo: "string";
-    half_day: "boolean";
-    full_day: "boolean";
-    max_OfPeople: "number";
-    min_OfPeople: "number";
-    meetingPoint: "string";
-    estimatedDuration: "string";
-  };
-  customerSessions: [
-    {
-      _id: "string";
-      sessionId: "string";
-      date: "string";
-      status: "string";
-      typeOfReservation: "string";
-      number_of_people: "number";
-      last_name: "string";
-      first_names: "string";
-      email: "string";
-      phone: "string";
-      people_list: [
-        {
-          size: "string";
-          weight: "string";
-        }
-      ];
-    }
-  ];
-  placesMax: "number";
-  placesReserved: "number";
+export interface ISessionWithDetails extends Omit<ISession, 'activity' | 'spot'> {
+  activity: IActivity; 
+  spot: ISpot;
+  customerSessions: ICustomerSession[];
 }

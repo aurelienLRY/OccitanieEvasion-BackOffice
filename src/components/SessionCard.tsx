@@ -1,89 +1,93 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import { ISessionWithDetails } from "@/libs/actions/Get";
 
 /* librairies */
 import { Tooltip } from "antd";
 
-
 /*actions*/
 import { DELETE_SESSION } from "@/libs/actions/Delete";
 import { UPDATE_SESSION } from "@/libs/actions/Update";
 
-
-
 /*components*/
 import Modal from "@/components/Modal";
 import SessionDetailCard from "@/components/SessionDetailCard";
-import addCustomerOfSession from "@/components/form/addCustomerOfSession";
+import AddCustomerOfSession from "@/components/form/addCustomerOfSession";
+import CustomerSession from "./CustomerSession";
 
+/*types*/
+import { ISession } from "@/libs/database/models/Session";
 
 /*icons*/
 import { RiCalendarCloseFill } from "react-icons/ri";
 import { TbListDetails } from "react-icons/tb";
 import { IoMdPersonAdd } from "react-icons/io";
 import { MdOutlineUpdate } from "react-icons/md";
-import AddCustomerOfSession from "@/components/form/addCustomerOfSession";
-import CustomerSession from "./CustomerSession";
-
-
 
 type Props = {
   customerSession: ISessionWithDetails;
 };
 
 function SessionCard({ customerSession }: Props) {
-  {/* GESTION DES MODALS */ }
+  {
+    /* GESTION DES MODALS */
+  }
+  const [thisSession, setThisSession] =
+    useState<ISessionWithDetails>(customerSession);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // modal details
   const handleCloseDetailsModal = () => setIsDetailsModalOpen(false); // close modal details
   const [isAddCustomerModalOpen, setIsAddCustomerModalOpen] = useState(false); // modal add customer
 
-
-  const cutsomerIsCancelled = () => {
-    let result = true
-    customerSession.customerSessions.forEach(cs => {
-      if (cs.status !== 'cancelled') {
-        result = false
+  const customerIsCancelled = () => {
+    let result = true;
+    thisSession.customerSessions.forEach((cs) => {
+      if (cs.status !== "cancelled") {
+        result = false;
       }
-    })
-    return result
+    });
+    return result;
+  };
 
-  }
-
-  {/* check if the customer is cancelled */ }
-  const checkedBeforeAction =
   {
-    CustomerIsCancelled: cutsomerIsCancelled(),
-    isArchived: customerSession.status === 'archived',
-    isReserved: customerSession.placesReserved > 0,
+    /* check if the customer is cancelled */
   }
+  const checked = {
+    customerIsCancelled: customerIsCancelled(),
+    isArchived: thisSession.status === "Archived",
+    isReserved: +thisSession.placesReserved > 0,
+  };
 
-
-  const updateSession = async (Session: ISession, data: any) => {
-    console.log('UpdateSession', data, Session)
-
-  }
+  const archiveSession = async (Session: ISessionWithDetails, data: any) => {
+    console.log("UpdateSession", data, Session);
+  };
 
   const deleteSession = async (sessionId: string) => {
-    console.log("deleteSession", sessionId)
-    const result = await DELETE_SESSION(sessionId)
-    console.log(await result)
+    console.log("deleteSession", sessionId);
+    const result = await DELETE_SESSION(sessionId);
+    console.log("deleteSession result : ", result);
+  };
 
-  }
 
-  const SwitchAction = async (Session: ISession, data: any) => {
-    console.log('SwitchAction >>> : ', Session, data)
-   
-    if (checkedBeforeAction.isReserved && checkedBeforeAction.CustomerIsCancelled) {
-      console.log('CustomerIsCancelled')
+
+  const SwitchAction = async (session: ISessionWithDetails, data: any) => {
+    if (checked.customerIsCancelled && !checked.isArchived) {
+      const result = await UPDATE_SESSION(
+        session._id,
+        { status: "Archived" }
+      );
+     
+      if (result) { 
+        const { activity, spot, ...rest } = result;
+        setThisSession((prevSession) => ({ ...prevSession, ...rest }));
+      }
+    } else if (
+      checked.isReserved &&
+      !checked.isArchived &&
+      !checked.customerIsCancelled
+    ) {
+      console.log("Annuler les reservations", session._id);
     }
-    else if (checkedBeforeAction.isArchived) {
-      console.log('isArchived')
-    }
-
-
-  }
-
+  };
 
   return (
     <>
@@ -119,53 +123,65 @@ function SessionCard({ customerSession }: Props) {
         </div>
 
         <div className="flex justify-end  items-center gap-4 w-full text-slate-400 ">
-
-          <Tooltip title="Voir les détails">
-            <TbListDetails className="text-2xl hover:text-slate-200 cursor-pointer transition-all" onClick={() => setIsDetailsModalOpen(true)} />
-          </Tooltip>
-
-
-          {customerSession.status !== "archived" && (
-            <Tooltip title="Ajouter des participants">
-              <IoMdPersonAdd className="text-2xl hover:text-slate-200 cursor-pointer transition-all" onClick={() => setIsAddCustomerModalOpen(true)} />
+          {checked.isReserved && (
+            <Tooltip title="Voir les détails">
+              <TbListDetails
+                className="text-2xl hover:text-slate-200 cursor-pointer transition-all"
+                onClick={() => setIsDetailsModalOpen(true)}
+              />
             </Tooltip>
           )}
 
-          {customerSession.status !== "archived" && (
+          {!checked.isArchived && (
+            <Tooltip title="Ajouter des participants">
+              <IoMdPersonAdd
+                className="text-2xl hover:text-slate-200 cursor-pointer transition-all"
+                onClick={() => setIsAddCustomerModalOpen(true)}
+              />
+            </Tooltip>
+          )}
+
+          {!checked.isArchived && (
             <Tooltip title="Modifier la session">
               <MdOutlineUpdate className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
             </Tooltip>
           )}
 
-
-          {customerSession.status !== "archived" && (
+          {!checked.isArchived && (
             <Tooltip
               title={
-                +customerSession.placesReserved > 0
+                checked.isReserved
                   ? "Annuler les réservations"
                   : "Archiver la session"
               }
             >
-              <RiCalendarCloseFill className="text-2xl hover:text-red-500 cursor-pointer transition-all" onClick={() => SwitchAction(customerSession, { status: 'Archived' })} />
+              <RiCalendarCloseFill
+                className="text-2xl hover:text-red-500 cursor-pointer transition-all"
+                onClick={() =>
+                  SwitchAction(thisSession, { status: "Archived" })
+                }
+              />
             </Tooltip>
           )}
 
-
-
-          {customerSession.status === "archived" && thisCutsomerIsCancelled() && (
+          {checked.isArchived && checked.customerIsCancelled && (
             <Tooltip title="Supprimer la session">
-              <RiCalendarCloseFill className="text-2xl hover:text-slate-200 cursor-pointer transition-all" onClick={() => deleteSession(customerSession._id)} />
+              <RiCalendarCloseFill
+                className="text-2xl hover:text-slate-200 cursor-pointer transition-all"
+                onClick={() => deleteSession(thisSession._id)}
+              />
             </Tooltip>
           )}
-
-
-
         </div>
       </div>
       <Modal isOpen={isDetailsModalOpen} onClose={handleCloseDetailsModal}>
         <SessionDetailCard customerSession={customerSession} />
       </Modal>
-      <AddCustomerOfSession session={customerSession} isOpen={isAddCustomerModalOpen} onClose={() => setIsAddCustomerModalOpen(false)} />
+      <AddCustomerOfSession
+        session={thisSession}
+        isOpen={isAddCustomerModalOpen}
+        onClose={() => setIsAddCustomerModalOpen(false)}
+      />
     </>
   );
 }
