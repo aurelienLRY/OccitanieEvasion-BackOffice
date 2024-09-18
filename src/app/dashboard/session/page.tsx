@@ -1,25 +1,59 @@
-'use client'
-import React, { useState } from 'react'
-import SessionForm from '@/components/form/sessionForm'
+"use client";
+import React, { useState } from "react";
+import SessionForm from "@/components/form/sessionForm";
+import AllSessionsCard from "@/components/AllSessionsCard";
 
-type Props = {}
+/* Store */
+import { useSessionWithDetails } from "@/context/store";
 
-const SessionPage = (props: Props) => {
-  const [isOpen, setIsOpen] = useState(false)
-  
-  
+/* Components */
+import { IconButton } from "@/components/Button";
+
+/* Icons */
+import { IoMdAddCircle } from "react-icons/io";
+import { RiCalendarCloseFill } from "react-icons/ri";
+import { MdOutlineUpdate } from "react-icons/md";
+
+/**
+ * SessionPage Component
+ * @returns JSX.Element
+ */
+const SessionPage = () => {
+  const [isOpenCreate, setIsOpenCreate] = useState(false);
+  const sessionsWithDetails = useSessionWithDetails(
+    (state) => state.SessionWithDetails
+  );
+
   return (
-    <div>
-      SessionPage
-      <button onClick={() => setIsOpen(true)} className='bg-blue-500 text-white px-4 py-2 rounded-md'>Créer une session</button>
+    <div className="w-full flex flex-col items-center gap-12">
+      <div className="flex flex-row gap-4  justify-around items-center min-w-[280px] w-full max-w-[600px]">
+        <IconButton
+          title="Créer une session"
+          icon={<IoMdAddCircle className="text-4xl" />}
+          onClick={() => setIsOpenCreate(true)}
+        />
+        <IconButton
+          title="Modifier une session"
+          icon={<MdOutlineUpdate className="text-4xl" />}
+          onClick={() => alert("Tu dois la coder ! 💻")}
+        />
+        <IconButton
+          title="Supprimer une session"
+          icon={<RiCalendarCloseFill className="text-4xl" />}
+          onClick={() => alert("Tu dois la coder ! 💻")}
+        />
+      </div>
 
-      <SessionForm isOpen={isOpen} onClose={() => setIsOpen(false)} />
+        <AllSessionsCard sessionsWithDetails={sessionsWithDetails} />
 
-     
-     
-    
+
+      <SessionForm
+        isOpen={isOpenCreate}
+        onClose={() => setIsOpenCreate(false)}
+        sessionData={undefined}
+      />
     </div>
-  )
-}
+  );
+};
 
 export default SessionPage;

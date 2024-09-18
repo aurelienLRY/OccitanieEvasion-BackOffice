@@ -1,13 +1,12 @@
 import mongoose, { Schema, model } from 'mongoose';
 
-export interface IUser extends Document {
-    _id: string;
-    email: string;
-    password: string;
-    username: string;
-}
+/* Types */
+import { IUser } from '@/types';
 
-const UserSchema = new Schema({
+
+
+
+const UserSchema = new Schema<IUser>({
 
     email: { type: String, unique: true, required: true , match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/ , "Email invalide"]},
     password: { type: String, required: true },

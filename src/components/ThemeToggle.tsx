@@ -5,6 +5,12 @@ import { useEffect, useState } from "react";
 import { IoSunny } from "react-icons/io5";
 import { IoMoon } from "react-icons/io5";
 
+
+
+/*
+*theme toggle 
+*@returns {JSX.Element} 
+*/
 const ThemeToggle = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
 

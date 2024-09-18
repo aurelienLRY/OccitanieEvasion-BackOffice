@@ -1,21 +1,9 @@
 import mongoose, { Schema, model } from 'mongoose';
+import { ISpot } from '@/types';
 
-export interface ISpot extends Document {
-    _id: string;
-    name: string;
-    description: string;
-    gpsCoordinates: string;
-    practicedActivities: string[];
-    photo: string;
-    half_day: boolean;
-    full_day: boolean;
-    max_OfPeople: number;
-    min_OfPeople: number;
-    meetingPoint: string;
-    estimatedDuration: string;
-}
 
-const SpotSchema = new Schema({
+
+const SpotSchema = new Schema<ISpot>({
     name: {
       type: String,
       required: true,

@@ -1,5 +1,6 @@
+/* LIBRAIRIES */
 import { Tooltip } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 
 /*icons*/
 import { IoMdCloseCircle } from "react-icons/io";
@@ -10,10 +11,36 @@ type Props = {
   children: React.ReactNode;
 };
 
+/**
+ * Modal Component
+ * @param isOpen: boolean
+ * @param onClose: () => void
+ * @param children: React.ReactNode
+ */
 export default function Modal({ isOpen, onClose, children }: Props) {
   const handleClose = () => {
     onClose();
   };
+
+  /*
+   * HandleEscape Function
+   * @param e: KeyboardEvent
+   * @returns void
+   */
+  const handleEscape = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      onClose();
+    }
+  };
+
+  // Utilisation de useEffect pour ajouter et nettoyer l'événement keydown
+  useEffect(() => {
+    window.addEventListener("keydown", handleEscape);
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -24,16 +51,17 @@ export default function Modal({ isOpen, onClose, children }: Props) {
         }`}
       >
         {/*modal*/}
-        <div className="bg-transparent dark:bg-sky-950 min-w-fit w-full max-w-[70vw] rounded-md  ">
+        <div className="min-w-[300px] w-fit lg:max-w-[70vw] max-h-[90vh] overflow-y-auto bg-slate-700 dark:bg-sky-800 rounded-md shadow-md shadow-slate-400 dark:shadow-sky-400">
           <div className="flex justify-end">
             <Tooltip title="Fermer">
-              <IoMdCloseCircle
-                className="text-2xl text-right h-7 w-7 p-1 hover:text-red-500 transition-all duration-300"
-                onClick={handleClose}
-              />
+              <button onClick={handleClose}>
+                <IoMdCloseCircle className="text-4xl text-white text-right p-1 hover:text-red-500 transition-all duration-300" />
+              </button>
             </Tooltip>
           </div>
-          <div className="px-4 pb-4">{children}</div>
+          <div className="px-4 pb-4 flex justify-center items-center w-full">
+            {children}
+          </div>
         </div>
       </div>
     </>
