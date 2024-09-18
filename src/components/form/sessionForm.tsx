@@ -1,18 +1,29 @@
 "use client";
+/* LIBRAIRIES */
 import React, { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { GET_ACTIVITIES, GET_SPOTS } from "@/libs/actions/Get";
-import { CREATE_SESSION } from "@/libs/actions/Create";
-/*TYPES*/
-import { ISession } from "@/libs/database/models/Session";
-import { ISpot } from "@/libs/database/models/Spot";
-import { IActivity } from "@/libs/database/models/Activity";
+import { toast } from "sonner";
+import { Spin } from "antd";
+
+/*ACTIONS*/
+import { CREATE_SESSION } from "@/libs/actions";
+
+/* STORES */
+import { useSessionWithDetails, useSpots, useActivities } from "@/context/store";
+
+/* TYPES */
+import { ISession } from "@/types";
+
 
 /*COMPONENTS*/
 import Modal from "@/components/Modal";
-import { Input, SelectInput } from "@/components/Inputs"; // Importez les composants réutilisables
+import { Input, SelectInput } from "@/components/Inputs";
+import ToasterAction from "@/components/ToasterAction";
+
+
+
 
 /* Validation schema */
 const schema = yup.object().shape({
@@ -32,6 +43,8 @@ const schema = yup.object().shape({
     .integer(),
 });
 
+
+
 export type TSessionForm = {
   date: Date;
   startTime: string;
@@ -42,7 +55,7 @@ export type TSessionForm = {
   placesReserved: number;
 };
 
-function SessionForm({
+export default function SessionForm({
   sessionData,
   isOpen,
   onClose,
@@ -51,24 +64,12 @@ function SessionForm({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const [spots, setSpots] = useState<ISpot[]>([]);
-  const [activities, setActivities] = useState<IActivity[]>([]);
-  const [err, setErr] = useState<any>(null);
-  const [result, setResult] = useState<any>(null);
-  // Error handling
 
-  useEffect(() => {
-    const fetchSpots = async () => {
-      const spots = await GET_SPOTS();
-      setSpots(spots);
-    };
-    const fetchActivities = async () => {
-      const activities = await GET_ACTIVITIES();
-      setActivities(activities);
-    };
-    fetchSpots();
-    fetchActivities();
-  }, []);
+
+  const addSessionWithDetails = useSessionWithDetails((state) => state.addSessionWithDetails);
+  const activities = useActivities((state) => state.Activities);
+  const spots = useSpots((state) => state.Spots);
+
 
   const methods = useForm<TSessionForm>({
     resolver: yupResolver(schema),
@@ -76,20 +77,26 @@ function SessionForm({
   });
 
   const onSubmit = async (data: TSessionForm) => {
-    console.log("ON SUBMIT > ", data);
-    const result = await CREATE_SESSION(data);
-    console.log("RESULT > ", result);
-    setResult(result);
+    const newData = {
+      ...data,
+      status: "Actif",
+    };
+    const result = await CREATE_SESSION(newData as ISession);
     if (result.success) {
+      if (result.data) {
+        addSessionWithDetails(result.data);
+      }
       reset();
-      const timeout = setTimeout(() => {
-        setResult(null);
-      }, 3000);
-      clearTimeout(timeout);
-    }
+      onClose();
+    } 
+    ToasterAction({result , defaultMessage: "Session créée avec succès"})
   };
 
-  const { handleSubmit, reset } = methods;
+  const {
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = methods;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -103,12 +110,6 @@ function SessionForm({
             <h2 className="text-2xl font-bold">
               {sessionData ? "Modifier la session" : "Créer une session"}
             </h2>
-            {err && <div className="text-red-500 text-sm">{err}</div>}
-            {result && result.success && (
-              <div className="text-green-500 text-sm">
-                Session créée avec succès
-              </div>
-            )}
           </div>
 
           {/* FORM */}
@@ -185,10 +186,12 @@ function SessionForm({
           <div className="flex justify-end items-center gap-1">
             <button
               type="submit"
-              className="p-1 px-2 rounded-md bg-orange-500 hover:bg-orange-600 transition-all duration-300 text-white"
+              className="bg-orange-500 hover:bg-orange-600 transition-all duration-300 text-white w-fit mx-auto p-3 rounded-md flex items-center justify-center min-w-[70px] min-h-[40px] disabled:opacity-80 disabled:cursor-not-allowed"
+              disabled={isSubmitting}
             >
-              {sessionData ? "Modifier" : "Créer"}
+              {isSubmitting ? <Spin size="default" />   : sessionData ? "Modifier" : "Créer"}
             </button>
+
           </div>
         </form>
       </FormProvider>
@@ -196,4 +199,4 @@ function SessionForm({
   );
 }
 
-export default SessionForm;
+

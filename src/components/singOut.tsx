@@ -1,12 +1,11 @@
+/*libraries*/
 import React from "react";
 import { signOut } from "next-auth/react";
 
 /*icons*/
 import { FaSignOutAlt } from "react-icons/fa";
 
-type Props = {};
-
-const SingOutBtn = (props: Props) => {
+export default function SingOutBtn() {
   return (
     <div className="flex justify-center items-center fixed bottom-3 right-0 p-1 bg-stone-700 rounded-s-lg opacity-70 hover:opacity-100 transition-opacity duration-300">
       <div className="group relative">
@@ -22,5 +21,5 @@ const SingOutBtn = (props: Props) => {
       </div>
     </div>
   );
-};
-export default SingOutBtn;
+}
+

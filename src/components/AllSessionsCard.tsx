@@ -1,17 +1,27 @@
 "use client";
+/* Librairies */
 import { useState, useEffect } from "react";
 import { cn } from "@/utils/cn";
+import { Spin } from "antd";
+/* Components */
 import SessionCard from "@/components/SessionCard";
-import { ISessionWithDetails } from "@/libs/actions/Get";
+import { ISessionWithDetails } from "@/types";
 
-/*icons*/
-import { IoIosSearch } from "react-icons/io";
+/* Utils */
+import { getSessionByStatus } from "@/utils/utilSession";
+import { SearchInObject } from "@/utils/search";
 
 
-function AllSessionsCard({
-  customerSessions,
+
+/**
+ * AllSessionsCard Component
+ * @param sessionsWithDetails: ISessionWithDetails[]
+ * @returns  JSX.Element
+ */
+export default function AllSessionsCard({
+  sessionsWithDetails,
 }: {
-  customerSessions: ISessionWithDetails[];
+  sessionsWithDetails: ISessionWithDetails[];
 }) {
   const [filter, setFilter] = useState<string>("all");
   const [filteredSessions, setFilteredSessions] = useState<
@@ -20,28 +30,40 @@ function AllSessionsCard({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [status, setStatus] = useState<string>("Actif");
   const [search, setSearch] = useState<string>("");
-
-
+  
 
   useEffect(() => {
-    setIsLoading(customerSessions.length === 0);
-    const resultFilter = filterSessions(customerSessions, filter, status);
-    const resultSearch = SearchInSessions(resultFilter, search);
-    setFilteredSessions(resultSearch);
-  }, [filter, customerSessions, status, search]);
+    setIsLoading(sessionsWithDetails.length === 0);
+    const sortedSessions = [...sessionsWithDetails].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const resultFilter = filterSessions(sortedSessions, filter, status);
+    const resultSearch = SearchInObject(resultFilter, search);
+    setFilteredSessions(resultSearch as ISessionWithDetails[]);
+  }, [filter, sessionsWithDetails, status, search]);
 
-
-  if (isLoading) {
-    return <div className="flex justify-center items-center w-screen  h-screen">Chargement...</div>;
+  if (isLoading || sessionsWithDetails.length === 0) {
+    if (sessionsWithDetails.length === 0) {
+      return (
+        <div className="flex flex-col gap-4 justify-center items-center w-screen min-h-60 ">
+          <p>Aucune session trouvée.</p>
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex flex-col gap-4 justify-center items-center w-screen min-h-60 ">
+          <Spin size="large" />
+          <p>Chargement des données.</p>
+        </div>
+      );
+    }
   }
 
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col gap-4 w-full min-h-60 border-2 border-sky-700 dark:border-sky-900 rounded-md px-2 md:px-4 py-6">
       {/* filter NAV */}
-      <div className="flex flex-col-reverse md:flex-row justify-between gap-4 items-center w-full">
-        <div className="flex gap-4 items-center">
+      <div className="flex flex-col-reverse lg:flex-row justify-between gap-4 items-center w-full">
+        <div className="flex flex-col md:flex-row gap-4 md:items-center">
           {/* filter Période */}
-          <div className="flex flex-col  justify-center ">
+          <div className="flex gap-0 flex-col  items-center md:items-start  md:justify-center ">
             <div className=" text-lg text-start ms-2 opacity-50">Période</div>
             <div className="flex justify-center gap-4 text-xs min-h-6 font-light bg-sky-950 dark:bg-sky-800 rounded-md py-2 px-4 box-content max-w-fit">
               <button
@@ -80,7 +102,7 @@ function AllSessionsCard({
             </div>
           </div>
           {/* filter Statut */}
-          <div className="flex flex-col  justify-center ">
+          <div className="flex gap-0 flex-col  items-center md:items-start  md:justify-center ">
             <div className=" text-lg text-start ms-2 opacity-50">Statut</div>
             <div className="flex justify-center gap-4 text-xs min-h-6 font-light bg-sky-950 dark:bg-sky-800 rounded-md py-2 px-4 box-content max-w-fit">
               <button
@@ -108,14 +130,19 @@ function AllSessionsCard({
               {/* pending */}
               <button
                 className={cn(
-                  "px-2 rounded-md",
-                  status === "pending"
+                  "px-2 rounded-md relative",
+                  status === "Pending"
                     ? "bg-blue-500 text-white"
                     : "bg-gray-200 text-gray-500"
                 )}
                 onClick={() => setStatus("Pending")}
               >
                 en attente
+                {getSessionByStatus(sessionsWithDetails, "Pending") > 0 && (
+                  <span className="absolute -top-3 -right-2 w-5 h-5 bg-orange-600 rounded-full text-white text-xs flex justify-center items-center">
+                    {getSessionByStatus(sessionsWithDetails, "Pending")}
+                  </span>
+                )}
               </button>
 
               <button
@@ -156,14 +183,20 @@ function AllSessionsCard({
   );
 }
 
-export default AllSessionsCard;
-
 function filterSessions(
   sessions: ISessionWithDetails[],
   filter: string,
   status?: string
 ) {
   const now = new Date();
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay());
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
+
   return sessions.filter((session) => {
     const sessionDate = new Date(session.date);
 
@@ -175,11 +208,7 @@ function filterSessions(
     // Filtrer par période
     switch (filter) {
       case "thisWeek":
-        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-        const endOfWeek = new Date(
-          now.setDate(now.getDate() - now.getDay() + 7)
-        );
-        return sessionDate >= startOfWeek && sessionDate < endOfWeek;
+        return sessionDate >= startOfWeek && sessionDate <= endOfWeek;
       case "thisMonth":
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -191,33 +220,6 @@ function filterSessions(
     }
   });
 }
-
-
-function SearchInSessions(objet: ISessionWithDetails[], search: string) {
-  const searchLower = search.toLowerCase(); // Convertir la recherche en minuscules pour une comparaison insensible à la casse
-
-  function searchIn(obj: any): boolean {
-    if (obj !== null && typeof obj === "object") {
-      for (const [cle, valeur] of Object.entries(obj)) {
-        // Vérifier si la valeur est une chaîne et si elle contient la chaîne de recherche
-        if (typeof valeur === "string" && valeur.toLowerCase().includes(searchLower)) {
-          return true; // Correspondance trouvée, renvoyer vrai
-        }
-        // Récursion pour chercher dans les objets imbriqués
-        if (typeof valeur === "object" && searchIn(valeur)) {
-          return true; // Correspondance trouvée dans un sous-objet, renvoyer vrai
-        }
-      }
-    }
-    return false; // Aucune correspondance trouvée, renvoyer faux
-  }
-
-  return objet.filter(session => searchIn(session)); // Filtrer les sessions où une correspondance est trouvée
-}
-  
-
-
-
 
 
 

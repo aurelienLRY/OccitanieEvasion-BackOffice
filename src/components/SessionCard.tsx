@@ -1,23 +1,25 @@
 "use client";
-import React, { useState } from "react";
-import { ISessionWithDetails } from "@/libs/actions/Get";
 
 /* librairies */
 import { Tooltip } from "antd";
-
+import { toast } from "sonner";
+import React, { useState } from "react";
 /*actions*/
-import { DELETE_SESSION } from "@/libs/actions/Delete";
-import { UPDATE_SESSION } from "@/libs/actions/Update";
+import { DELETE_SESSION } from "@/libs/actions";
+import { UPDATE_SESSION } from "@/libs/actions";
+
+/*store*/
+import { useSessionWithDetails } from "@/context/store";
 
 /*components*/
 import Modal from "@/components/Modal";
 import SessionDetailCard from "@/components/SessionDetailCard";
 import AddCustomerOfSession from "@/components/form/addCustomerOfSession";
-import CustomerSession from "./CustomerSession";
+import UpdateSessionForm from "@/components/form/updateSession";
+import CanceledCustomerSession from "@/components/CanceledCustomerSession";
 
-/*types*/
-import { ISession } from "@/libs/database/models/Session";
-
+/* Types */
+import { ISessionWithDetails } from "@/types";
 /*icons*/
 import { RiCalendarCloseFill } from "react-icons/ri";
 import { TbListDetails } from "react-icons/tb";
@@ -28,81 +30,114 @@ type Props = {
   customerSession: ISessionWithDetails;
 };
 
+/**
+ * SessionCard Component
+ * @param customerSession: ISessionWithDetails
+ * @returns JSX.Element
+ */
 function SessionCard({ customerSession }: Props) {
-  {
-    /* GESTION DES MODALS */
-  }
-  const [thisSession, setThisSession] =
-    useState<ISessionWithDetails>(customerSession);
+  // GESTION DES MODALS
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // modal details
-  const handleCloseDetailsModal = () => setIsDetailsModalOpen(false); // close modal details
   const [isAddCustomerModalOpen, setIsAddCustomerModalOpen] = useState(false); // modal add customer
+  const [isUpdateSessionModalOpen, setIsUpdateSessionModalOpen] =
+    useState(false); // modal update session
+  const [
+    isCanceledCustomerSessionModalOpen,
+    setIsCanceledCustomerSessionModalOpen,
+  ] = useState(false);
 
-  const customerIsCancelled = () => {
-    let result = true;
-    thisSession.customerSessions.forEach((cs) => {
-      if (cs.status !== "cancelled") {
-        result = false;
-      }
-    });
-    return result;
-  };
+  // modal canceled customer session
+  const { updateSessionWithDetails, deleteSessionWithDetails } =
+    useSessionWithDetails();
 
-  {
-    /* check if the customer is cancelled */
-  }
+  // Vérifie si tous les clients sont annulés
+  const customerIsCancelled = () =>
+    customerSession.customerSessions.every((cs) => cs.status === "Canceled");
+
+  const customerIsWaiting = () =>
+    customerSession.customerSessions.some((cs) => cs.status === "Waiting");
+
+  const customerWaitingCount = () =>
+    customerSession.customerSessions.filter((cs) => cs.status === "Waiting")
+      .length;
+
+  // Statuts vérifiés
   const checked = {
     customerIsCancelled: customerIsCancelled(),
-    isArchived: thisSession.status === "Archived",
-    isReserved: +thisSession.placesReserved > 0,
+    customerIsWaiting: customerIsWaiting(),
+    isArchived: customerSession.status === "Archived",
+    isReserved: +customerSession.placesReserved > 0,
+    isPending: customerSession.status === "Pending",
+    isActive: customerSession.status === "Actif",
   };
 
-  const archiveSession = async (Session: ISessionWithDetails, data: any) => {
-    console.log("UpdateSession", data, Session);
-  };
-
+  // Supprimer une session
   const deleteSession = async (sessionId: string) => {
-    console.log("deleteSession", sessionId);
-    const result = await DELETE_SESSION(sessionId);
-    console.log("deleteSession result : ", result);
+    if (window.confirm("Voulez-vous vraiment supprimer cette session ?")) {
+      const result = await DELETE_SESSION(sessionId);
+      if (result.success) {
+        toast.success("Session supprimée avec succès");
+        deleteSessionWithDetails(customerSession);
+      } else {
+        toast.error("Erreur lors de la suppression de la session");
+      }
+    }
   };
 
+  // Action de bascule (archiver ou annuler les réservations)
 
-
-  const SwitchAction = async (session: ISessionWithDetails, data: any) => {
+  //TODO: pb de soustraction des places réservées
+  const SwitchAction = async (session: ISessionWithDetails) => {
     if (checked.customerIsCancelled && !checked.isArchived) {
-      const result = await UPDATE_SESSION(
-        session._id,
-        { status: "Archived" }
-      );
-     
-      if (result) { 
-        const { activity, spot, ...rest } = result;
-        setThisSession((prevSession) => ({ ...prevSession, ...rest }));
+      if (window.confirm("Voulez-vous vraiment archiver cette session ?")) {
+        const result = await UPDATE_SESSION(session._id, {
+          ...session,
+          activity: session.activity._id,
+          spot: session.spot._id,
+          status: "Archived",
+        });
+        if (result.success) {
+          updateSessionWithDetails({ ...session, status: "Archived" });
+          toast.success("Session archivée avec succès");
+        } else {
+          if (result.feedback) {
+            toast.error(result.feedback);
+          }
+        }
       }
     } else if (
       checked.isReserved &&
       !checked.isArchived &&
       !checked.customerIsCancelled
     ) {
-      console.log("Annuler les reservations", session._id);
+      setIsCanceledCustomerSessionModalOpen(true);
     }
   };
 
   return (
     <>
-      <div className="flex flex-col gap-2 justify-evenly min-w-fit w-full max-w-[350px] bg-slate-700 dark:bg-sky-800 rounded-md px-3 pt-3 pb-1 text-white relative shadow-md shadow-slate-400 dark:shadow-sky-400">
-        <div className=" w-full  flex flex-col ">
+      <div
+        className={`flex flex-col gap-2 justify-evenly min-w-fit w-full max-w-[350px] bg-slate-700 dark:bg-sky-800 rounded-md px-3 pt-3 pb-1 text-white relative shadow-md shadow-slate-400 dark:shadow-sky-400 border-opacity-65 ${
+          checked.isArchived
+            ? "opacity-60 border-e-8 border-red-500"
+            : checked.isPending
+            ? "border-e-8 border-orange-500"
+            : checked.isActive
+            ? "border-e-8 border-green-500"
+            : "opacity-100"
+        }`}
+      >
+        <div className="w-full flex flex-col">
           <p className="text-center text-xl font-semibold m-0">
             {customerSession.activity.name}
           </p>
-          {+customerSession.placesReserved > 0 && (
+          {checked.isReserved && (
             <small className="text-xs font-light text-orange-500 text-center">
               🚀 {customerSession.placesReserved} places réservées 🚀
             </small>
           )}
         </div>
-        <div className="flex flex-col gap-1 w-full text-xs ">
+        <div className="flex flex-col gap-1 w-full text-xs">
           <p>
             <span className="font-semibold">Date : </span>
             {new Date(customerSession.date).toLocaleDateString()}
@@ -112,73 +147,97 @@ function SessionCard({ customerSession }: Props) {
             {`de ${customerSession.startTime} à ${customerSession.endTime}`}
           </p>
           <p>
-            <span className="font-semibold">Lieu : </span>{" "}
+            <span className="font-semibold">Lieu : </span>
             {customerSession.spot.name}
           </p>
-
           <p>
             <span className="font-semibold">Places disponibles : </span>
             {+customerSession.placesMax - +customerSession.placesReserved}
           </p>
         </div>
 
-        <div className="flex justify-end  items-center gap-4 w-full text-slate-400 ">
+        <div className="flex justify-end items-center gap-4 w-full text-slate-400">
           {checked.isReserved && (
             <Tooltip title="Voir les détails">
-              <TbListDetails
-                className="text-2xl hover:text-slate-200 cursor-pointer transition-all"
+              <button
                 onClick={() => setIsDetailsModalOpen(true)}
-              />
+                className="relative"
+              >
+                <TbListDetails
+                  className={`text-2xl hover:text-slate-200 cursor-pointer transition-all ${
+                    checked.customerIsWaiting
+                      ? "text-orange-600"
+                      : "text-slate-400"
+                  }`}
+                />
+                {checked.customerIsWaiting && (
+                  <span className="absolute -top-1 -right-2 bg-orange-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                    {customerWaitingCount()}
+                  </span>
+                )}
+              </button>
             </Tooltip>
           )}
 
           {!checked.isArchived && (
-            <Tooltip title="Ajouter des participants">
-              <IoMdPersonAdd
-                className="text-2xl hover:text-slate-200 cursor-pointer transition-all"
-                onClick={() => setIsAddCustomerModalOpen(true)}
-              />
-            </Tooltip>
-          )}
+            <>
+              <Tooltip title="Ajouter des participants">
+                <button onClick={() => setIsAddCustomerModalOpen(true)}>
+                  <IoMdPersonAdd className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
+                </button>
+              </Tooltip>
 
-          {!checked.isArchived && (
-            <Tooltip title="Modifier la session">
-              <MdOutlineUpdate className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
-            </Tooltip>
-          )}
+              <Tooltip title="Modifier la session">
+                <button onClick={() => setIsUpdateSessionModalOpen(true)}>
+                  <MdOutlineUpdate className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
+                </button>
+              </Tooltip>
 
-          {!checked.isArchived && (
-            <Tooltip
-              title={
-                checked.isReserved
-                  ? "Annuler les réservations"
-                  : "Archiver la session"
-              }
-            >
-              <RiCalendarCloseFill
-                className="text-2xl hover:text-red-500 cursor-pointer transition-all"
-                onClick={() =>
-                  SwitchAction(thisSession, { status: "Archived" })
+              <Tooltip
+                title={
+                  checked.isReserved
+                    ? "Annuler les réservations"
+                    : "Archiver la session"
                 }
-              />
-            </Tooltip>
+              >
+                <button onClick={() => SwitchAction(customerSession)}>
+                  <RiCalendarCloseFill className="text-2xl hover:text-red-500 cursor-pointer transition-all" />
+                </button>
+              </Tooltip>
+            </>
           )}
 
           {checked.isArchived && checked.customerIsCancelled && (
             <Tooltip title="Supprimer la session">
-              <RiCalendarCloseFill
-                className="text-2xl hover:text-slate-200 cursor-pointer transition-all"
-                onClick={() => deleteSession(thisSession._id)}
-              />
+              <button onClick={() => deleteSession(customerSession._id)}>
+                <RiCalendarCloseFill className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
+              </button>
             </Tooltip>
           )}
         </div>
       </div>
-      <Modal isOpen={isDetailsModalOpen} onClose={handleCloseDetailsModal}>
+
+      {/* MODALS DETAILS */}
+      <Modal
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+      >
         <SessionDetailCard customerSession={customerSession} />
       </Modal>
+      <CanceledCustomerSession
+        isOpen={isCanceledCustomerSessionModalOpen}
+        data={customerSession}
+        onClose={() => setIsCanceledCustomerSessionModalOpen(false)}
+      />
+
+      <UpdateSessionForm
+        sessionData={customerSession}
+        isOpen={isUpdateSessionModalOpen}
+        onClose={() => setIsUpdateSessionModalOpen(false)}
+      />
+
       <AddCustomerOfSession
-        session={thisSession}
+        session={customerSession}
         isOpen={isAddCustomerModalOpen}
         onClose={() => setIsAddCustomerModalOpen(false)}
       />

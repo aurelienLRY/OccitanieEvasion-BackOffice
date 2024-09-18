@@ -1,17 +1,8 @@
 import mongoose, { Schema, model } from "mongoose";
+/* Types */
+import { IActivity } from "@/types"
 
-export interface IActivity extends Document {
-    _id: string;
-    name: string;
-    description: string;
-    half_day: boolean;
-    full_day: boolean;
-    price_half_day: number;
-    price_full_day: number;
-    min_age: number;
-    max_OfPeople: number;
-    min_OfPeople: number;
-}
+
 
 const activitySchema = new mongoose.Schema({
   name: {
