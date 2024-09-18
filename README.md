@@ -1,4 +1,8 @@
 # Projet de gestion de Reservation d’activités 
+![occitanie evasion](https://github.com/user-attachments/assets/b3cd8efd-ddd6-4bd3-a2c4-060fd405b335)
+
+
+
 ## 1. A propos
 Ce projet est une application de gestion de réservation d'activités. Il permet de gérer les réservations des clients pour les activités proposées par l'entreprise.
 
