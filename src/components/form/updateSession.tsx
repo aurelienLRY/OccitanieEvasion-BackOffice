@@ -87,11 +87,8 @@ export default function UpdateSessionForm({
   });
 
   const onSubmit = async (data: TSessionForm) => {
-    console.log("data: ", data);
     const result = await UPDATE_SESSION(sessionData?._id as string, data );
     if (result.success) {
-        console.log("result: ", result)
-        console.log("result.data: ", result.data)
       if (result.data) {
         updateSessionWithDetails(result.data);
       }

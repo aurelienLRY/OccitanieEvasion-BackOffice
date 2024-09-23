@@ -16,8 +16,16 @@ export interface IActivity {
     description: string;
     half_day: boolean;
     full_day: boolean;
-    price_half_day: number;
-    price_full_day: number;
+    price_half_day: {
+        standard: number;
+        reduced: number;
+        ACM: number;
+    };
+    price_full_day: {
+        standard: number;
+        reduced: number;
+        ACM: number;
+    };
     min_age: number;
     max_OfPeople: number;
     min_OfPeople: number;

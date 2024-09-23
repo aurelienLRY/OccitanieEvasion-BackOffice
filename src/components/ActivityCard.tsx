@@ -5,8 +5,8 @@ import { IActivity } from "@/types";
 import { Spin } from "antd";
 
 /* Components */
-
 import ToasterAction from "@/components/ToasterAction";
+import UpdateActivityForm from "@/components/form/updateActivity";
 
 /* Actions */
 import { DELETE_ACTIVITY } from "@/libs/actions";
@@ -19,7 +19,6 @@ import { RiCalendarCloseFill } from "react-icons/ri";
 import { MdOutlineUpdate } from "react-icons/md";
 import { IoPeople } from "react-icons/io5";
 
-
 type Props = {
   activity: IActivity;
 };
@@ -27,20 +26,23 @@ type Props = {
 function ActivityCard({ activity }: Props) {
   const [isUpdateActivityModalOpen, setIsUpdateActivityModalOpen] =
     useState(false);
+
   const [isDelete, setIsDelete] = useState(false);
 
-  const {deleteActivities} = useActivities()
+  const { deleteActivities } = useActivities();
 
   const deleteActivity = async (activityId: string) => {
     if (window.confirm("Voulez-vous vraiment supprimer cette activité ?")) {
-        setIsDelete(true);
+      setIsDelete(true);
       const result = await DELETE_ACTIVITY(activityId);
       if (result.success) {
-        deleteActivities(result.data)
+        if (result.data) {
+          deleteActivities(result.data);
+        }
       } else {
         setIsDelete(false);
       }
-      ToasterAction({result, defaultMessage: 'Activité supprimée avec succès'})
+      ToasterAction({ result, defaultMessage: "Activité supprimée avec succès" });
     }
   };
 
@@ -57,56 +59,97 @@ function ActivityCard({ activity }: Props) {
         )}
 
         <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold text-center">{activity.name}</h2>
+          <h2 className="text-2xl font-bold text-center bg-sky-950 rounded-md p-2 py-4 shadow-inner shadow-sky-600">
+            {activity.name}
+          </h2>
 
-          <div className="flex flex-col gap-2 w-full justify-center items-center">
-            <h3 className="text-xl font-bold">Description</h3>
-            <p className="text-sm dark:text-gray-500 text-center  px-2">
-              {activity.description}
+          <div className="flex gap-2 w-full justify-center items-center border-2 border-sky-600 p-2 rounded-md">
+            <h3 className="text-lg font-bold text-gray-400">Description: </h3>
+            <p className="text-sm text-justify px-2">
+              {activity.description
+                ? activity.description
+                : "🧐 Ajouter une description à votre activité 🧐 "}
             </p>
           </div>
 
           <div className="flex flex-col gap-2 w-full justify-center items-center">
-            <h3 className="text-xl font-bold">Tarification</h3>
-            <div className="flex flex-col md:flex-row gap-4">
-              <p>
-                Prix demi-journée:{" "}
-                <span className="font-bold">{activity.price_half_day}€</span>
-              </p>
-              <p>
-                Prix journée complète:{" "}
-                <span className="font-bold">{activity.price_full_day}€</span>
-              </p>
+            <h3 className="text-xl font-bold text-gray-400">Tarification</h3>
+              <table className="w-full border-collapse border-2 border-sky-500 rounded-md">
+                <thead>
+                  <tr>
+                    <th className="border border-sky-500 p-2"></th>
+                    <th className="border border-sky-500 p-2">Demi-journée</th>
+                    <th className="border border-sky-500 p-2">Journée complète</th>
+                  </tr>
+                </thead>
+                <tbody className="text-center">
+                  <tr className="hover:bg-orange-500 transition-all duration-200">
+                    <td className="border border-sky-500 p-2">Standard</td>
+                    <td className="border border-sky-500 p-2">
+                      {activity.price_half_day?.standard !== undefined
+                        ? `${activity.price_half_day.standard}€`
+                        : "N/A"}
+                    </td>
+                    <td className="border border-sky-500 p-2">
+                      {activity.price_full_day?.standard !== undefined
+                        ? `${activity.price_full_day.standard}€`
+                        : "N/A"}
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-orange-500 transition-all duration-200">
+                    <td className="border border-sky-500 p-2">Réduit</td>
+                    <td className="border border-sky-500 p-2">
+                      {activity.price_half_day?.reduced !== undefined
+                        ? `${activity.price_half_day.reduced}€`
+                        : "N/A"}
+                    </td>
+                    <td className="border border-sky-500 p-2">
+                      {activity.price_full_day?.reduced !== undefined
+                        ? `${activity.price_full_day.reduced}€`
+                        : "N/A"}
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-orange-500 transition-all duration-200">
+                    <td className="border border-sky-500 p-2">ACM</td>
+                    <td className="border border-sky-500 p-2">
+                      {activity.price_half_day?.ACM !== undefined
+                        ? `${activity.price_half_day.ACM}€`
+                        : "N/A"}
+                    </td>
+                    <td className="border border-sky-500 p-2">
+                      {activity.price_full_day?.ACM !== undefined
+                        ? `${activity.price_full_day.ACM}€`
+                        : "N/A"}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-          </div>
-
+   
 
           <div className="flex flex-col gap-2 w-full justify-center items-center">
-            <h3 className="text-xl font-bold"> Caractéristiques          </h3>
+            <h3 className="text-xl font-bold">Caractéristiques</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex flex-col justify-around items-center gap-1 bg-orange-500 rounded-md p-2 text-center">
                 Âge minimum
                 <span className="font-bold">{activity.min_age} ans</span>
               </div>
 
-
               <div className="flex flex-col justify-around items-center gap-1 bg-orange-500 rounded-md p-2 text-center">
                 <p>Nombre minimum</p>
-                <p className="flex items-center gap-1"><span className="font-bold">{activity.min_OfPeople}</span> <IoPeople />
+                <p className="flex items-center gap-1">
+                  <span className="font-bold">{activity.min_OfPeople}</span> <IoPeople />
                 </p>
-                
               </div>
-
 
               <div className="flex flex-col justify-around items-center gap-1 bg-orange-500 rounded-md p-2 text-center">
                 <p>Nombre maximum</p>
-                <p className="flex items-center gap-1"><span className="font-bold">{activity.max_OfPeople}</span> <IoPeople />
+                <p className="flex items-center gap-1">
+                  <span className="font-bold">{activity.max_OfPeople}</span> <IoPeople />
                 </p>
               </div>
-
             </div>
           </div>
-
         </div>
 
         <div className="w-full flex justify-end gap-3">
@@ -122,6 +165,11 @@ function ActivityCard({ activity }: Props) {
           </Tooltip>
         </div>
       </div>
+      <UpdateActivityForm
+        data={activity}
+        isOpen={isUpdateActivityModalOpen}
+        onClose={() => setIsUpdateActivityModalOpen(false)}
+      />
     </>
   );
 }

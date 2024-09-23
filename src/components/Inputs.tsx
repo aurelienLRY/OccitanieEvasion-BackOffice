@@ -13,6 +13,7 @@ type InputProps = {
   className?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   errorsName?: string;
+  defaultValue?: string | number ;
 };
 
 /**
@@ -33,6 +34,7 @@ export const Input = ({
   label,
   className,
   onChange,
+  defaultValue,
   errorsName = name,
 }: InputProps) => {
   const {
@@ -43,10 +45,9 @@ export const Input = ({
   const errorMessage = getNestedValue(errors, errorsName)?.message as string;
 
   return (
-    <div className={`flex flex-col items-center  ${className}`}>
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-0 md:gap-2 w-full">
+      <div className={`flex flex-col md:flex-row items-start md:items-center gap-0 md:gap-2  ${className && className}`}>
         {label && (
-          <label htmlFor={name} className="text-sm font-light opacity-70 ">
+          <label htmlFor={name} className="text-sm font-light opacity-70 min-w-28 md:text-right ">
             {label}
           </label>
         )}
@@ -61,9 +62,10 @@ export const Input = ({
               errorMessage
                 ? "border-red-500 shadow-md shadow-red-500"
                 : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
-            }`}
+            } ${disabled ? "opacity-50" : ""}  ${type === "number" ? "max-w-40" : ""}`}
             aria-invalid={errorMessage ? "true" : "false"}
             disabled={disabled}
+            defaultValue={defaultValue}
           />
           {errorMessage && (
             <span
@@ -75,7 +77,7 @@ export const Input = ({
           )}
         </div>
       </div>
-    </div>
+
   );
 };
 
@@ -93,12 +95,14 @@ export const SelectInput = ({
   label,
   className,
   errorsName = name,
+  disabled = false,
 }: {
   name: string;
   options: { id: string; name: string }[];
   label?: string;
   className?: string;
   errorsName?: string;
+  disabled?: boolean;
 }) => {
   const {
     register,
@@ -108,8 +112,7 @@ export const SelectInput = ({
   const errorMessage = getNestedValue(errors, errorsName)?.message as string;
 
   return (
-    <div className={`flex flex-col items-center  ${className}`}>
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-0 md:gap-2 w-full">
+      <div className={`flex flex-col md:flex-row items-start md:items-center gap-0 md:gap-2  ${className && className}`}>
         {label && (
           <label htmlFor={name} className="font-light text-sm opacity-70">
             {label}
@@ -124,7 +127,8 @@ export const SelectInput = ({
           errorMessage
             ? "border-red-500 shadow-md shadow-red-500"
             : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
-        }`}
+        } ${disabled ? "bg-gray-100" : ""}`}
+          disabled={disabled}
           >
             <option value="">Sélectionnez une option</option>
             {options.map((option) => (
@@ -143,7 +147,6 @@ export const SelectInput = ({
           )}
         </div>
       </div>
-    </div>
   );
 };
 
@@ -161,16 +164,12 @@ export const CheckboxInput = ({
   name,
   value,
   label,
-  checked,
-  onChange,
   className,
   errorsName = name,
 }: {
   name: string;
   value?: string;
   label?: string;
-  checked?: boolean;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   errorsName?: string;
 }) => {
@@ -187,9 +186,7 @@ export const CheckboxInput = ({
         id={name}
         type="checkbox"
         value={value}
-        checked={checked}
         {...register(name)}
-        onChange={onChange}
         className={`mr-2 ${
           errorMessage
             ? "border-red-500 shadow-md shadow-red-500"
@@ -238,10 +235,9 @@ export const Textarea = ({
   const errorMessage = getNestedValue(errors, errorsName)?.message as string;
 
   return (
-    <div className={`flex  items-center  ${className}`}>
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-0 md:gap-2 w-full">
+      <div className={`flex flex-col md:flex-row items-start md:items-center gap-0 md:gap-2 w-full ${className && className}`}>
         {label && (
-          <label htmlFor={name} className="text-sm font-light opacity-70">
+          <label htmlFor={name} className="text-sm font-light opacity-70 min-w-28">
             {label}
           </label>
         )}
@@ -250,7 +246,7 @@ export const Textarea = ({
             id={name}
             placeholder={placeholder}
             {...register(name)}
-            className={` rounded-md border border-gray-300 bg-white py-2 px-2 md:px-6  text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
+            className={`min-w-60 w-full rounded-md border border-gray-300 bg-white py-2 px-2 md:px-6  text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
               errorMessage
                 ? "border-red-500 shadow-md shadow-red-500"
                 : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
@@ -266,7 +262,6 @@ export const Textarea = ({
         </span>
       )}
       </div>
-    </div>
 
   );
 };

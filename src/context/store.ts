@@ -3,11 +3,8 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { produce } from 'immer';
 /* types*/
-import { ISession } from "@/libs/database/models/Session";
-import { ISpot } from "@/libs/database/models/Spot";
-import { ISessionWithDetails } from "@/libs/actions/Get";
-import { IActivity } from "@/libs/database/models/Activity";
-import { ICustomerSession } from "@/libs/database/models/CustomerSession";
+import { ISession , ISpot , ISessionWithDetails , IActivity , ICustomerSession } from "@/types";
+
 
 /*************************************************************************/ 
 

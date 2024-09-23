@@ -92,6 +92,19 @@ const DashboardNav = ({
         {" "}
         Activités{" "}
       </Link>
+
+      <Link
+        href="/dashboard/email"
+        className={cn(
+          isActive("/dashboard/email")
+            ? "font-semibold bg-sky-700 dark:bg-sky-900"
+            : "",
+          "p-1 px-2 rounded-md transition-all hover:font-semibold "
+        )}
+      >
+        {" "} 
+        Emails
+      </Link>
     </nav>
   );
 };
