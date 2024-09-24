@@ -27,6 +27,9 @@ const CustomerSessionSchema = new mongoose.Schema<ICustomerSession>({
       weight: { type: String, required: true },
     },
   ],
+  price_applicable: { type: Number, required: true },
+  price_total: { type: Number, required: true },
+  tarification: { type: String, required: true },
 });
 
 CustomerSessionSchema.pre("save", async function (next) {

@@ -27,12 +27,7 @@ export default function EmailPage() {
       <div className="w-full h-full bg-white">
         <div dangerouslySetInnerHTML={{ __html: EmailConfirmation }} />
       </div>
-
-
-
-
-
-      <EditEmail isOpen={true} onClose={() => {}} myContent={EmailConfirmation}  />
+     <EditEmail isOpen={true} onClose={() => {}} myContent={EmailConfirmation}  />
       </>
     ) ;
 }

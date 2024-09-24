@@ -12,7 +12,6 @@
  * @property {number} placesReserved - The number of people reserved for the session
  */
 export interface ISession {
-    [x: string]: any;
     _id: string;
     status: "Actif"| "Pending" | "Archived";
     date: Date;
@@ -22,4 +21,5 @@ export interface ISession {
     spot: string;
     placesMax: number;
     placesReserved: number;
+    type_formule: "half_day" | "full_day";
   }

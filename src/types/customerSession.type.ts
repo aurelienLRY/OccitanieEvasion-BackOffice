@@ -28,4 +28,7 @@ export interface ICustomerSession {
       size: string;
       weight: string;
     }[];
+    tarification: "reduced" | "standard" | "acm";
+    price_applicable: number;
+    price_total: number;
   }

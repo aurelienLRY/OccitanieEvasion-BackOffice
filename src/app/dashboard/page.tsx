@@ -6,6 +6,7 @@ import SessionCard from "@/components/SessionCard";
 
 /* Utils */
 import { getMonthString, getYearString } from "@/utils/date";
+import { calculateSessionIncomeByMonth } from "@/utils/price";
 import {
   calculateNumberOfSessions,
   filterSessionsForDashboard,
@@ -79,7 +80,7 @@ const Dashboard = () => {
                 { DisplayHeaderMessage(sessionsWithDetails.length)}
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-center">
                   {filteredSessions.map((session) => (
-                    <SessionCard key={session._id} customerSession={session} />
+                    <SessionCard key={session._id} sessionWithDetails={session} />
                   ))}
                 </div>
               </>
@@ -107,7 +108,12 @@ const Dashboard = () => {
               label="Nombre d'inscriptions"
               value={calculateInscrit(sessionsWithDetails, "month")}
             />
+            <StatisticItem
+              label="Chiffre d'affaire"
+              value={`${calculateSessionIncomeByMonth(sessionsWithDetails, "month")} €`}
+            />
           </StatisticCard>
+          
           <StatisticCard title={`Statistiques ${getYearString()}`}>
             <StatisticItem
               label="Sessions"
@@ -116,6 +122,10 @@ const Dashboard = () => {
             <StatisticItem
               label="Nombre d'inscriptions"
               value={calculateInscrit(sessionsWithDetails, "year")}
+            />
+                 <StatisticItem
+              label="Chiffre d'affaire"
+              value={`${calculateSessionIncomeByMonth(sessionsWithDetails, "year")} €`}
             />
           </StatisticCard>
           <StatisticCard title="Classement des Lieux">
@@ -187,7 +197,9 @@ function StatisticCard({
   return (
     <div className="w-full flex flex-col gap-4 items-center text-white bg-slate-800 dark:bg-sky-950 p-4 rounded-lg border-2 border-slate-700 dark:border-sky-800 shadow-md shadow-slate-700/50 dark:shadow-sky-800/50">
       <h3 className="text-xl md:text-2xl font-bold">{title}</h3>
-      {children}
+      <div className="w-full flex flex-col gap-1">
+        {children}
+      </div>
     </div>
   );
 }

@@ -30,7 +30,7 @@ type Props = {
 
 function MyTiptap ({ className, isBubbleMenu, isToolBar, myContent , editorContent }: Props) {
   const editor = useEditor({
-    extensions: [StarterKit , TextAlign.configure({ types: ['heading', 'paragraph'] }), Highlight, Table, TableCell, TableHeader, TableRow, Link],
+    extensions: [StarterKit , TextAlign.configure({ types: ['heading', 'paragraph'] }), Highlight, Table, TableCell, TableHeader, TableRow, Link ],
     content: myContent,
     onUpdate: ({ editor }) => {
       editorContent(editor.getHTML());

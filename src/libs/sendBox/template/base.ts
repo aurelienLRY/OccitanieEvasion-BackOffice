@@ -102,7 +102,7 @@ const footer = (): string => {
 export const MailContent = ( title: string, children: string ): string => {
 return `
   <table
-    style="width: 100%; background-color: #1f2937;"
+    style="width: 100%; background-color: #1f2937; color: #ffffff;"
     role="presentation"
     cellspacing="0"
     cellpadding="0"
@@ -110,14 +110,18 @@ return `
     >
     ${header(title)}
 
-    <tr id="body" style="margin-bottom: 10px; background-color: #1f2937; padding: 20px;">
+
+    <tr id="body" style="margin-bottom: 10px; background-color: #1f2937; padding: 20px; color: #ffffff;">
     <td style="width: 100%; padding: 20px;">
-      ${children} 
+      ${children}
+      <tr style="margin-top: 20px;">
+      <td style="width: 100%; padding: 20px;">
       <p style="margin: 0; color: #ffffff; text-align: center;">Cordialement,</p>
       <p style="margin: 0; color: #ffffff; text-align: center;">Florent.</p>
+      </td>
+      </tr>
     </td>
     </tr>
-
       ${footer()}
   </table>
   `;

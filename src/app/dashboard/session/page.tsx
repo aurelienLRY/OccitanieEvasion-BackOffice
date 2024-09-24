@@ -1,14 +1,15 @@
 "use client";
 import React, { useState } from "react";
-import SessionForm from "@/components/form/sessionForm";
-import AllSessionsCard from "@/components/AllSessionsCard";
+
+
 
 /* Store */
 import { useSessionWithDetails } from "@/context/store";
 
 /* Components */
 import { IconButton } from "@/components/Button";
-
+import { SessionForm } from "@/components/form";
+import AllSessionsCard from "@/components/AllSessionsCard";
 /* Icons */
 import { IoMdAddCircle } from "react-icons/io";
 import { RiCalendarCloseFill } from "react-icons/ri";

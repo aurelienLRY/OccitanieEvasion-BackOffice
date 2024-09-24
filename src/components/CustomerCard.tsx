@@ -62,8 +62,8 @@ const CustomerCard = ({ customer , className }: { customer: ICustomerSession , c
   return (
     <>
       <div
-        className={`border border-gray-200 rounded-md p-2 min-w-[200px] relative ${
-          IsCanceled ? "opacity-50 " : "opacity-100"
+        className={`bg-sky-950/50  shadow-sm rounded-md p-4 min-w-[200px] relative ${
+          IsCanceled ? "opacity-50  shadow-red-500" : " shadow-sky-600 opacity-100"
         } ${className}`}
       >
         <div className="flex flex-col gap-4">
@@ -81,9 +81,12 @@ const CustomerCard = ({ customer , className }: { customer: ICustomerSession , c
               </span>
             </Tooltip>
           </div>
-          <div className="flex flex-col md:text-sm  ">
-            <p className="  inline-flex items-center gap-1">
-              <MdOutlineEmail className="text-gray-400 mr-1 " />{" "}
+
+          <div className="flex flex-col gap-2 md:text-sm  ">
+            <div className="flex flex-col  p-2 rounded-md bg-sky-500/10 shadow-inner shadow-sky-500/20">
+              <h3 className="text-lg font-semibold text-center pb-2">Contact</h3>
+              <p className="  inline-flex items-center gap-1">
+                <MdOutlineEmail className="text-gray-400 mr-1 " />{" "}
               {customer.email}
             </p>
             <p className=" inline-flex items-center gap-1">
@@ -93,6 +96,18 @@ const CustomerCard = ({ customer , className }: { customer: ICustomerSession , c
               <MdPeopleAlt className="text-gray-400 mr-1 " />{" "}
               {customer.people_list.length} personnes
             </p>
+            </div>
+            <div className="flex flex-col  p-2 rounded-md bg-sky-500/10 shadow-inner shadow-sky-500/20">
+              <h3 className="text-lg font-semibold text-center pb-2">Prix</h3>
+            <p className="  inline-flex items-center gap-1">
+              <span className="font-semibold">Par personne: </span>
+              {customer.price_applicable} €
+            </p>
+            <p className="  inline-flex items-center gap-1">
+              <span className="font-semibold">Total: </span>
+              {customer.price_total} €
+            </p>
+            </div>
             <div className="flex justify-end gap-6 md:gap-2 p-1">
               <Tooltip title="Voir les détails">
                 <button onClick={() => setIsDetailsModalOpen(true)}>

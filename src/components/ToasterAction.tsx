@@ -19,7 +19,7 @@ export default function ToasterAction({result , defaultMessage}: {result: ICallb
     toast.error(
         <div className="w-full">
         <p className="text-center font-semibold text-lg">
-          Erreur lors de l&apos;ajout du client.
+          Erreur
         </p>
         <ul className="p-3">
           {result.feedback &&

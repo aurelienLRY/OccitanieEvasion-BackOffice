@@ -8,7 +8,7 @@ import { ISpot } from "@/types";
 import { DELETE_SPOT } from "@/libs/actions";
 /* Components */
 import MapCustomer from "@/components/MapCustomer";
-import UpdateSpotForm from "@/components/form/updateSpot";
+import { SpotForm } from "@/components/form";
 import ToasterAction from "@/components/ToasterAction";
 
 
@@ -132,7 +132,7 @@ export default function SpotCard({ spot }: { spot: ISpot }) {
         <MapCustomer spot={spot} />
       </div>
 
-      <UpdateSpotForm spotData={spot} isOpen={isOpen} onClose={() => {setIsOpen(false)}} />
+      <SpotForm spotData={spot} isOpen={isOpen} onClose={() => {setIsOpen(false)}} />
     </div>
   );
 }

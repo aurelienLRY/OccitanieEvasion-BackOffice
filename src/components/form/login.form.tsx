@@ -23,7 +23,7 @@ const schema = yup.object().shape({
   password: yup.string().required("Renseignez votre mot de passe"),
 });
 
-const Login = () => {
+export const LoginForm = () => {
   const router = useRouter();
   const {
     register,
@@ -105,4 +105,3 @@ const Login = () => {
   );
 };
 
-export default Login;

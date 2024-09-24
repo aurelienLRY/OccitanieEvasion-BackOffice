@@ -7,6 +7,11 @@ import xss from "xss";
 import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 /* Models */
 import Activity from "@/libs/database/models/Activity";
+
+
+/* YUP schema */
+import { activitySchema } from "@/libs/yup";  
+
 /* Types */
 import {
   IActivity,
@@ -14,40 +19,6 @@ import {
   ICallbackForActivities,
 } from "@/types";
 
-/*
- * Activity schema
- */
-const activitySchema = yup.object().shape({
-  name: yup.string().required("Le champ name est requis"),
-  description: yup.string(),
-  half_day: yup.boolean(),
-  full_day: yup.boolean(),
-  price_half_day: yup
-    .number()
-    .positive()
-    .integer()
-    .required("Le champ price_half_day est requis"),
-  price_full_day: yup
-    .number()
-    .positive()
-    .integer()
-    .required("Le champ price_full_day est requis"),
-  min_age: yup
-    .number()
-    .positive()
-    .integer()
-    .required("Le champ min_age est requis"),
-  max_OfPeople: yup
-    .number()
-    .positive()
-    .integer()
-    .required("Le champ max_OfPeople est requis"),
-  min_OfPeople: yup
-    .number()
-    .positive()
-    .integer()
-    .required("Le champ min_OfPeople est requis"),
-});
 
 /*
  * Validate the activity
@@ -90,6 +61,7 @@ export const CREATE_ACTIVITY = async (
   activity: IActivity
 ): Promise<ICallbackForActivity> => {
   try {
+    console.log("activity", activity)
     /* validation & cleaning */
     const yupActivity = (await validateActivity(activity)) as IActivity;
     const cleanActivity = (await xssActivity(yupActivity)) as IActivity;

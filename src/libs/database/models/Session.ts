@@ -1,18 +1,9 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { ISession } from '@/types';
 
-export interface ISession extends Document {
-    _id: string;
-    status: 'Actif' | 'Archived' | 'Pending';
-    date: Date;
-    startTime: string;
-    endTime: string;
-    activity: string;
-    spot: string;
-    placesMax: number;
-    placesReserved: number;
-}
 
-const sessionSchema = new mongoose.Schema({
+
+const sessionSchema = new Schema<ISession>({
     status: { type: String, required: true , default: 'Pending' },
     date: { type: Date, required: true },
     startTime: { type: String, required: true },
@@ -20,8 +11,8 @@ const sessionSchema = new mongoose.Schema({
     activity: { type: String, required: true },
     spot: { type: String, required: true },
     placesMax: { type: Number, required: true },
-    placesReserved: { type: Number, required: true },
-  
+    placesReserved: { type: Number, required: true , default: 0 },
+    type_formule: { type: String, required: true },
   });
 
   const Session = mongoose.models.Session || mongoose.model<ISession>('Session', sessionSchema);
