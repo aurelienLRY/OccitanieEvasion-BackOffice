@@ -36,4 +36,6 @@ export const customerSessionSchema = yup.object().shape({
    .string()
    .required("Le champ tarification est requis")
    .oneOf(["reduced", "standard", "acm"]),
+ price_applicable: yup.number().required("Le champ price_applicable est requis"),
+ price_total: yup.number().required("Le champ price_total est requis"),
 });

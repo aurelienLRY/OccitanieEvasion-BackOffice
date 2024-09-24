@@ -65,6 +65,7 @@ export function SessionForm({
       activity: sessionData ? sessionData.activity._id : "",
       spot: sessionData ? sessionData.spot._id : "",
       status: sessionData ? sessionData.status : "Actif",
+      placesReserved: sessionData ? sessionData.placesReserved : 0,
     },
   });
 

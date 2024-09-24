@@ -114,7 +114,7 @@ export const SelectInput = ({
   return (
       <div className={`flex flex-col md:flex-row items-start md:items-center gap-0 md:gap-2  ${className && className}`}>
         {label && (
-          <label htmlFor={name} className="font-light text-sm opacity-70">
+          <label htmlFor={name} className="text-sm font-light opacity-70 min-w-40 md:text-right">
             {label}
           </label>
         )}
@@ -122,7 +122,7 @@ export const SelectInput = ({
           <select
             id={name}
             {...register(name)}
-            className={`border border-none rounded-md p-1 dark:text-black focus-visible:outline-none
+            className={`border border-none rounded-md py-2 px-2 md:px-6 dark:text-black focus-visible:outline-none
         ${
           errorMessage
             ? "border-red-500 shadow-md shadow-red-500"

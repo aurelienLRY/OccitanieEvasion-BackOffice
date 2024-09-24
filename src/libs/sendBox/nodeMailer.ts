@@ -20,26 +20,27 @@ const transporter = nodemailer.createTransport(
 const sendEmail = async (
   email: string,
   subject: string,
-  text?: string,
-  html?: string
+  html: string
 ): Promise<boolean> => {
   const isVerified = await transporter.verify();
   if (!isVerified) {
     return false;
   }
+  console.log("isVerified", isVerified);
 
   const mailOptions = {
     from: process.env.SMTP_EMAIL,
     to: email,
     subject: subject,
-    text: text,
     html: html,
   };
 
   const info = await transporter.sendMail(mailOptions);
   if (info.messageId) {
+    console.log("Email envoyé avec succès");
     return true;
   }
+  console.log("Erreur lors de l'envoi de l'email");
   return false;
 };
 
