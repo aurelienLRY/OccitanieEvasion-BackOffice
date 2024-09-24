@@ -14,8 +14,8 @@ import { useSessionWithDetails } from "@/context/store";
 /*components*/
 import Modal from "@/components/Modal";
 import SessionDetailCard from "@/components/SessionDetailCard";
-import AddCustomerOfSession from "@/components/form/addCustomerOfSession";
-import UpdateSessionForm from "@/components/form/updateSession";
+
+import {SessionForm , CustomerSessionForm}from "@/components/form";
 import CanceledCustomerSession from "@/components/CanceledCustomerSession";
 
 /* Types */
@@ -154,6 +154,7 @@ function SessionCard({ customerSession }: Props) {
             <span className="font-semibold">Places disponibles : </span>
             {+customerSession.placesMax - +customerSession.placesReserved}
           </p>
+          <p><span className="font-semibold">Formule : </span>{customerSession.type_formule === "half_day" ? "demi-journée" : "journée"} </p>
         </div>
 
         <div className="flex justify-end items-center gap-4 w-full text-slate-400">
@@ -230,13 +231,13 @@ function SessionCard({ customerSession }: Props) {
         onClose={() => setIsCanceledCustomerSessionModalOpen(false)}
       />
 
-      <UpdateSessionForm
+      <SessionForm
         sessionData={customerSession}
         isOpen={isUpdateSessionModalOpen}
         onClose={() => setIsUpdateSessionModalOpen(false)}
       />
 
-      <AddCustomerOfSession
+      <CustomerSessionForm
         session={customerSession}
         isOpen={isAddCustomerModalOpen}
         onClose={() => setIsAddCustomerModalOpen(false)}

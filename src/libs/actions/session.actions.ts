@@ -18,27 +18,8 @@ import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 import Session from "@/libs/database/models/Session";
 /*  actions */
 import { GET_SERVER_SESSION_WITH_DETAILS } from "@/libs/actions/sessionWithDetail.actions";
+import { sessionSchema } from "@/libs/yup";
 
-/**
- * Session schema
- */
-const sessionSchema = yup.object().shape({
-  status: yup.string().required("Le champ status est requis"),
-  date: yup.date().required("Le champ date est requis"),
-  startTime: yup.string().required("Le champ startTime est requis"),
-  endTime: yup.string().required("Le champ endTime est requis"),
-  activity: yup.string().required("Le champ activity est requis"),
-  spot: yup.string().required("Le champ spot est requis"),
-  placesMax: yup
-    .number()
-    .required("Le champ placesMax est requis")
-    .positive()
-    .integer(),
-  placesReserved: yup
-    .number()
-    .required("Le champ placesReserved est requis")
-    .integer(),
-});
 
 /**
  * Validate session
@@ -74,6 +55,7 @@ export const xssSession = (session: ISession): ISession => {
       endTime: xss(session.endTime),
       activity: xss(session.activity),
       spot: xss(session.spot),
+      type_formule: xss(session.type_formule),
     };
     return JSON.parse(JSON.stringify(xssSession));
   } catch (error) {
@@ -276,6 +258,8 @@ export const UPDATE_SESSION = async (
       spot: xssData.spot,
       placesMax: xssData.placesMax,
       placesReserved: xssData.placesReserved,
+      type_formule: xssData.type_formule,
+      tarification: xssData.tarification,
     };
 
     await connectDB();

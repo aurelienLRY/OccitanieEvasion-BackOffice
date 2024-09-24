@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 /* components */
 import SpotCard from "@/components/SpotCard";
-import SpotForm from "@/components/form/spotForm";
+import { SpotForm } from "@/components/form";
 import { IconButton } from "@/components/Button";
 
 /* Icons */

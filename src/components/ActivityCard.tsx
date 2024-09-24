@@ -6,7 +6,7 @@ import { Spin } from "antd";
 
 /* Components */
 import ToasterAction from "@/components/ToasterAction";
-import UpdateActivityForm from "@/components/form/updateActivity";
+import { ActivityForm } from "@/components/form";
 
 /* Actions */
 import { DELETE_ACTIVITY } from "@/libs/actions";
@@ -78,49 +78,65 @@ function ActivityCard({ activity }: Props) {
                 <thead>
                   <tr>
                     <th className="border border-sky-500 p-2"></th>
-                    <th className="border border-sky-500 p-2">Demi-journée</th>
-                    <th className="border border-sky-500 p-2">Journée complète</th>
+                    { activity.half_day && (
+                      <th className="border border-sky-500 p-2">Demi-journée</th>
+                    )}
+                    {activity.full_day && (
+                      <th className="border border-sky-500 p-2">Journée complète</th>
+                    )}
                   </tr>
                 </thead>
                 <tbody className="text-center">
                   <tr className="hover:bg-orange-500 transition-all duration-200">
                     <td className="border border-sky-500 p-2">Standard</td>
+                    {activity.half_day && (
                     <td className="border border-sky-500 p-2">
                       {activity.price_half_day?.standard !== undefined
                         ? `${activity.price_half_day.standard}€`
                         : "N/A"}
                     </td>
+                    )}
+                    {activity.full_day && (
                     <td className="border border-sky-500 p-2">
                       {activity.price_full_day?.standard !== undefined
                         ? `${activity.price_full_day.standard}€`
                         : "N/A"}
                     </td>
+                    )}
                   </tr>
                   <tr className="hover:bg-orange-500 transition-all duration-200">
                     <td className="border border-sky-500 p-2">Réduit</td>
+                    {activity.half_day && (
                     <td className="border border-sky-500 p-2">
                       {activity.price_half_day?.reduced !== undefined
                         ? `${activity.price_half_day.reduced}€`
                         : "N/A"}
                     </td>
+                    )}
+                    {activity.full_day && (
                     <td className="border border-sky-500 p-2">
                       {activity.price_full_day?.reduced !== undefined
                         ? `${activity.price_full_day.reduced}€`
                         : "N/A"}
                     </td>
+                    )}
                   </tr>
                   <tr className="hover:bg-orange-500 transition-all duration-200">
                     <td className="border border-sky-500 p-2">ACM</td>
+                    {activity.half_day && (
                     <td className="border border-sky-500 p-2">
                       {activity.price_half_day?.ACM !== undefined
                         ? `${activity.price_half_day.ACM}€`
                         : "N/A"}
                     </td>
+                    )}
+                    {activity.full_day && (
                     <td className="border border-sky-500 p-2">
                       {activity.price_full_day?.ACM !== undefined
                         ? `${activity.price_full_day.ACM}€`
                         : "N/A"}
                     </td>
+                    )}
                   </tr>
                 </tbody>
               </table>
@@ -165,7 +181,7 @@ function ActivityCard({ activity }: Props) {
           </Tooltip>
         </div>
       </div>
-      <UpdateActivityForm
+      <ActivityForm
         data={activity}
         isOpen={isUpdateActivityModalOpen}
         onClose={() => setIsUpdateActivityModalOpen(false)}

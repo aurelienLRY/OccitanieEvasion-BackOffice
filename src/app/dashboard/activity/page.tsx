@@ -6,7 +6,7 @@ import React, { useState } from "react";
 /* Components */
 import { IconButton } from "@/components/Button";
 import ActivityCard from "@/components/ActivityCard";
-import CreateActivityForm from "@/components/form/activityForm";
+import { ActivityForm } from "@/components/form";
 
 /* Icons */
 import { IoMdAddCircle } from "react-icons/io";
@@ -61,7 +61,7 @@ function ActivityPage({}: Props) {
         </div>
       </div>
 
-      <CreateActivityForm
+      <ActivityForm
         isOpen={openCreateActivityForm}
         onClose={() => {
           setOpenCreateActivityForm(false);

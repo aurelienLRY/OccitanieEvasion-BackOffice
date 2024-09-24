@@ -166,6 +166,63 @@ export const CheckboxInput = ({
   label,
   className,
   errorsName = name,
+  checked,
+  onChange,
+}: {
+  name: string;
+  value?: string;
+  label?: string;
+  className?: string;
+  errorsName?: string;
+  checked?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
+
+  const errorMessage = getNestedValue(errors, errorsName)?.message as string;
+
+  return (
+    <div className={`flex items-center ${className}`}>
+      <input
+        id={name}
+        type="checkbox"
+        value={value}
+        {...register(name)}
+        checked={checked}
+        onChange={onChange}
+        className={`mr-2 ${
+          errorMessage
+            ? "border-red-500 shadow-md shadow-red-500"
+            : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
+        }`}
+        aria-invalid={errorMessage ? "true" : "false"}
+      />
+      {label && (
+        <label htmlFor={name} className="text-sm font-light opacity-70">
+          {label}
+        </label>
+      )}
+      {errorMessage && (
+        <span role="alert" className="text-red-500 text-sm min-h-3 text-center">
+          {errorMessage}
+        </span>
+      )}
+    </div>
+  );
+};
+
+
+
+
+export const SimpleCheckboxInput = ({
+  name,
+  value,
+  label,
+  className,
+  errorsName = name,
 }: {
   name: string;
   value?: string;

@@ -2,14 +2,14 @@
 
 /* LIBRAIRIES */
 import React, { useEffect } from "react";
-import { useForm, FormProvider} from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { Spin } from "antd";
-import { Tooltip } from "antd";
+
 
 /* ACTIONS */
-import { CREATE_ACTIVITY } from "@/libs/actions";
+import { CREATE_ACTIVITY, UPDATE_ACTIVITY } from "@/libs/actions";
+import { activitySchema } from "@/libs/yup";
 
 /* STORE */
 import { useActivities } from "@/context/store";
@@ -18,54 +18,13 @@ import { useActivities } from "@/context/store";
 import { IActivity } from "@/types";
 
 /* COMPONENTS */
-import { Input, CheckboxInput, Textarea } from "@/components/Inputs";
+import { Input, CheckboxInput, Textarea, SimpleCheckboxInput } from "@/components/Inputs";
 import Modal from "@/components/Modal";
 import ToasterAction from "@/components/ToasterAction";
 import InfoTooltips from "@/components/InfoTooltips";
-/* Validation schema */
-const baseSchema = yup.object().shape({
-  name: yup.string().required("Le champ name est requis"),
-  description: yup.string(),
-  half_day: yup.boolean(),
-  full_day: yup.boolean(),
-  price_half_day: yup.object().when('half_day', {
-    is: true,
-    then: (schema) => schema.shape({
-      standard: yup.number().positive().integer().required("Le prix pour la demi-journée est requis"),
-      reduced: yup.number().positive().integer(),
-      ACM: yup.number().positive().integer(),
-    }),
-    otherwise: (schema) => schema
-  }),
-
-  price_full_day: yup.object().when('full_day', {
-    is: true,
-    then: (schema) => schema.shape({
-      standard: yup.number().positive().integer().required("Le prix pour la journée complète est requis"),
-      reduced: yup.number().positive().integer(),
-      ACM: yup.number().positive().integer(),
-    }),
-    otherwise: (schema) => schema
-  }),
- 
-  min_age: yup
-    .number()
-    .positive()
-    .integer()
-    .required("Le champ min_age est requis"),
-  max_OfPeople: yup
-    .number()
-    .positive()
-    .integer()
-    .required("Le champ max_OfPeople est requis"),
-  min_OfPeople: yup
-    .number()
-    .positive()
-    .integer()
-    .required("Le champ min_OfPeople est requis"),
-});
 
 export type TActivityForm = {
+  _id?: string;
   name: string;
   description?: string;
   half_day?: boolean;
@@ -85,15 +44,20 @@ export type TActivityForm = {
   min_OfPeople: number;
 };
 
-export default function CreateActivityForm({
-  isOpen,
-  onClose,
-}: {
+type Props = {
+  data?: IActivity;
   isOpen: boolean;
   onClose: () => void;
-}) {
+};
+
+export function ActivityForm({ data, isOpen, onClose }: Props) {
   const methods = useForm<TActivityForm>({
-    resolver: yupResolver(baseSchema),
+    resolver: yupResolver(activitySchema),
+    defaultValues: {
+      ...data,
+      price_half_day: data?.price_half_day || { standard: 0, reduced: 0, ACM: 0 },
+      price_full_day: data?.price_full_day || { standard: 0, reduced: 0, ACM: 0 },
+    },
   });
 
   const {
@@ -105,10 +69,24 @@ export default function CreateActivityForm({
 
   const { updateActivities } = useActivities();
 
-  const onSubmit = async (data: TActivityForm) => {
-    console.log("onSubmit", data)
-    
-    const result = await CREATE_ACTIVITY(data as IActivity);
+  useEffect(() => {
+    reset({
+      ...data,
+      price_half_day: data?.price_half_day || { standard: 0, reduced: 0, ACM: 0 },
+      price_full_day: data?.price_full_day || { standard: 0, reduced: 0, ACM: 0 },
+    });
+  }, [data, reset]);
+
+  const onSubmit = async (formData: TActivityForm) => {
+    console.log("formData", formData);
+
+    let result;
+    if (data?._id) {
+      result = await UPDATE_ACTIVITY(data._id, formData as IActivity);
+    } else {
+      result = await CREATE_ACTIVITY(formData as IActivity);
+    }
+
     if (result.success) {
       if (result.data) {
         updateActivities(result.data);
@@ -116,10 +94,9 @@ export default function CreateActivityForm({
       reset();
       onClose();
     }
-    ToasterAction({ result, defaultMessage: "Activité créée avec succès" });
+    ToasterAction({ result, defaultMessage: data?._id ? "Activité modifiée avec succès" : "Activité créée avec succès" });
   };
 
-  // Surveiller la valeur de full_day et half_day
   const watchHalfDay = watch("half_day", false);
   const watchFullDay = watch("full_day", false);
 
@@ -127,7 +104,7 @@ export default function CreateActivityForm({
     <Modal isOpen={isOpen} onClose={onClose}>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center gap-4">
-          <h2 className="text-2xl font-bold text-center">Créer une activité</h2>
+          <h2 className="text-2xl font-bold text-center">{data?._id ? "Modifier l'activité" : "Créer une activité"}</h2>
           <Input name="name" type="text" label="Nom de l'activité" />
           <Textarea name="description" label="Description" />
 
@@ -141,17 +118,17 @@ export default function CreateActivityForm({
             <tbody>
               <tr className="flex justify-around gap-4 w-full">
                 <td className="p-2 flex justify-center items-center">
-                  <CheckboxInput name="half_day" label="Demi-journée" />
+                  <SimpleCheckboxInput name="half_day" label="Demi-journée" />
                 </td>
                 <td className="p-2 flex justify-center items-center">
-                  <CheckboxInput name="full_day" label="Journée complète" />
-                </td> 
+                  <SimpleCheckboxInput name="full_day" label="Journée complète" />
+                </td>
               </tr>
               <tr className="flex justify-center items-center gap-2 w-full">
-              <h3 className="text-sky-500 text-xl font-bold text-center ">Tarification </h3>
-              <InfoTooltips title="Renseigner les prix pour les formules sélectionnées " />
+                <h3 className="text-sky-500 text-xl font-bold text-center ">Tarification </h3>
+                <InfoTooltips title="Renseigner les prix pour les formules sélectionnées " />
               </tr>
-              <tr className="flex flex-col justify-around items-center md:flex-row gap-4 w-full"> 
+              <tr className="flex flex-col justify-around items-center md:flex-row gap-4 w-full">
                 <td className={`p-2 flex flex-col justify-center items-center gap-1 ${!watchHalfDay && 'opacity-60'}`}>
                   <div className="font-semibold text-center py-4">Prix demi-journée</div>
                   <Input
@@ -200,8 +177,8 @@ export default function CreateActivityForm({
 
           <div className="flex flex-col gap-2 items-center">
             <div className="flex justify-center items-center gap-2">
-            <h3 className="text-lg font-bold">Gestion des groupes</h3>
-            <InfoTooltips title="Renseigner les nombres maximum et minimum de personnes pour les groupes" />
+              <h3 className="text-lg font-bold">Gestion des groupes</h3>
+              <InfoTooltips title="Renseigner les nombres maximum et minimum de personnes pour les groupes" />
             </div>
             <div className="flex flex-col md:flex-row gap-6">
               <Input
@@ -224,7 +201,7 @@ export default function CreateActivityForm({
               className="bg-orange-500 hover:bg-orange-600 transition-all duration-300 text-white w-fit mx-auto p-3 rounded-md flex items-center justify-center min-w-[70px] min-h-[40px] disabled:opacity-80 disabled:cursor-not-allowed"
               disabled={isSubmitting}
             >
-              {isSubmitting ? <Spin size="default" /> : "Créer"}
+              {isSubmitting ? <Spin size="default" /> : data?._id ? "Modifier" : "Créer"}
             </button>
           </div>
         </form>
