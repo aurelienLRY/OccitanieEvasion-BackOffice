@@ -19,6 +19,9 @@ import {
   ICallbackForActivities,
 } from "@/types";
 
+/* Actions */
+import { GET_SERVER_SESSIONS_WITH_DETAILS } from "@/libs/actions/sessionWithDetail.actions";
+
 
 /*
  * Validate the activity
@@ -43,7 +46,11 @@ export const xssActivity = async (
     const xssData: IActivity = {
       ...activity,
       name: xss(activity.name),
-      description: xss(activity.description),
+      description: activity.description ? xss(activity.description) : null,
+      duration: {
+        half: activity.duration.half ? xss(activity.duration.half) : null,
+        full: activity.duration.full ? xss(activity.duration.full) : null,
+      },
     };
     return JSON.parse(JSON.stringify(xssData));
   } catch (error) {
@@ -164,6 +171,8 @@ export const UPDATE_ACTIVITY = async (
     const yupActivity = (await validateActivity(activity)) as IActivity;
     const cleanActivity = (await xssActivity(yupActivity)) as IActivity;
 
+    console.log("cleanActivity", cleanActivity)
+
     await connectDB();
     const updatedActivity = await Activity.findByIdAndUpdate(id, cleanActivity, {
       new: true,
@@ -201,6 +210,11 @@ export const UPDATE_ACTIVITY = async (
 export const DELETE_ACTIVITY = async (activityId: string): Promise<ICallbackForActivity> => {
     try {
         await connectDB()
+         const sessionsWithDetails = await GET_SERVER_SESSIONS_WITH_DETAILS()
+         const sessionsWithDetailsByActivity = sessionsWithDetails.filter(session => session.activity._id === activityId )
+         if(sessionsWithDetailsByActivity.length > 0){
+            return {success: false, error: "Cette activité est utilisée dans une session", data: null, feedback: null}
+         }
         const result = await Activity.findByIdAndDelete(activityId)
         if (!result) {
             throw new Error("Activité non trouvée")

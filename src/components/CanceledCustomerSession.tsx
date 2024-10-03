@@ -31,7 +31,7 @@ export default function CanceledCustomerSession({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col gap-6">
-        <div className=" text-center">
+        <div className=" text-center text-white">
           <h3 className="text-2xl font-bold">Panneau d&apos;annulation</h3>
           <p className="text-sm">
             Attention, lors du processus d&apos;annulation, les clients sont
@@ -77,10 +77,8 @@ function CustomerCanceled({ customer }: { customer: ICustomerSession }) {
 
   return (
     <div
-      className={`flex relative flex-col gap-2 rounded-md border border-gray-200 p-2  bg-slate-600 dark:bg-sky-900 transition-all duration-300 ${
-        customer.status === "Canceled"
-          ? "opacity-60"
-          : "hover:bg-slate-700 dark:hover:bg-sky-950 "
+      className={`flex relative flex-col gap-2 p-2 rounded-md bg-sky-500/10 shadow-inner shadow-sky-500/20 transition-all duration-300 text-white ${
+        customer.status === "Canceled" && "opacity-60"
       }`}
     >
       {customer.status === "Canceled" && (

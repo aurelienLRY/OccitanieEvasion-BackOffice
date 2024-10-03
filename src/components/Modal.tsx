@@ -51,13 +51,21 @@ export default function Modal({ isOpen, onClose, children }: Props) {
         }`}
       >
         {/*modal*/}
-        <div className="min-w-[300px] w-fit lg:max-w-[70vw] max-h-[90vh] overflow-y-auto bg-slate-700 dark:bg-sky-800 rounded-md shadow-md shadow-slate-400 dark:shadow-sky-400">
-          <div className="flex justify-end">
+        <div className="min-w-[300px] w-fit lg:max-w-[70vw] max-h-[90vh] overflow-y-auto bg-gray-800 dark:bg-sky-800 rounded-md shadow-md shadow-slate-400 dark:shadow-sky-400">
+          <div className="flex justify-between items-center bg-gray-600 rounded-t-md w-full">
+            <div className=" h-7 flex w-full items-center px-3">
+              <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+              <span className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+              <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+            </div>
+            
+           
             <Tooltip title="Fermer">
               <button onClick={handleClose}>
                 <IoMdCloseCircle className="text-4xl text-white text-right p-1 hover:text-red-500 transition-all duration-300" />
               </button>
             </Tooltip>
+        
           </div>
           <div className="px-4 pb-4 flex justify-center items-center w-full">
             {children}

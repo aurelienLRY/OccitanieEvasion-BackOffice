@@ -9,7 +9,7 @@ import { Tooltip } from "antd";
 
 /* Component */
 import Modal from "@/components/Modal";
-import { Input, SelectInput } from "@/components/Inputs";
+import { Input, SelectInput, SimpleCheckboxInput , CheckboxInput } from "@/components/Inputs";
 import ToasterAction from "@/components/ToasterAction";
 import EditEmail from "@/components/EditEmail";
 
@@ -52,6 +52,8 @@ const peopleListSchema = yup.array().of(
   yup.object().shape({
     size: yup.string().required("La taille est obligatoire"),
     weight: yup.string().required("Le poids est obligatoire"),
+    isReduced: yup.boolean(),
+    price_applicable: yup.number(),
   })
 );
 
@@ -71,37 +73,46 @@ type Props = {
 };
 
 export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
-  const methods = useForm({
-    resolver: yupResolver(createDynamicSchema([])),
-    defaultValues: {
-      ...data,
-      people_list: data?.people_list || [{ size: ``, weight: `` }],
-    },
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    name: "people_list",
-    control: methods.control,
-  });
-
-  const {
-    reset,
-    formState: { isSubmitting },
-  } = methods;
-
   const { updateSessionWithDetails } = useSessionWithDetails();
   const [isOpenEmail, setIsOpenEmail] = useState(false);
   const [customer, setCustomer] = useState<ICustomerSession | null>(null);
   const [sessionWithDetails, setSessionWithDetails] =
     useState<ISessionWithDetails | null>(null);
 
+  /* Form */
+  const methods = useForm({
+    resolver: yupResolver(createDynamicSchema([])),
+    defaultValues: {
+      ...data,
+      people_list: data?.people_list || [
+        { size: ``, weight: ``, isReduced: false, price_applicable: 0 },
+      ],
+    },
+  });
+
+  /* Field Array */
+  const { fields, append, remove } = useFieldArray({
+    name: "people_list",
+    control: methods.control,
+  });
+
+  /* Reset Form */
+  const {
+    reset,
+    formState: { isSubmitting },
+  } = methods;
+
+  /* Reset Form */
   useEffect(() => {
     reset({
       ...data,
-      people_list: data?.people_list || [{ size: ``, weight: `` }],
+      people_list: data?.people_list || [
+        { size: ``, weight: ``, isReduced: false, price_applicable: 0 },
+      ],
     });
   }, [data, reset, session]);
 
+  /* Submit Form */
   const onSubmit = async (formData: any) => {
     const newCustomer: ICustomerSession = {
       ...formData,
@@ -110,11 +121,17 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
       status: "Validated",
       typeOfReservation: "ByCompany",
       number_of_people: fields.length,
-      price_applicable: price,
-      price_total: price ? price * fields.length : 0,
+      price_applicable: getPriceApplicable(watch.tarification === "reduced" ? true : false, session.type_formule, session.activity),
+      price_total: formData.people_list.reduce(
+        (acc: number, person: { price_applicable: number }) =>
+          acc + person.price_applicable,
+        0
+      ),
     };
-    
+
     setCustomer(newCustomer);
+
+ 
     let result;
     if (data?._id && newCustomer) {
       result = await UPDATE_CUSTOMER_SESSION(data._id, newCustomer);
@@ -166,8 +183,13 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
         ? "Client modifié avec succès"
         : "Client ajouté avec succès",
     });
+  
   };
 
+  /*
+   * Option Tarif
+   *
+   */
   const optionTarif = () => {
     if (session.type_formule === "half_day") {
       return Object.entries(session.activity.price_half_day)
@@ -200,23 +222,49 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
     }
   };
 
-  const watchTarification = methods.watch("tarification") as string;
-  const [price, setPrice] = useState<number>();
-  useEffect(() => {
-    if (watchTarification && session.type_formule === "half_day") {
-      setPrice(
-        session.activity.price_half_day[
-          watchTarification as keyof typeof session.activity.price_half_day
-        ]
-      );
-    } else if (watchTarification && session.type_formule === "full_day") {
-      setPrice(
-        session.activity.price_full_day[
-          watchTarification as keyof typeof session.activity.price_full_day
-        ]
-      );
+  /*
+   * Watching form
+   */
+  const watch = methods.watch()
+
+
+
+  /*
+   * Fonction utilitaire pour obtenir le prix applicable
+   */
+  const getPriceApplicable = (isReduced: boolean, typeFormule: string, activity: any) => {
+    if (typeFormule === "half_day") {
+      return isReduced ? activity.price_half_day.reduced : activity.price_half_day.standard;
+    } else if (typeFormule === "full_day") {
+      return isReduced ? activity.price_full_day.reduced : activity.price_full_day.standard;
     }
-  }, [watchTarification, session]);
+    return 0;
+  };
+
+  /*
+   *
+   */
+  useEffect(() => {
+    if (watch.tarification === "reduced") {
+      watch.people_list?.forEach((person, index) => {
+        const price = getPriceApplicable(true, session.type_formule, session.activity);
+        methods.setValue(`people_list.${index}.price_applicable`, price);
+      });  
+    
+    } else {
+      watch.people_list?.forEach((person, index) => {
+      if (person.isReduced === undefined) {
+        return;
+      }
+      const price = getPriceApplicable(person.isReduced, session.type_formule, session.activity);
+      methods.setValue(`people_list.${index}.price_applicable`, price);
+    });  
+    }
+  
+  }, [watch.tarification, watch.people_list]);
+
+
+
 
   return (
     <>
@@ -224,7 +272,7 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
         <FormProvider {...methods}>
           <form
             onSubmit={methods.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-4 text-white"
           >
             <h2 className="text-2xl font-bold text-center">
               {data?._id
@@ -262,14 +310,24 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
                       fields?.length &&
                       fields.length < session.placesMax - session.placesReserved
                     ) {
-                      append({ size: ``, weight: `` });
+                      append({
+                        size: ``,
+                        weight: ``,
+                        isReduced: false,
+                        price_applicable: getPriceApplicable(false, session.type_formule, session.activity),
+                      });
                     } else {
                       if (
                         window.confirm(
                           "Nombre de personnes maximum atteint ! \n Voulez-vous tout de même ajouter une personne ?"
                         )
                       ) {
-                        append({ size: ``, weight: `` });
+                        append({
+                          size: ``,
+                          weight: ``,
+                          isReduced: false,
+                          price_applicable: getPriceApplicable(false, session.type_formule, session.activity),
+                        });
                       } else {
                         toast.error("Nombre de personnes maximum atteint");
                       }
@@ -296,9 +354,19 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
                       type="number"
                       errorsName={`people_list.${index}.weight`}
                     />
-                    <span className="text-sm text-gray-500 ">
-                      Prix: {price} €
-                    </span>
+                    <div className="flex flex-col  gap-1 ">
+                      {index > 0 && (
+                        <CheckboxInput
+                          name={`people_list.${index}.isReduced`}
+                          label="prix réduit"
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const price = getPriceApplicable(isChecked, session.type_formule, session.activity);
+                            methods.setValue(`people_list.${index}.price_applicable`, price);
+                          }}
+                        />
+                      )}
+                    </div>
                     {index > 0 && (
                       <button
                         type="button"
@@ -315,7 +383,7 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
               </div>
             </div>
             <div className="flex w-full items-center justify-end flex-col gap-2">
-              <h3>Prix total: {price ? price * fields.length : 0} €</h3>
+              <h3>Prix total: {methods.getValues("people_list")?.reduce((acc: number, person: { price_applicable?: number }) => acc + (person.price_applicable || 0), 0)} €</h3>
             </div>
 
             <button

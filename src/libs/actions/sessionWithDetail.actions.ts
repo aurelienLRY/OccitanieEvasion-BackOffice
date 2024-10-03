@@ -13,21 +13,24 @@ import { IActivity, ISpot, ICustomerSession, ISession, ISessionWithDetails } fro
 export const GET_SERVER_SESSION_WITH_DETAILS = async (
     sessionId: string
 ): Promise<ISessionWithDetails> => {
+    
     const session = await Session.findById(sessionId) as ISession
     const activity = await Activity.findById(session.activity) as IActivity
     const spot = await Spot.findById(session.spot) as ISpot
     const customerSession = await CustomerSession.find({sessionId: session._id}) as ICustomerSession[]
 
-    if (!session || !activity || !spot || !customerSession) {
-        throw new Error("Session non trouvée")
-    }
-
     const sessionWithDetails = {
         ...session.toObject(),
-        activity: activity,
-        spot: spot,
-        customerSessions: customerSession
+        activity: activity && activity,
+        spot: spot && spot,
+        customerSessions: customerSession && customerSession
     } as ISessionWithDetails
-
     return sessionWithDetails 
 };
+
+
+ export const GET_SERVER_SESSIONS_WITH_DETAILS = async (): Promise<ISessionWithDetails[]> => {
+    const sessions = await Session.find() as ISession[]
+    const sessionsWithDetails = await Promise.all(sessions.map(session => GET_SERVER_SESSION_WITH_DETAILS(session._id)))
+    return sessionsWithDetails
+ }

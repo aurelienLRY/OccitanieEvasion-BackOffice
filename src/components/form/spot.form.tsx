@@ -18,7 +18,7 @@ import { useSpots, useActivities } from "@/context/store";
 import { ISpot } from "@/types";
 
 /* COMPONENTS */
-import { Input, CheckboxInput, Textarea } from "@/components/Inputs";
+import { Input, CheckboxInput, Textarea, SimpleCheckboxInput } from "@/components/Inputs";
 import Modal from "@/components/Modal";
 import ToasterAction from "@/components/ToasterAction";
 
@@ -49,12 +49,12 @@ export type TSpotForm = {
     activityName: string;
   }[];
   photo: string | undefined;
+  meetingPoint: {
+    half_day: string;
+    full_day: string;
+  };
   half_day: boolean;
   full_day: boolean;
-  max_OfPeople: number;
-  min_OfPeople: number;
-  meetingPoint: string | undefined;
-  estimatedDuration: string | undefined;
 };
 
 export  function SpotForm({
@@ -115,6 +115,10 @@ export  function SpotForm({
     onClose();
   };
 
+   const watchHalfDay = methods.watch("half_day");
+   const watchFullDay = methods.watch("full_day");
+
+
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
       <FormProvider {...methods}>
@@ -134,20 +138,14 @@ export  function SpotForm({
               <Input
                 name="gpsCoordinates"
                 type="text"
-                label="Coordonnées GPS"
+                label="Coordonnées GPS site web"
                 
                 placeholder="Exemple: 48.8584, 2.2945"
               />
-              <Input
-                name="meetingPoint"
-                type="text"
-                label="Point de rencontre"
-                
-                placeholder="Exemple: 48.8584, 2.2945"
-              />
+
             </div>
 
-            <Input name="estimatedDuration" type="text" label="Durée estimée"  />
+
           </div>
 
           <div className="flex flex-col items-center gap-1 border-2 rounded-md border-sky-500 w-full p-2">
@@ -181,20 +179,22 @@ export  function SpotForm({
           </div>
 
           <div className="flex flex-col items-center gap-1 border-2 rounded-md border-sky-500 w-full p-2">
-            <p className="text-sky-500 text-xl font-bold">Disponibilité</p>
-            <div className="flex flex-col md:flex-row gap-4 w-full justify-center">
-              <CheckboxInput name="half_day" label="Demi-journée"  />
-              <CheckboxInput name="full_day" label="Journée complète"  />
+            <p className="text-sky-500 text-xl font-bold">Point de rencontre</p>
+            <div className="flex flex-col  gap-4 w-full justify-center">
+              <div className="flex justify-between gap-2">
+                <SimpleCheckboxInput name="half_day" label="Demi-journée"  />
+                <Input name="meetingPoint.half_day" label="Point de rencontre demi-journée" type="text" placeholder="Exemple: 48.8584, 2.2945"  disabled={!watchHalfDay} />
+                
+                </div>
+              <div className="flex justify-between gap-2">
+                <SimpleCheckboxInput name="full_day" label="Journée complète"  />
+                <Input name="meetingPoint.full_day" label="Point de rencontre journée complète" type="text" placeholder="Exemple: 48.8584, 2.2945"  disabled={!watchFullDay} />
+                </div>
+
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-1 border-2 rounded-md border-sky-500 w-full p-2">
-            <p className="text-sky-500 text-xl font-bold">Capacité</p>
-            <div className="flex flex-col md:flex-row gap-4 w-full justify-center">
-              <Input name="max_OfPeople" type="number" label="Nombre maximum de personnes"  />
-              <Input name="min_OfPeople" type="number" label="Nombre minimum de personnes"  />
-            </div>
-          </div>
+  
 
           {/* FOOTER */}
           <div className="flex justify-end items-center gap-1">

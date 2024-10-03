@@ -27,21 +27,23 @@ export type TActivityForm = {
   _id?: string;
   name: string;
   description?: string;
-  half_day?: boolean;
-  full_day?: boolean;
+  half_day: boolean;
+  full_day: boolean;
   price_half_day: {
     standard: number;
-    reduced?: number;
-    ACM?: number;
+    reduced: number;
+    ACM: number;
   };
   price_full_day: {
-    standard?: number;
-    reduced?: number;
-    ACM?: number;
+    standard: number;
+    reduced: number;
+    ACM: number;
   };
-  min_age: number;
-  max_OfPeople: number;
-  min_OfPeople: number;
+
+  duration: {
+    half: string | null;
+    full: string | null;
+  }
 };
 
 type Props = {
@@ -57,6 +59,8 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
       ...data,
       price_half_day: data?.price_half_day || { standard: 0, reduced: 0, ACM: 0 },
       price_full_day: data?.price_full_day || { standard: 0, reduced: 0, ACM: 0 },
+      duration: data?.duration || { half: null, full: null },
+      description: data?.description ?? "",
     },
   });
 
@@ -72,14 +76,13 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
   useEffect(() => {
     reset({
       ...data,
+      description: data?.description ?? "",
       price_half_day: data?.price_half_day || { standard: 0, reduced: 0, ACM: 0 },
       price_full_day: data?.price_full_day || { standard: 0, reduced: 0, ACM: 0 },
     });
   }, [data, reset]);
 
   const onSubmit = async (formData: TActivityForm) => {
-    console.log("formData", formData);
-
     let result;
     if (data?._id) {
       result = await UPDATE_ACTIVITY(data._id, formData as IActivity);
@@ -99,6 +102,8 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
 
   const watchHalfDay = watch("half_day", false);
   const watchFullDay = watch("full_day", false);
+
+
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -122,6 +127,14 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
                 </td>
                 <td className="p-2 flex justify-center items-center">
                   <SimpleCheckboxInput name="full_day" label="Journée complète" />
+                </td>
+              </tr>
+              <tr className="flex justify-around gap-4 w-full">
+                <td className="p-2 flex justify-center items-center">
+                  <Input name="duration.half" type="text" label="Durée estimée" disabled={!watchHalfDay} />
+                </td>
+                <td className="p-2 flex justify-center items-center">
+                  <Input name="duration.full" type="text" label="Durée estimée" disabled={!watchFullDay} />
                 </td>
               </tr>
               <tr className="flex justify-center items-center gap-2 w-full">

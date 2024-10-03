@@ -17,7 +17,7 @@ import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 /* Models */
 import Session from "@/libs/database/models/Session";
 /*  actions */
-import { GET_SERVER_SESSION_WITH_DETAILS } from "@/libs/actions/sessionWithDetail.actions";
+import { GET_SERVER_SESSIONS_WITH_DETAILS , GET_SERVER_SESSION_WITH_DETAILS } from "@/libs/actions/sessionWithDetail.actions";
 import { sessionSchema } from "@/libs/yup";
 
 
@@ -201,13 +201,9 @@ export async function GET_SESSIONS_WITH_DETAILS(): Promise<ICallbackForSessionWi
   try {
     await connectDB();
 
-    const sessions = (await Session.find()) as ISession[];
 
-    const sessionsWithDetails = await Promise.all(
-      sessions.map(async (session) => {
-        return await GET_SERVER_SESSION_WITH_DETAILS(session._id);
-      })
-    );
+
+    const sessionsWithDetails = await GET_SERVER_SESSIONS_WITH_DETAILS()
     return {
       success: true,
       data: JSON.parse(
@@ -259,7 +255,6 @@ export const UPDATE_SESSION = async (
       placesMax: xssData.placesMax,
       placesReserved: xssData.placesReserved,
       type_formule: xssData.type_formule,
-      tarification: xssData.tarification,
     };
 
     await connectDB();

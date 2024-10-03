@@ -25,6 +25,8 @@ const CustomerSessionSchema = new mongoose.Schema<ICustomerSession>({
     {
       size: { type: String, required: true },
       weight: { type: String, required: true },
+      price_applicable: { type: Number, required: true },
+      isReduced: { type: Boolean, required: true },
     },
   ],
   price_applicable: { type: Number, required: true },

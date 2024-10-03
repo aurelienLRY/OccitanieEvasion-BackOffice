@@ -14,12 +14,12 @@ import { useSessionWithDetails } from "@/context/store";
 /*components*/
 import Modal from "@/components/Modal";
 import SessionDetailCard from "@/components/SessionDetailCard";
-import {SessionForm , CustomerSessionForm}from "@/components/form";
+import { SessionForm, CustomerSessionForm } from "@/components/form";
 import CanceledCustomerSession from "@/components/CanceledCustomerSession";
+import { ItemCard, ItemCardInner } from "@/components/ItemCard";
 
 /* utils */
 import { calculateSessionIncome } from "@/utils/price";
-
 
 /* Types */
 import { ISessionWithDetails } from "@/types";
@@ -39,29 +39,34 @@ type Props = {
  * @returns JSX.Element
  */
 function SessionCard({ sessionWithDetails }: Props) {
- 
   // GESTION DES MODALS
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // modal details
   const [isAddCustomerModalOpen, setIsAddCustomerModalOpen] = useState(false); // modal add customer
-  const [isUpdateSessionModalOpen, setIsUpdateSessionModalOpen] = useState(false); // modal update session
-  const [isCanceledCustomerSessionModalOpen,setIsCanceledCustomerSessionModalOpen ] = useState(false);
-  const [ calculateRevenue, setCalculateRevenue ] = useState(0);
+  const [isUpdateSessionModalOpen, setIsUpdateSessionModalOpen] =
+    useState(false); // modal update session
+  const [
+    isCanceledCustomerSessionModalOpen,
+    setIsCanceledCustomerSessionModalOpen,
+  ] = useState(false);
+  const [calculateRevenue, setCalculateRevenue] = useState(0);
 
   // modal canceled customer session
-  const { updateSessionWithDetails, deleteSessionWithDetails } = useSessionWithDetails();
-   
-
+  const { updateSessionWithDetails, deleteSessionWithDetails } =
+    useSessionWithDetails();
 
   // Vérifie si tous les clients sont annulés
   const customerIsCancelled = () =>
-    sessionWithDetails?.customerSessions?.every((cs) => cs.status === "Canceled");
+    sessionWithDetails?.customerSessions?.every(
+      (cs) => cs.status === "Canceled"
+    );
 
   const customerIsWaiting = () =>
     sessionWithDetails?.customerSessions?.some((cs) => cs.status === "Waiting");
 
   const customerWaitingCount = () =>
-    sessionWithDetails?.customerSessions?.filter((cs) => cs.status === "Waiting")
-      .length;
+    sessionWithDetails?.customerSessions?.filter(
+      (cs) => cs.status === "Waiting"
+    ).length;
 
   // Statuts vérifiés
   const checked = {
@@ -71,9 +76,8 @@ function SessionCard({ sessionWithDetails }: Props) {
     isReserved: +sessionWithDetails.placesReserved > 0,
     isPending: sessionWithDetails.status === "Pending",
     isActive: sessionWithDetails.status === "Actif",
-  }; 
-  
-  
+  };
+
   React.useEffect(() => {
     setCalculateRevenue(calculateSessionIncome(sessionWithDetails));
   }, [sessionWithDetails]);
@@ -121,13 +125,10 @@ function SessionCard({ sessionWithDetails }: Props) {
     }
   };
 
-
- 
-
   return (
     <>
-      <div
-        className={`flex flex-col gap-2 justify-evenly min-w-fit w-full max-w-[350px] bg-slate-700 dark:bg-sky-800 rounded-md px-3 pt-3 pb-1 text-white relative shadow-md shadow-slate-400 dark:shadow-sky-400 border-opacity-65 ${
+      <ItemCard
+        className={`flex flex-col gap-4 min-w-[350px] ${
           checked.isArchived
             ? "opacity-60 border-e-8 border-red-500"
             : checked.isPending
@@ -137,13 +138,11 @@ function SessionCard({ sessionWithDetails }: Props) {
             : "opacity-100"
         }`}
       >
-
-        
         <div className="w-full flex flex-col">
           <p className="text-center text-xl font-semibold m-0">
             {sessionWithDetails.activity.name}
           </p>
-          {checked.isReserved && (         
+          {checked.isReserved && (
             <small className="text-xs font-light text-orange-500 text-center">
               🚀 {sessionWithDetails.placesReserved} places réservées 🚀
             </small>
@@ -151,11 +150,11 @@ function SessionCard({ sessionWithDetails }: Props) {
 
           {checked.isReserved && calculateRevenue > 0 && (
             <p className="text-center text-sm font-semibold">
-              💲 {calculateRevenue }€ 💲
+              💲 {calculateRevenue}€ 💲
             </p>
           )}
         </div>
-        <div className="flex flex-col  w-full text-sm  p-2 rounded-md bg-sky-500/10 shadow-inner shadow-sky-500/20">
+        <ItemCardInner className="flex flex-col  w-full text-sm">
           <p>
             <span className="font-semibold">Date : </span>
             {new Date(sessionWithDetails.date).toLocaleDateString()}
@@ -172,8 +171,13 @@ function SessionCard({ sessionWithDetails }: Props) {
             <span className="font-semibold">Places disponibles : </span>
             {+sessionWithDetails.placesMax - +sessionWithDetails.placesReserved}
           </p>
-          <p><span className="font-semibold">Formule : </span>{sessionWithDetails.type_formule === "half_day" ? "demi-journée" : "journée"} </p>
-        </div>
+          <p>
+            <span className="font-semibold">Formule : </span>
+            {sessionWithDetails.type_formule === "half_day"
+              ? "demi-journée"
+              : "journée"}{" "}
+          </p>
+        </ItemCardInner>
 
         <div className="flex justify-end items-center gap-4 w-full text-slate-400">
           {checked.isReserved && (
@@ -234,8 +238,7 @@ function SessionCard({ sessionWithDetails }: Props) {
             </Tooltip>
           )}
         </div>
-      </div>
-
+      </ItemCard>
       {/* MODALS DETAILS */}
       <Modal
         isOpen={isDetailsModalOpen}

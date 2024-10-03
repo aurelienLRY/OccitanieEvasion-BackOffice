@@ -15,6 +15,7 @@ import {
 /* Components */
 import SingOutBtn from "@/components/singOut";
 import Dashboard from "@/components/Dashboard";
+import ToasterAction from "@/components/ToasterAction";
 
 /* Store */
 import {
@@ -47,6 +48,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
           useSessionWithDetails.setState({
             SessionWithDetails: sessionWithDetails.data,
           });
+        }
+        else if (!sessionWithDetails.success) {
+          ToasterAction({result: sessionWithDetails, defaultMessage: "Erreur lors du chargement des sessions avec détails"})
         }
 
         // Get Customer Sessions and add them to the store
@@ -116,7 +120,12 @@ export const getPathname = (pathname: string) => {
       return "Lieux";
     case "/dashboard/activity":
       return "Activités";
-    default:
+    case "/dashboard/email":
+      return "Email";
+
+    
+    
+      default:
       return "Dashboard";
   }
 };

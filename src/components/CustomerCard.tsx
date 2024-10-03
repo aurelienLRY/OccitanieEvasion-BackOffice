@@ -13,7 +13,7 @@ import Modal from "@/components/Modal";
 import CustomerFiche from "@/components/CustomerFiche";
 import { Tooltip } from "antd";
 import ToasterAction from "@/components/ToasterAction";
-
+import { ItemCard, ItemCardInner } from "@/components/ItemCard";
 
 /* Utils */
 import { capitalizeFirstLetter } from "@/utils/typo";
@@ -30,7 +30,13 @@ import { TbListDetails } from "react-icons/tb";
  * @param customer: ICustomerSession
  * @returns JSX.Element
  */
-const CustomerCard = ({ customer , className }: { customer: ICustomerSession , className?: string }) => {
+const CustomerCard = ({
+  customer,
+  className,
+}: {
+  customer: ICustomerSession;
+  className?: string;
+}) => {
   const IsCanceled = capitalizeFirstLetter(customer.status) === "Canceled";
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // modal details
 
@@ -49,21 +55,23 @@ const CustomerCard = ({ customer , className }: { customer: ICustomerSession , c
           updateSessionWithDetails(result.data);
         }
       }
-      ToasterAction({result, defaultMessage: 'Client annulé avec succès'})
+      ToasterAction({ result, defaultMessage: "Client annulé avec succès" });
     }
   };
- 
+
   const displayStatus = {
-    "Validated": {icon: "👍", name: "Validé"},
-    "Canceled": {icon: "🖕", name: "Annulé"},
-    "Waiting": {icon: "🕒", name: "En attente"},
-  }
+    Validated: { icon: "👍", name: "Validé" },
+    Canceled: { icon: "🖕", name: "Annulé" },
+    Waiting: { icon: "🕒", name: "En attente" },
+  };
 
   return (
     <>
-      <div
-        className={`bg-sky-950/50  shadow-sm rounded-md p-4 min-w-[200px] relative ${
-          IsCanceled ? "opacity-50  shadow-red-500" : " shadow-sky-600 opacity-100"
+      <ItemCard
+        className={`min-w-[200px] relative ${
+          IsCanceled
+            ? "opacity-50  shadow-red-500"
+            : " shadow-sky-600 opacity-100"
         } ${className}`}
       >
         <div className="flex flex-col gap-4">
@@ -71,11 +79,7 @@ const CustomerCard = ({ customer , className }: { customer: ICustomerSession , c
             <p className="text-xl font-bold">
               {customer.first_names} {customer.last_name.toUpperCase()}
             </p>
-            <Tooltip
-              title={
-                displayStatus[customer.status].name
-              }
-            >
+            <Tooltip title={displayStatus[customer.status].name}>
               <span className="text-xl cursor-pointer">
                 {displayStatus[customer.status].icon}
               </span>
@@ -83,31 +87,33 @@ const CustomerCard = ({ customer , className }: { customer: ICustomerSession , c
           </div>
 
           <div className="flex flex-col gap-2 md:text-sm  ">
-            <div className="flex flex-col  p-2 rounded-md bg-sky-500/10 shadow-inner shadow-sky-500/20">
-              <h3 className="text-lg font-semibold text-center pb-2">Contact</h3>
+            <ItemCardInner className="flex flex-col  p-2 ">
+              <h3 className="text-lg font-semibold text-center pb-2">
+                Contact
+              </h3>
               <p className="  inline-flex items-center gap-1">
                 <MdOutlineEmail className="text-gray-400 mr-1 " />{" "}
-              {customer.email}
-            </p>
-            <p className=" inline-flex items-center gap-1">
-              <FaPhoneAlt className="text-gray-400 mr-1" /> {customer.phone}
-            </p>
-            <p className="  inline-flex items-center gap-1">
-              <MdPeopleAlt className="text-gray-400 mr-1 " />{" "}
-              {customer.people_list.length} personnes
-            </p>
-            </div>
-            <div className="flex flex-col  p-2 rounded-md bg-sky-500/10 shadow-inner shadow-sky-500/20">
+                {customer.email}
+              </p>
+              <p className=" inline-flex items-center gap-1">
+                <FaPhoneAlt className="text-gray-400 mr-1" /> {customer.phone}
+              </p>
+              <p className="  inline-flex items-center gap-1">
+                <MdPeopleAlt className="text-gray-400 mr-1 " />{" "}
+                {customer.people_list.length} personnes
+              </p>
+            </ItemCardInner>
+            <ItemCardInner className="flex flex-col  p-2 r">
               <h3 className="text-lg font-semibold text-center pb-2">Prix</h3>
-            <p className="  inline-flex items-center gap-1">
-              <span className="font-semibold">Par personne: </span>
-              {customer.price_applicable} €
-            </p>
-            <p className="  inline-flex items-center gap-1">
-              <span className="font-semibold">Total: </span>
-              {customer.price_total} €
-            </p>
-            </div>
+              <p className="  inline-flex items-center gap-1">
+                <span className="font-semibold">Par personne: </span>
+                {customer.price_applicable} €
+              </p>
+              <p className="  inline-flex items-center gap-1">
+                <span className="font-semibold">Total: </span>
+                {customer.price_total} €
+              </p>
+            </ItemCardInner>
             <div className="flex justify-end gap-6 md:gap-2 p-1">
               <Tooltip title="Voir les détails">
                 <button onClick={() => setIsDetailsModalOpen(true)}>
@@ -125,8 +131,7 @@ const CustomerCard = ({ customer , className }: { customer: ICustomerSession , c
             </div>
           </div>
         </div>
-      </div>
-
+      </ItemCard>
       <Modal isOpen={isDetailsModalOpen} onClose={OncloseDetailsModal}>
         <CustomerFiche customer={customer} />
       </Modal>

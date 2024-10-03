@@ -2,7 +2,7 @@ import * as yup from "yup";
 
 export const activitySchema = yup.object().shape({
     name: yup.string().required("Le champ name est requis"),
-    description: yup.string(),
+    description: yup.string().nullable(),
     half_day: yup.boolean(),
     full_day: yup.boolean(),
   
@@ -33,5 +33,22 @@ export const activitySchema = yup.object().shape({
     min_age: yup.number().positive().integer().required("Le champ min_age est requis"),
     max_OfPeople: yup.number().positive().integer().required("Le champ max_OfPeople est requis"),
     min_OfPeople: yup.number().positive().integer().required("Le champ min_OfPeople est requis"),
-  });
+
+
+
+    duration : yup.object( {
+      half: yup.string().when('half_day', {
+        is: true,
+        then: (schema) => schema.required("Le champ duration est requis"),
+        otherwise: (schema) => schema.nullable()
+      }),
+      full: yup.string().when('full_day', {
+        is: true,
+        then: (schema) => schema.required("Le champ duration est requis"),
+        otherwise: (schema) => schema.nullable()
+      }),
+    }
+)
+    
+  },[['half_day', 'full_day']]);
 

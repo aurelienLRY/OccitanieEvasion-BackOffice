@@ -57,6 +57,8 @@ export const xssCustomerSession = async (customerSession: ICustomerSession) => {
       people_list: customerSession.people_list.map((person) => ({
         size: xss(person.size),
         weight: xss(person.weight),
+        price_applicable: person.price_applicable,
+        isReduced: person.isReduced,
       })),
     };
     return JSON.parse(JSON.stringify(xssData));

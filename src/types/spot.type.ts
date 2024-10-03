@@ -23,10 +23,9 @@ export interface ISpot {
       _id: string;
     }[];
     photo: string;
-    half_day: boolean;
-    full_day: boolean;
-    max_OfPeople: number;
-    min_OfPeople: number;
-    meetingPoint: string;
+    meetingPoint: {
+      half_day: string;
+      full_day: string;
+    };
     estimatedDuration: string;
 }

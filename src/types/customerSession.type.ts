@@ -27,6 +27,8 @@ export interface ICustomerSession {
     people_list: {
       size: string;
       weight: string;
+      price_applicable: number
+      isReduced : boolean
     }[];
     tarification: "reduced" | "standard" | "acm";
     price_applicable: number;

@@ -2,7 +2,7 @@
 import React from "react";
 import { Tooltip } from "antd";
 import { capitalizeFirstLetter } from "@/utils/typo";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 
 /* ACTIONS */
 import { UPDATE_CUSTOMER_SESSION } from "@/libs/actions";
@@ -12,6 +12,7 @@ import { useSessionWithDetails } from "@/context/store";
 
 /* types */
 import { ICustomerSession } from "@/types";
+import ToasterAction from "./ToasterAction";
 
 /*
  * CustomerFiche Component
@@ -19,9 +20,16 @@ import { ICustomerSession } from "@/types";
  * @returns JSX.Element
  */
 function CustomerFiche({ customer }: { customer: ICustomerSession }) {
+  console.log("CustomerFcihe componant  >>>>  this is the customer", customer);
   const { updateSessionWithDetails } = useSessionWithDetails();
 
   const removePerson = async (index: number) => {
+    if (customer.number_of_people === 1) {
+      toast.error(
+        "Vous ne pouvez pas retirer la dernière personne de la réservation, veuillez annuler la réservation."
+      );
+      return;
+    }
     if (window.confirm("Voulez-vous vraiment retirer cette personne ?")) {
       const people_list = [...customer.people_list];
       if (people_list.length > 1) {
@@ -31,19 +39,8 @@ function CustomerFiche({ customer }: { customer: ICustomerSession }) {
         ...customer,
         people_list,
         number_of_people: people_list.length,
+        price_total: people_list.reduce((acc, person) => acc + person.price_applicable, 0),
       };
-
-      if (people_list.length === 0) {
-        if (
-          window.confirm(
-            "Aucun participant sera enregistré , voulez vous annuler la réservation ?"
-          )
-        ) {
-          data.status = "Canceled";
-          data.number_of_people = 0;
-        }
-      } 
-
       const result = await UPDATE_CUSTOMER_SESSION(
         customer._id,
         data as ICustomerSession
@@ -51,19 +48,13 @@ function CustomerFiche({ customer }: { customer: ICustomerSession }) {
       console.log(result);
       if (result.success) {
         if (result.data) {
-          if (result.data.status === "Canceled") {
-            toast.success("Réservation annulée avec succès");
-            updateSessionWithDetails(result.data);
-          } else {
-            updateSessionWithDetails(result.data);
-            toast.success("Participation retirée avec succès");
-          }
-        } else {
-          toast.error(
-            "Une erreur est survenue lors de l'annulation de la réservation"
-          );
+          updateSessionWithDetails(result.data);
         }
       }
+      ToasterAction({
+        result,
+        defaultMessage: "Participant retiré avec succès",
+      });
     }
   };
 
@@ -99,6 +90,18 @@ function CustomerFiche({ customer }: { customer: ICustomerSession }) {
           <span className="font-bold">Téléphone:</span>{" "}
           <a href={`tel:${customer.phone}`}>{customer.phone}</a>
         </p>
+        <p>
+          <span className="font-bold">Date de réservation :</span>{" "}
+          {new Date(customer.createdAt).toLocaleDateString("fr-FR", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          })}
+        </p>
+        <p>
+          <span className="font-bold">Total à payer:</span>{" "}
+          {customer.price_total} €
+        </p>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -113,9 +116,19 @@ function CustomerFiche({ customer }: { customer: ICustomerSession }) {
             }`}
           >
             <span className="font-bold text-4xl">🧍‍♂️</span>
+
+            <p className={person.isReduced ? "text-orange-300 " : ""}>
+              {person.isReduced ? (
+                <Tooltip title={`prix réduit`}>
+                  {person.price_applicable} €
+                </Tooltip>
+              ) : (
+                <>{person.price_applicable} €</>
+              )}
+            </p>
+
             <span className="font-bold text-xl"> -&gt; </span>
             <p>
-              {" "}
               {person.size} cm | {person.weight}kg
             </p>
             {!IsCanceled && (

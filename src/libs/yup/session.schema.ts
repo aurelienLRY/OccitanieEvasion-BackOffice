@@ -5,20 +5,22 @@ import * as yup from "yup";
 
  export const sessionSchema = yup.object().shape({
     status: yup.string().required("Le champ status est requis"),
-    date: yup.date().required("Le champ date est requis"),
-    startTime: yup.string().required("Le champ startTime est requis"),
-    endTime: yup.string().required("Le champ endTime est requis"),
-    activity: yup.string().required("Le champ activity est requis"),
-    spot: yup.string().required("Le champ spot est requis"),
+    date: yup.date().typeError("Renseignez une date valide").required("Le champ date est requis"),
+    startTime: yup.string().typeError("Renseignez une heure valide").required("Le champ heure de début est requis"),
+    endTime: yup.string().typeError("Renseignez une heure valide").required("Le champ heure de fin est requis"),
+    activity: yup.string().required("Sélectionnez une activité"),
+    spot: yup.string().required("Sélectionnez un lieu"),
     placesMax: yup
       .number()
-      .required("Le champ placesMax est requis")
+      .typeError("le nombre de place maximum est requis")
+      .required("le nombre de place maximum est requis")
       .positive()
       .integer(),
     placesReserved: yup
       .number()
-      .required("Le champ placesReserved est requis")
-      .integer(),
+      .typeError("le nombre de place réservé est requis")
+      .required("le nombre de place réservé est requis")
+      .integer().default(0),
     type_formule: yup.string().required("Le champ formule est requis"),
   });
 

@@ -14,6 +14,9 @@ import { spotSchema } from "@/libs/yup";
 /* Types */
 import { ISpot, ICallbackForSpot, ICallbackForSpots } from "@/types";
 
+/* Actions */
+import { GET_SERVER_SESSIONS_WITH_DETAILS } from "@/libs/actions/sessionWithDetail.actions";
+
 
 /*
  * Validate the spot
@@ -44,8 +47,12 @@ export const xssSpot = async (spot: ISpot): Promise<ISpot | object> => {
         activityName: xss(activity.activityName),
       })),
       photo: xss(spot.photo),
-      meetingPoint: xss(spot.meetingPoint),
-      estimatedDuration: xss(spot.estimatedDuration),
+      meetingPoint: {
+        half_day: xss(spot.meetingPoint.half_day),
+        full_day: xss(spot.meetingPoint.full_day),
+      },
+
+
     };
     return JSON.parse(JSON.stringify(xssData));
   } catch (error) {
@@ -73,7 +80,7 @@ export async function CREATE_SPOT(spot: ISpot): Promise<ICallbackForSpot> {
       success: true,
       data: JSON.parse(JSON.stringify(newSpot)),
       error: null,
-      feedback: "Spot créé avec succès",
+      feedback: ["Spot créé avec succès"],
     };
   } catch (error) {
     console.error("Erreur lors de la création du spot:", error);
@@ -212,6 +219,11 @@ export async function UPDATE_SPOT(
 export const DELETE_SPOT = async (spotId: string): Promise<ICallbackForSpot> => {
     try {
         await connectDB()
+        const sessionsWithDetails = await GET_SERVER_SESSIONS_WITH_DETAILS()
+        const sessionsWithDetailsBySpot = sessionsWithDetails.filter(session => session.spot._id === spotId )
+        if(sessionsWithDetailsBySpot.length > 0){
+            return {success: false, error: "Ce spot est utilisé dans une session", data: null, feedback: null}
+        }
         const result = await Spot.findByIdAndDelete(spotId)
         if (!result) {
             throw new Error("lieu non trouvé")

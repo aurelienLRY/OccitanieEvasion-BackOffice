@@ -73,6 +73,16 @@ const activitySchema = new Schema({
     type: Number,
     required: true,
   },
+  duration: {
+    half: {
+      type: String,
+      required: false,
+    },
+    full: {
+      type: String,
+      required: false,
+    },
+  },
 });
 
 const Activity = mongoose.models.Activity || mongoose.model<IActivity>('Activity', activitySchema);

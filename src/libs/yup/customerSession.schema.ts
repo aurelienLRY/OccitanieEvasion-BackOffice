@@ -30,6 +30,8 @@ export const customerSessionSchema = yup.object().shape({
    yup.object().shape({
      size: yup.string().required("Le champ size est requis"),
      weight: yup.string().required("Le champ weight est requis"),
+     price_applicable: yup.number().required("Le champ price_applicable est requis"),
+     isReduced: yup.boolean(),
    })
  ),
  tarification: yup

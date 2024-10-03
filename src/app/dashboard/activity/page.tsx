@@ -24,7 +24,6 @@ type Props = {};
 
 function ActivityPage({}: Props) {
   const activities = useActivities((state) => state.Activities);
-  console.log(activities);
 
   const [search, setSearch] = useState("");
   const [openCreateActivityForm, setOpenCreateActivityForm] = useState(false);

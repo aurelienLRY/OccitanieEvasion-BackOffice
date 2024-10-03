@@ -10,7 +10,7 @@
 import { useEffect } from "react";
 
 /* librairie leaflet */
-import { MapContainer, TileLayer, Marker,  } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { LatLngBounds , icon } from "leaflet";
 
@@ -33,11 +33,32 @@ function MapCustomer({ spot }: { spot: ISpot | null }) {
 
   if (spot === null) return null;
 
-  const coordinates = convertGpsCoordinates(spot.gpsCoordinates);   
+  const coordinatesWeb = convertGpsCoordinates(spot.gpsCoordinates);
+  const coordinatesMeetingHalf_day = spot.meetingPoint?.half_day ? convertGpsCoordinates(spot.meetingPoint.half_day) : null;
+  const coordinatesMeetingFull_day = spot.meetingPoint?.full_day ? convertGpsCoordinates(spot.meetingPoint.full_day) : null;
   return (
-    <MapContainer center={coordinates} zoom={15} className="w-full h-full min-h-[300px] rounded-md z-0">
+    <MapContainer center={coordinatesWeb} zoom={14} className="w-full h-full min-h-[300px] rounded-md z-0">
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <Marker position={coordinates} icon={Icon}></Marker>
+      <Marker position={coordinatesWeb} icon={IconWeb}>
+        <Popup>
+          <p>{spot.name}</p>
+
+        </Popup>
+      </Marker>
+      {coordinatesMeetingHalf_day && (
+        <Marker position={coordinatesMeetingHalf_day} icon={IconMeetingHalfDay}>
+          <Popup>
+              <p>Point de rendez-vous demi-journée</p>
+          </Popup>
+        </Marker>
+      )}
+      {coordinatesMeetingFull_day && (
+        <Marker position={coordinatesMeetingFull_day} icon={IconMeetingFullDay}>
+          <Popup>
+            <p>Point de rendez-vous pleine journée</p>
+          </Popup>
+        </Marker>
+      )}
     </MapContainer>
   );
 }
@@ -52,9 +73,21 @@ function convertGpsCoordinates(gpsCoordinates: string): [number, number] {
   return [parseFloat(gps[0]), parseFloat(gps[1])];
 }
 
- const Icon = icon({
-  iconUrl: "/img/Marker.png",
-  iconSize: [32, 32],
+ const IconWeb = icon({
+  iconUrl: "/img/Marker-web.png",
+  iconSize: [75, 100],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
+});
+ const IconMeetingHalfDay = icon({
+  iconUrl: "/img/Marker-meeting_half.png",
+  iconSize: [75, 100],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
+});
+ const IconMeetingFullDay = icon({
+  iconUrl: "/img/Marker-meeting_full.png",
+  iconSize: [75, 100],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32],
 });
