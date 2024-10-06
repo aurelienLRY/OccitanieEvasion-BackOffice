@@ -4,11 +4,10 @@ import { userSchema } from "@/libs/yup/user.schema";
 import { connectDB } from "@/libs/database/mongodb";
 import bcrypt from "bcryptjs";
 
-
+// Gestionnaire d'erreur amélioré
 function handleError(message: string, status: number) {
   return NextResponse.json({ error: message }, { status });
 }
-
 
 export async function POST(req: Request) {
   try {
@@ -24,10 +23,9 @@ export async function POST(req: Request) {
       return handleError("Invalid token", 401);
     }
 
-    // Lire le corps de la requête une seule fois
-    const body = await req.json();  
+    const body = await req.json();
     if (!body) {
-      return handleError("All fields are required", 400);
+      return handleError("Request body is required", 400);
     }
 
     const { email, password, username } = body;
@@ -45,7 +43,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "User created" }, { status: 201 });
   } catch (error: any) {
     if (error.name === 'ValidationError') {
-      return handleError("All fields are required", 400);
+      return handleError(error.message, 400);
     }
     return handleError("Internal Server Error", 500);
   }

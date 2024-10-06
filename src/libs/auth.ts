@@ -15,10 +15,9 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         await connectDB();
-        const userFound = await User.findOne({
+        const userFound  = await User.findOne({
           email: credentials?.email,
         });
-        console.log("userFound",userFound)
 
         if (!userFound) throw new Error("Email inconnu");
 
@@ -52,7 +51,8 @@ export const authOptions: NextAuthOptions = {
         session.user = {
           id: token.id as string,
           email: token.email as string,
-          username: token.username as string, // Ajoutez le nom d'utilisateur à la session
+          username: token.username as string,
+          image: token.image as string | null,
         };
       }
       return session;

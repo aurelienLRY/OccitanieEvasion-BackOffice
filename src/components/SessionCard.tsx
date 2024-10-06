@@ -103,9 +103,9 @@ function SessionCard({ sessionWithDetails }: Props) {
       if (window.confirm("Voulez-vous vraiment archiver cette session ?")) {
         const result = await UPDATE_SESSION(session._id, {
           ...session,
-          activity: session.activity._id,
-          spot: session.spot._id,
-          status: "Archived",
+          activity: session.activity._id as string,
+          spot: session.spot._id as string,
+          status: "Archived" ,
         });
         if (result.success) {
           updateSessionWithDetails({ ...session, status: "Archived" });

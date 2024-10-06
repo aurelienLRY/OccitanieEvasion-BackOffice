@@ -1,4 +1,3 @@
-
 'use server'
 /* Models */
 import Activity from "@/libs/database/models/Activity";
@@ -20,7 +19,7 @@ export const GET_SERVER_SESSION_WITH_DETAILS = async (
     const customerSession = await CustomerSession.find({sessionId: session._id}) as ICustomerSession[]
 
     const sessionWithDetails = {
-        ...session.toObject(),
+        ...(session as any).toObject(),
         activity: activity && activity,
         spot: spot && spot,
         customerSessions: customerSession && customerSession

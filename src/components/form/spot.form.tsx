@@ -2,8 +2,9 @@
 
 /* LIBRAIRIES */
 import React, { useEffect } from "react";
-import { useForm, FormProvider, useFieldArray } from "react-hook-form";
+import { useForm, FormProvider, useFieldArray , Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+
 import * as yup from "yup";
 import { Spin } from "antd";
 
@@ -71,7 +72,7 @@ export  function SpotForm({
   const updateSpot = useSpots((state) => state.updateSpots);
   const activities = useActivities((state) => state.Activities);
   const methods = useForm<TSpotForm>({
-    resolver: yupResolver(createDynamicSchema([])),
+    resolver: yupResolver(createDynamicSchema([])) as unknown as Resolver<TSpotForm>,
     defaultValues: {
       ...spotData,
     },
@@ -84,8 +85,8 @@ export  function SpotForm({
 
   const onSubmit = async (data: TSpotForm) => {
     const result = isUpdate
-      ? await UPDATE_SPOT(spotData!._id, data as ISpot)
-      : await CREATE_SPOT(data as ISpot);
+      ? await UPDATE_SPOT(spotData!._id, data as unknown as ISpot)
+      : await CREATE_SPOT(data as unknown as ISpot);
 
     if (result.success) {
       if (result.data) {
@@ -142,6 +143,12 @@ export  function SpotForm({
                 
                 placeholder="Exemple: 48.8584, 2.2945"
               />
+              <Input
+                name="photo"
+                type="text"
+                label="Photo"
+                placeholder="URL de la photo"
+              />
 
             </div>
 
@@ -165,7 +172,7 @@ export  function SpotForm({
                   onChange={(e) => {
                     if (e.target.checked) {
                       append({
-                        activityId: activity._id,
+                        activityId: activity._id as string,
                         activityName: activity.name,
                       });
                     } else {

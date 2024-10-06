@@ -65,7 +65,7 @@ function SpotPage({}: Props) {
               >
                 Toutes
               </button>
-              {activities.map((activity) => (
+              {activities.map((activity: IActivity) => (
                 <button
                   key={activity._id}
                   className={`px-2 rounded-md ${
@@ -73,7 +73,7 @@ function SpotPage({}: Props) {
                       ? "bg-blue-500 text-white"
                       : "bg-gray-200 text-gray-500"
                   }`}
-                  onClick={() => setSelectedActivity(activity._id)}
+                  onClick={() => setSelectedActivity(activity._id as string)}
                 >
                   {activity.name}
                 </button>

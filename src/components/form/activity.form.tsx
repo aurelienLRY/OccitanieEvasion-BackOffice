@@ -4,6 +4,7 @@
 import React, { useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { InferType } from 'yup'
 import { Spin } from "antd";
 
 
@@ -23,28 +24,9 @@ import Modal from "@/components/Modal";
 import ToasterAction from "@/components/ToasterAction";
 import InfoTooltips from "@/components/InfoTooltips";
 
-export type TActivityForm = {
-  _id?: string;
-  name: string;
-  description?: string;
-  half_day: boolean;
-  full_day: boolean;
-  price_half_day: {
-    standard: number;
-    reduced: number;
-    ACM: number;
-  };
-  price_full_day: {
-    standard: number;
-    reduced: number;
-    ACM: number;
-  };
+export type TActivityForm = InferType<typeof activitySchema>;
 
-  duration: {
-    half: string | null;
-    full: string | null;
-  }
-};
+
 
 type Props = {
   data?: IActivity;
@@ -57,10 +39,13 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
     resolver: yupResolver(activitySchema),
     defaultValues: {
       ...data,
+      description: data?.description ?? "",
       price_half_day: data?.price_half_day || { standard: 0, reduced: 0, ACM: 0 },
       price_full_day: data?.price_full_day || { standard: 0, reduced: 0, ACM: 0 },
-      duration: data?.duration || { half: null, full: null },
-      description: data?.description ?? "",
+      duration: {
+        half: data?.duration?.half ?? undefined,
+        full: data?.duration?.full ?? undefined,
+      },
     },
   });
 
@@ -79,6 +64,10 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
       description: data?.description ?? "",
       price_half_day: data?.price_half_day || { standard: 0, reduced: 0, ACM: 0 },
       price_full_day: data?.price_full_day || { standard: 0, reduced: 0, ACM: 0 },
+      duration: {
+        half: data?.duration?.half ?? undefined,
+        full: data?.duration?.full ?? undefined,
+      },
     });
   }, [data, reset]);
 

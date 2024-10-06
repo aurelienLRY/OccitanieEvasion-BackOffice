@@ -261,7 +261,7 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
     });  
     }
   
-  }, [watch.tarification, watch.people_list]);
+  }, [watch.tarification, watch.people_list, methods, session.activity, session.type_formule]);
 
 
 

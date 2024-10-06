@@ -1,5 +1,4 @@
-import { ISessionWithDetails } from "@/libs/actions/Get";
-
+import { ICustomerSession , ISessionWithDetails } from "@/types";
 
 
 
@@ -43,7 +42,7 @@ let total = 0;
     sessions.map((session) => {
       const sessionDate = new Date(session.date);   
     if (sessionDate.getMonth() === month ){
-        session.customerSessions.forEach((customerSession) => {
+        session.customerSessions.forEach((customerSession: ICustomerSession) => {
             if (customerSession.status === "Validated") {
                 total += customerSession.number_of_people;
             }
@@ -57,7 +56,7 @@ let total = 0;
   sessions.map((session) => {
     const sessionDate = new Date(session.date);
     if (sessionDate.getFullYear() === year) {
-      session.customerSessions.forEach((customerSession) => {
+      session.customerSessions.forEach((customerSession: ICustomerSession) => {
         if (customerSession.status === "Validated") {
           total += customerSession.number_of_people;
         }

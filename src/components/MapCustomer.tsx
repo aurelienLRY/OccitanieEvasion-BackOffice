@@ -21,17 +21,10 @@ import { ISpot } from "@/types";
  * Component to display a map with markers for each spot.
  * @param spots - The spots to be displayed on the map.
  */
-function MapCustomer({ spot }: { spot: ISpot | null }) {
+function MapCustomer({ spot }: { spot: ISpot  }) {
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      console.log("window is defined");
-    }
-    // Retourner undefined au lieu de null
-    return undefined;
-  }, []);
+  if(typeof window !== 'undefined') {
 
-  if (spot === null) return null;
 
   const coordinatesWeb = convertGpsCoordinates(spot.gpsCoordinates);
   const coordinatesMeetingHalf_day = spot.meetingPoint?.half_day ? convertGpsCoordinates(spot.meetingPoint.half_day) : null;
@@ -60,7 +53,7 @@ function MapCustomer({ spot }: { spot: ISpot | null }) {
         </Marker>
       )}
     </MapContainer>
-  );
+  );}
 }
 
 /**

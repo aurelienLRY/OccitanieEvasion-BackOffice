@@ -112,7 +112,7 @@ export function SessionForm({
       interActivities
         .map((interActivity) => interActivity.activityId)
         .filter((activityId): activityId is string => !!activityId) // Ajout de cette ligne pour filtrer les 'undefined'
-        .includes(activity._id)
+        .includes(activity._id as string)
     );
     setFilteredActivities(filteredActivities);
   }, [watchSpot, activities, spots]);
@@ -128,13 +128,14 @@ export function SessionForm({
       if (thisActivity.full_day)
         typeFormuleOptions.push({ id: "full_day", name: "Journée" });
       setFilteredTypeFormule(typeFormuleOptions);
+      methods.setValue("placesMax", thisActivity.max_OfPeople);
     } else {
       setFilteredTypeFormule([
         { id: "half_day", name: "Demi-journée" },
         { id: "full_day", name: "Journée" },
       ]);
     }
-  }, [watchActivity, activities]);
+  }, [watchActivity, activities, methods]);
 
   useEffect(() => {
     if (!isUpdate) {

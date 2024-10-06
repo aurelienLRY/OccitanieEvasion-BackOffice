@@ -2,12 +2,18 @@
 import { Tooltip, Spin } from "antd";
 import { useState } from "react";
 import { toast } from "sonner";
+import Image from "next/image";
+import dynamic from "next/dynamic";
+
+
 /* Types */
 import { ISpot, ICallback } from "@/types";
+
 /* Actions */
 import { DELETE_SPOT } from "@/libs/actions";
+
 /* Components */
-import MapCustomer from "@/components/MapCustomer";
+
 import { SpotForm } from "@/components/form";
 import ToasterAction from "@/components/ToasterAction";
 import { ItemCard, ItemCardInner, ItemCardHeader } from "@/components/ItemCard";
@@ -29,6 +35,10 @@ export default function SpotCard({ spot }: { spot: ISpot }) {
   const sessionsWithSpot = SessionWithDetails.filter(
     (session) => session.spot._id === spot._id
   );
+
+  const MapCustomerNoSSR = dynamic(() => import("@/components/MapCustomer"), {
+    ssr: false,
+  });
 
   const handleDelete = async () => {
     //check if the spot is used in a session
@@ -66,13 +76,23 @@ export default function SpotCard({ spot }: { spot: ISpot }) {
  
           {/* header */}
 
-          <ItemCardHeader>
-            <h2 className="text-4xl font-bold text-center">{spot.name}</h2>
+          <ItemCardHeader className={`relative flex items-center justify-center ${spot.photo ? "h-[200px]" : ""}`}>
+            <h2 className={`text-4xl font-bold text-center z-10 relative flex items-center justify-center ${spot.photo ? "bg-slate-300 rounded-md px-4 py-2  backdrop-blur-sm bg-opacity-45" : ""}`}>{spot.name}</h2> 
+            {spot.photo && (
+              <Image
+                src={spot.photo}
+                alt={spot.name}
+                width={600}
+                height={200}
+                className="w-full h-full object-cover absolute top-0 left-0 z-0 block rounded-md opacity-80 "
+              />
+            )}
+           
           </ItemCardHeader>
 
           {/* content */}
           <div className="flex flex-col justify-between h-full gap-2">
-            <p className="text-sm  dark:text-gray-300 text-center ">
+            <p className="text-sm  dark:text-gray-300 text-center flex items-center justify-center h-full ">
               {spot.description || "Aucune description"}
             </p>
             <ItemCardInner className="flex gap-3 w-full items-center ">
@@ -101,8 +121,9 @@ export default function SpotCard({ spot }: { spot: ISpot }) {
           </Tooltip>
         </div>
       </div>
+
       <div className="min-w-[40%] flex items-center justify-center  ">
-        <MapCustomer spot={spot} />
+        <MapCustomerNoSSR spot={spot} />
       </div>
 
       <SpotForm
