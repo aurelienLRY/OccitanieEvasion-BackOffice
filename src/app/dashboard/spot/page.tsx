@@ -54,9 +54,9 @@ function SpotPage({}: Props) {
         <div className="flex flex-col-reverse items-center lg:flex-row gap-2 lg:justify-between">
           <div className="flex gap-0 flex-col  items-center md:items-start  md:justify-center ">
             <h3 className=" text-lg text-start ms-2 opacity-50">Activités</h3>
-            <div className="flex justify-center gap-4 text-xs min-h-6 font-light bg-sky-950 dark:bg-sky-800 rounded-md py-2 px-4 box-content max-w-fit">
+            <div className="flex-wrap flex justify-center gap-4 text-xs min-h-6 font-light bg-sky-950 dark:bg-sky-800 rounded-md py-2 px-2 md:px-4 box-content max-w-fit">
               <button
-                className={`py-1 px-4 rounded-md ${
+                className={`py-2 px-2  rounded-md ${
                   selectedActivity === "all"
                     ? "bg-blue-500 text-white"
                     : "bg-gray-200 text-gray-500"
@@ -68,7 +68,7 @@ function SpotPage({}: Props) {
               {activities.map((activity: IActivity) => (
                 <button
                   key={activity._id}
-                  className={`px-2 rounded-md ${
+                  className={`py-2 px-2 rounded-md ${
                     selectedActivity === activity._id
                       ? "bg-blue-500 text-white"
                       : "bg-gray-200 text-gray-500"
@@ -90,11 +90,14 @@ function SpotPage({}: Props) {
           </div>
         </div>
 
-        <div className=" grid grid-cols-1 xl:grid-cols-2 justify-center items-center gap-4">
+        <div className=" grid grid-cols-1 xl:grid-cols-2 justify-items-center  gap-4">
           {filteredSpots.map((spot) => (
             <SpotCard key={spot._id} spot={spot} />
           ))}
         </div>
+      
+      
+      
       </div>
       <SpotForm
         isOpen={openModalCreate}

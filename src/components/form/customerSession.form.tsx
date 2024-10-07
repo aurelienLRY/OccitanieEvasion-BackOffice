@@ -9,7 +9,12 @@ import { Tooltip } from "antd";
 
 /* Component */
 import Modal from "@/components/Modal";
-import { Input, SelectInput, SimpleCheckboxInput , CheckboxInput } from "@/components/Inputs";
+import {
+  Input,
+  SelectInput,
+  SimpleCheckboxInput,
+  CheckboxInput,
+} from "@/components/Inputs";
 import ToasterAction from "@/components/ToasterAction";
 import EditEmail from "@/components/EditEmail";
 
@@ -121,7 +126,11 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
       status: "Validated",
       typeOfReservation: "ByCompany",
       number_of_people: fields.length,
-      price_applicable: getPriceApplicable(watch.tarification === "reduced" ? true : false, session.type_formule, session.activity),
+      price_applicable: getPriceApplicable(
+        watch.tarification === "reduced" ? true : false,
+        session.type_formule,
+        session.activity
+      ),
       price_total: formData.people_list.reduce(
         (acc: number, person: { price_applicable: number }) =>
           acc + person.price_applicable,
@@ -131,7 +140,6 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
 
     setCustomer(newCustomer);
 
- 
     let result;
     if (data?._id && newCustomer) {
       result = await UPDATE_CUSTOMER_SESSION(data._id, newCustomer);
@@ -148,15 +156,15 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
 
     if (result.success) {
       if (result.data) {
-          updateSessionWithDetails(result.data);
-          setSessionWithDetails(result.data);
+        updateSessionWithDetails(result.data);
+        setSessionWithDetails(result.data);
         if (
           window.confirm(
             "Client ajouté avec succès ! \n Voulez-vous envoyer un email au client ?"
           )
         ) {
           if (sessionWithDetails && customer) {
-            const myContent =  customerConfirmation(
+            const myContent = customerConfirmation(
               customer,
               sessionWithDetails
             );
@@ -183,7 +191,6 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
         ? "Client modifié avec succès"
         : "Client ajouté avec succès",
     });
-  
   };
 
   /*
@@ -225,18 +232,24 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
   /*
    * Watching form
    */
-  const watch = methods.watch()
-
-
+  const watch = methods.watch();
 
   /*
    * Fonction utilitaire pour obtenir le prix applicable
    */
-  const getPriceApplicable = (isReduced: boolean, typeFormule: string, activity: any) => {
+  const getPriceApplicable = (
+    isReduced: boolean,
+    typeFormule: string,
+    activity: any
+  ) => {
     if (typeFormule === "half_day") {
-      return isReduced ? activity.price_half_day.reduced : activity.price_half_day.standard;
+      return isReduced
+        ? activity.price_half_day.reduced
+        : activity.price_half_day.standard;
     } else if (typeFormule === "full_day") {
-      return isReduced ? activity.price_full_day.reduced : activity.price_full_day.standard;
+      return isReduced
+        ? activity.price_full_day.reduced
+        : activity.price_full_day.standard;
     }
     return 0;
   };
@@ -247,24 +260,33 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
   useEffect(() => {
     if (watch.tarification === "reduced") {
       watch.people_list?.forEach((person, index) => {
-        const price = getPriceApplicable(true, session.type_formule, session.activity);
+        const price = getPriceApplicable(
+          true,
+          session.type_formule,
+          session.activity
+        );
         methods.setValue(`people_list.${index}.price_applicable`, price);
-      });  
-    
+      });
     } else {
       watch.people_list?.forEach((person, index) => {
-      if (person.isReduced === undefined) {
-        return;
-      }
-      const price = getPriceApplicable(person.isReduced, session.type_formule, session.activity);
-      methods.setValue(`people_list.${index}.price_applicable`, price);
-    });  
+        if (person.isReduced === undefined) {
+          return;
+        }
+        const price = getPriceApplicable(
+          person.isReduced,
+          session.type_formule,
+          session.activity
+        );
+        methods.setValue(`people_list.${index}.price_applicable`, price);
+      });
     }
-  
-  }, [watch.tarification, watch.people_list, methods, session.activity, session.type_formule]);
-
-
-
+  }, [
+    watch.tarification,
+    watch.people_list,
+    methods,
+    session.activity,
+    session.type_formule,
+  ]);
 
   return (
     <>
@@ -272,12 +294,12 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
         <FormProvider {...methods}>
           <form
             onSubmit={methods.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4 text-white"
+            className="flex flex-col items-center  gap-4 text-white"
           >
             <h2 className="text-2xl font-bold text-center">
               {data?._id
-                ? "Modifier le client de la session"
-                : "Ajouter un client à la session"}
+                ? "Modifier le client"
+                : "Ajouter un client"}
             </h2>
 
             <SelectInput
@@ -290,12 +312,12 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
               <h3 className="text-xl font-bold text-sky-500">
                 Informations du client
               </h3>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-col  md:flex-row">
                 <Input name="last_name" label="Nom" type="text" />
                 <Input name="first_names" label="Prénoms" type="text" />
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-col md:flex-row">
                 <Input name="email" label="Email" type="email" />
                 <Input name="phone" label="Téléphone" type="tel" />
               </div>
@@ -314,7 +336,11 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
                         size: ``,
                         weight: ``,
                         isReduced: false,
-                        price_applicable: getPriceApplicable(false, session.type_formule, session.activity),
+                        price_applicable: getPriceApplicable(
+                          false,
+                          session.type_formule,
+                          session.activity
+                        ),
                       });
                     } else {
                       if (
@@ -326,7 +352,11 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
                           size: ``,
                           weight: ``,
                           isReduced: false,
-                          price_applicable: getPriceApplicable(false, session.type_formule, session.activity),
+                          price_applicable: getPriceApplicable(
+                            false,
+                            session.type_formule,
+                            session.activity
+                          ),
                         });
                       } else {
                         toast.error("Nombre de personnes maximum atteint");
@@ -335,55 +365,80 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
                   }}
                 />
               </Tooltip>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 ">
                 {fields.map((field, index) => (
-                  <div key={field.id} className="flex gap-2 items-center ">
+                  <div
+                    key={field.id}
+                    className="flex flex-col md:flex-row gap-2 items-center border-2 border-sky-500 p-4 rounded-md"
+                  >
                     <span className="flex items-center gap-1 text-sm">
                       <FaUser className="text-xl" />
                       {index + 1}
                     </span>
-                    <Input
-                      name={`people_list[${index}].size`}
-                      label="Taille en cm"
-                      type="number"
-                      errorsName={`people_list.${index}.size`}
-                    />
-                    <Input
-                      name={`people_list[${index}].weight`}
-                      label="Poids"
-                      type="number"
-                      errorsName={`people_list.${index}.weight`}
-                    />
-                    <div className="flex flex-col  gap-1 ">
-                      {index > 0 && (
-                        <CheckboxInput
-                          name={`people_list.${index}.isReduced`}
-                          label="prix réduit"
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            const price = getPriceApplicable(isChecked, session.type_formule, session.activity);
-                            methods.setValue(`people_list.${index}.price_applicable`, price);
-                          }}
+                    <div className="flex items-center  gap-4 h-full">
+                      <div className="flex flex-col md:flex-row gap-2">
+                        <Input
+                          name={`people_list[${index}].size`}
+                          label="Taille en cm"
+                          type="number"
+                          errorsName={`people_list.${index}.size`}
                         />
-                      )}
+                        <Input
+                          name={`people_list[${index}].weight`}
+                          label="Poids"
+                          type="number"
+                          errorsName={`people_list.${index}.weight`}
+                        />
+                      </div>
+                      <div className="flex flex-col md:flex-row gap-1">
+                        {index > 0 && (
+                          <CheckboxInput
+                            name={`people_list.${index}.isReduced`}
+                            label="prix réduit"
+                            onChange={(e) => {
+                              const isChecked = e.target.checked;
+                              const price = getPriceApplicable(
+                                isChecked,
+                                session.type_formule,
+                                session.activity
+                              );
+                              methods.setValue(
+                                `people_list.${index}.price_applicable`,
+                                price
+                              );
+                            }}
+                          />
+                        )}
+
+                        {index > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              remove(index);
+                            }}
+                            className="m-1 border-2 border-red-500 hover:bg-red-600 transition-all duration-300 text-white w-fit px-2 p-1 rounded-md flex items-center justify-center  "
+                          >
+                            Retirer
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    {index > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          remove(index);
-                        }}
-                        className="m-1 border-2 border-red-500 hover:bg-red-600 transition-all duration-300 text-white w-fit px-2 p-1 rounded-md flex items-center justify-center  "
-                      >
-                        Retirer
-                      </button>
-                    )}
                   </div>
                 ))}
               </div>
             </div>
             <div className="flex w-full items-center justify-end flex-col gap-2">
-              <h3>Prix total: {methods.getValues("people_list")?.reduce((acc: number, person: { price_applicable?: number }) => acc + (person.price_applicable || 0), 0)} €</h3>
+              <h3>
+                Prix total:{" "}
+                {methods
+                  .getValues("people_list")
+                  ?.reduce(
+                    (acc: number, person: { price_applicable?: number }) =>
+                      acc + (person.price_applicable || 0),
+                    0
+                  )}{" "}
+                €
+              </h3>
             </div>
 
             <button

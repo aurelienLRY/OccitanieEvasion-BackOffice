@@ -75,7 +75,7 @@ const Dashboard = () => {
   return (
     <section className="w-full md:p-4 flex flex-col gap-12 items-center">
       <article className="w-full md:p-4 flex flex-col gap-12 items-center">
-        <div className="w-full flex flex-col lg:flex-row gap-4">
+        <div className="w-full flex flex-col xl:flex-row gap-4">
           <CardContainer title="Mes sessions à venir">
             {filteredSessions.length === 0 ? (
               <div className="flex flex-col gap-4 justify-center items-center h-full">
@@ -119,7 +119,7 @@ const Dashboard = () => {
           <CardContainer title="Mon calendrier">
             <iframe
               src="https://calendar.google.com/calendar/embed?height=600&wkst=2&ctz=Europe%2FParis&bgcolor=%23ffffff&showPrint=0&showCalendars=0&showTz=0&showTabs=0&showTitle=0&showDate=0&src=ZDdlNzFlMzYzMmJkZjI3Mjg2Y2UyZmY5NDE0NmY0M2E1MWE5MTA3Y2FlYTJlM2U0Y2NhNjhmZTQ2OTNkOGYzOUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23F09300"
-              className="w-full min-h-[50vw] lg:min-h-[30vw] rounded-lg"
+              className="w-full min-h-[100vw] lg:min-h-[30vw] rounded-lg"
             ></iframe>
           </CardContainer>
         </div>

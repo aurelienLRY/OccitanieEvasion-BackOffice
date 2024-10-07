@@ -123,7 +123,7 @@ function SessionCard({ sessionWithDetails, detailsModal , updateSessionModal , a
   return (
     <>
       <ItemCard
-        className={`flex flex-col gap-4 min-w-[350px] ${
+        className={`flex flex-col gap-4 w-full max-w-[400px] box-border ${
           checked.isArchived
             ? "opacity-60 border-e-8 border-red-500"
             : checked.isPending

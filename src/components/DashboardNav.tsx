@@ -28,7 +28,8 @@ const DashboardNav = ({
   };
 
   return (
-    <nav className="flex items-center gap-1 md:gap-2  bg-sky-950 dark:bg-sky-800 text-white text-xs font-light p-1 rounded-md">
+    <nav className="flex flex-col md:flex-row items-center gap-1 md:gap-2  bg-sky-950 dark:bg-sky-800 text-white text-xs font-light p-1 rounded-md">
+      <div className="flex  ">
       <Link
         href="/dashboard"
         className={cn(
@@ -68,6 +69,8 @@ const DashboardNav = ({
       >
         Réservations
       </Link>
+      </div>
+      <div className="flex ">
       <Link
         href="/dashboard/spot"
         className={cn(
@@ -105,6 +108,7 @@ const DashboardNav = ({
         {" "} 
         Emails
       </Link>
+      </div>
     </nav>
   );
 };

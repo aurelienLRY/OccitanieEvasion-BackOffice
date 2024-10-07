@@ -110,22 +110,22 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
               </tr>
             </thead>
             <tbody>
-              <tr className="flex justify-around gap-4 w-full">
+              <tr className="flex flex-col md:flex-row justify-around gap-4 w-full">
                 <td className="p-2 flex justify-center items-center">
-                  <SimpleCheckboxInput name="half_day" label="Demi-journée" />
+                  <tr className="flex flex-col md:flex-row gap-2">
+                    <SimpleCheckboxInput name="half_day" label="Demi-journée" />
+                    <Input name="duration.half" type="text" label="Durée estimée" disabled={!watchHalfDay} />
+                  </tr>
+                  
                 </td>
                 <td className="p-2 flex justify-center items-center">
-                  <SimpleCheckboxInput name="full_day" label="Journée complète" />
+                  <tr className="flex flex-col md:flex-row gap-2">
+                    <SimpleCheckboxInput name="full_day" label="Journée complète" />
+                    <Input name="duration.full" type="text" label="Durée estimée" disabled={!watchFullDay} />
+                  </tr>
                 </td>
               </tr>
-              <tr className="flex justify-around gap-4 w-full">
-                <td className="p-2 flex justify-center items-center">
-                  <Input name="duration.half" type="text" label="Durée estimée" disabled={!watchHalfDay} />
-                </td>
-                <td className="p-2 flex justify-center items-center">
-                  <Input name="duration.full" type="text" label="Durée estimée" disabled={!watchFullDay} />
-                </td>
-              </tr>
+
               <tr className="flex justify-center items-center gap-2 w-full">
                 <h3 className="text-sky-500 text-xl font-bold text-center ">Tarification </h3>
                 <InfoTooltips title="Renseigner les prix pour les formules sélectionnées " />
@@ -177,12 +177,12 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
             </tbody>
           </table>
 
-          <div className="flex flex-col gap-2 items-center">
+          <div className="flex flex-col gap-2 md:items-center">
             <div className="flex justify-center items-center gap-2">
               <h3 className="text-lg font-bold">Gestion des groupes</h3>
               <InfoTooltips title="Renseigner les nombres maximum et minimum de personnes pour les groupes" />
             </div>
-            <div className="flex flex-col md:flex-row gap-6">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-6">
               <Input
                 name="max_OfPeople"
                 type="number"

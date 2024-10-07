@@ -22,7 +22,7 @@ export default function SessionDetailCard({ data, isOpen, onClose }: { data: ISe
   const getPrice_total = calculateSessionIncome(data);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-    <div className="flex flex-col gap-10 justify-evenly min-w-fit   px-3 pt-3 pb-1 text-white relative ">
+    <div className="flex flex-col gap-10 justify-evenly min-w-fit    text-white relative ">
       <div className=" w-full flex flex-col items-center   ">
           <p className="text-center text-2xl font-semibold m-0">
             {data.activity.name}
