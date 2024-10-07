@@ -3,7 +3,9 @@
 import React from "react";
 /* Components */
 import SessionCard from "@/components/SessionCard";
-
+import SessionDetailCard from "@/components/SessionDetailCard";
+import { SessionForm , CustomerSessionForm } from "@/components/form";
+import CanceledCustomerSession from "@/components/CanceledCustomerSession";
 /* Utils */
 import { getMonthString, getYearString } from "@/utils/date";
 import { calculateSessionIncomeByMonth } from "@/utils/price";
@@ -18,12 +20,24 @@ import {
 /* Store */
 import { useSessionWithDetails } from "@/context/store";
 
+/* Types */
+import { ISessionWithDetails } from "@/types";
+
+/* Hook */
+import { useModal } from "@/hook";
+
 const Dashboard = () => {
   const sessionsWithDetails = useSessionWithDetails(
     (state) => state.SessionWithDetails
   );
 
   const filteredSessions = filterSessionsForDashboard(sessionsWithDetails);
+
+  const detailsModal = useModal<ISessionWithDetails>();
+  const updateSessionModal = useModal<ISessionWithDetails>();
+  const customerModal = useModal<ISessionWithDetails>();
+  const canceledCustomerModal = useModal<ISessionWithDetails>();
+
 
   const DisplayHeaderMessage = (n: number) => {
     if (1 <= n && n <= 4) {
@@ -61,7 +75,7 @@ const Dashboard = () => {
   return (
     <section className="w-full md:p-4 flex flex-col gap-12 items-center">
       <article className="w-full md:p-4 flex flex-col gap-12 items-center">
-        <div className="w-full flex flex-col lg:flex-row gap-4">
+        <div className="w-full flex flex-col xl:flex-row gap-4">
           <CardContainer title="Mes sessions à venir">
             {filteredSessions.length === 0 ? (
               <div className="flex flex-col gap-4 justify-center items-center h-full">
@@ -80,9 +94,24 @@ const Dashboard = () => {
                 { DisplayHeaderMessage(sessionsWithDetails.length)}
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-center">
                   {filteredSessions.map((session) => (
-                    <SessionCard key={session._id} sessionWithDetails={session} />
+                    <SessionCard 
+                    key={session._id}
+                     sessionWithDetails={session} 
+                     detailsModal={detailsModal.openModal}
+                     updateSessionModal={updateSessionModal.openModal}
+                      addCustomerModal={customerModal.openModal}
+                      canceledCustomerModal={canceledCustomerModal.openModal}
+                      />
                   ))}
                 </div>
+                {/* Modal Details */}
+                {detailsModal.data && <SessionDetailCard data={detailsModal.data} isOpen={detailsModal.isOpen} onClose={detailsModal.closeModal} />}
+                {/* Modal Update */}
+                {updateSessionModal.data && <SessionForm data={updateSessionModal.data} isOpen={updateSessionModal.isOpen} onClose={updateSessionModal.closeModal} />}
+                {/* Modal Customer */}
+                {customerModal.data && <CustomerSessionForm session={customerModal.data} isOpen={customerModal.isOpen} onClose={customerModal.closeModal} />} 
+                {/* Modal Canceled Customer */}
+                {canceledCustomerModal.data && <CanceledCustomerSession data={canceledCustomerModal.data} isOpen={canceledCustomerModal.isOpen} onClose={canceledCustomerModal.closeModal} />} 
               </>
             )}
           </CardContainer>
@@ -90,7 +119,7 @@ const Dashboard = () => {
           <CardContainer title="Mon calendrier">
             <iframe
               src="https://calendar.google.com/calendar/embed?height=600&wkst=2&ctz=Europe%2FParis&bgcolor=%23ffffff&showPrint=0&showCalendars=0&showTz=0&showTabs=0&showTitle=0&showDate=0&src=ZDdlNzFlMzYzMmJkZjI3Mjg2Y2UyZmY5NDE0NmY0M2E1MWE5MTA3Y2FlYTJlM2U0Y2NhNjhmZTQ2OTNkOGYzOUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23F09300"
-              className="w-full min-h-[50vw] lg:min-h-[30vw] rounded-lg"
+              className="w-full min-h-[100vw] lg:min-h-[30vw] rounded-lg"
             ></iframe>
           </CardContainer>
         </div>

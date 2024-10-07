@@ -26,7 +26,6 @@ const sendEmail = async (
   if (!isVerified) {
     return false;
   }
-  console.log("isVerified", isVerified);
 
   const mailOptions = {
     from: process.env.SMTP_EMAIL,
@@ -37,7 +36,6 @@ const sendEmail = async (
 
   const info = await transporter.sendMail(mailOptions);
   if (info.messageId) {
-    console.log("Email envoyé avec succès");
     return true;
   }
   console.log("Erreur lors de l'envoi de l'email");

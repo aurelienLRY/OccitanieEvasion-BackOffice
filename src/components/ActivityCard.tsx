@@ -73,9 +73,9 @@ function ActivityCard({ activity }: Props) {
             {activity.name}
           </h2>
         </ItemCardHeader>
-          <div className="flex gap-2 w-full justify-center items-center border-2 border-sky-600 p-2 rounded-md">
+          <div className="flex flex-col md:flex-row gap-2 w-full justify-center items-center border-2 border-sky-600 p-2 rounded-md">
             <h3 className="text-lg font-bold text-gray-400 dark:text-sky-500">Description: </h3>
-            <p className="text-sm text-justify px-2">
+            <p className="text-sm text-center md:text-justify px-2">
               {activity.description
                 ? activity.description
                 : "🧐 Ajouter une description à votre activité 🧐 "}
@@ -214,12 +214,12 @@ function ActivityCard({ activity }: Props) {
         <div className="w-full flex justify-end gap-3">
           <Tooltip title="Modifier l'activité">
             <button onClick={() => setIsUpdateActivityModalOpen(true)}>
-              <MdOutlineUpdate className="text-4xl hover:text-slate-200 cursor-pointer transition-all" />
+              <MdOutlineUpdate className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
             </button>
           </Tooltip>
           <Tooltip title="Supprimer l'activité">
             <button onClick={() => deleteActivity(activity._id as string)}>
-              <RiCalendarCloseFill className="text-4xl hover:text-red-500 cursor-pointer transition-all" />
+              <RiCalendarCloseFill className="text-2xl hover:text-red-500 cursor-pointer transition-all" />
             </button>
           </Tooltip>
         </div>

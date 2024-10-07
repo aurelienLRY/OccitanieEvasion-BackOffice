@@ -46,12 +46,12 @@ export default function Modal({ isOpen, onClose, children }: Props) {
     <>
       {/*overlay*/}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex justify-center items-center z-40 ${
+        className={`fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex justify-center items-center z-40  ${
           isOpen ? "block" : "hidden"
         }`}
       >
         {/*modal*/}
-        <div className="min-w-[300px] w-fit lg:max-w-[70vw] max-h-[90vh] overflow-y-auto bg-gray-800 dark:bg-sky-800 rounded-md shadow-md shadow-slate-400 dark:shadow-sky-400">
+        <div className="min-w-[300px] w-fit lg:max-w-[70vw] max-h-[90vh] overflow-y-auto bg-gray-800 dark:bg-sky-950 rounded-md shadow-md shadow-slate-400 dark:shadow-sky-400">
           <div className="flex justify-between items-center bg-gray-600 rounded-t-md w-full">
             <div className=" h-7 flex w-full items-center px-3">
               <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>

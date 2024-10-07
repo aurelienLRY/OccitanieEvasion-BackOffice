@@ -5,13 +5,19 @@ import { cn } from "@/utils/cn";
 import { Spin } from "antd";
 /* Components */
 import SessionCard from "@/components/SessionCard";
-import { ISessionWithDetails } from "@/types";
+import { SessionForm , CustomerSessionForm  } from "@/components/form";
+import CanceledCustomerSession from "@/components/CanceledCustomerSession";
 
 /* Utils */
 import { getSessionByStatus } from "@/utils/utilSession";
 import { SearchInObject } from "@/utils/search";
+import SessionDetailCard from "./SessionDetailCard";
 
+/* Types */
+import { ISessionWithDetails } from "@/types";
 
+/* Hook */
+import { useModal } from "@/hook";
 
 /**
  * AllSessionsCard Component
@@ -30,11 +36,26 @@ export default function AllSessionsCard({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [status, setStatus] = useState<string>("Actif");
   const [search, setSearch] = useState<string>("");
-  
+
+
+const detailsModal = useModal<ISessionWithDetails>();
+const updateSessionModal = useModal<ISessionWithDetails>();
+const customerModal = useModal<ISessionWithDetails>();
+const canceledCustomerModal = useModal<ISessionWithDetails>();
+
+
+
+
+
+
+
+
 
   useEffect(() => {
     setIsLoading(sessionsWithDetails.length === 0);
-    const sortedSessions = [...sessionsWithDetails].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const sortedSessions = [...sessionsWithDetails].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
     const resultFilter = filterSessions(sortedSessions, filter, status);
     const resultSearch = SearchInObject(resultFilter, search);
     setFilteredSessions(resultSearch as ISessionWithDetails[]);
@@ -176,13 +197,64 @@ export default function AllSessionsCard({
           <SessionCard
             sessionWithDetails={customerSession}
             key={customerSession._id}
+            detailsModal={detailsModal.openModal}
+            updateSessionModal={updateSessionModal.openModal}
+            addCustomerModal={customerModal.openModal}
+            canceledCustomerModal={canceledCustomerModal.openModal}
           />
         ))}
+
+        {/* Form action  */}
+
+        {/* Modal Details */}
+        {detailsModal.data && (
+          <SessionDetailCard
+            data={detailsModal.data}
+            isOpen={detailsModal.isOpen}
+            onClose={detailsModal.closeModal}
+          />
+        )}
+
+        {/* Modal Update */}
+        {updateSessionModal.data && (
+          <SessionForm
+            data={updateSessionModal.data}
+            isOpen={updateSessionModal.isOpen}
+            onClose={updateSessionModal.closeModal}
+          />
+        )}
+
+        {/* Modal Customer */}
+        {customerModal.data && (
+          <CustomerSessionForm
+            session={customerModal.data}
+            isOpen={customerModal.isOpen}
+            onClose={customerModal.closeModal}
+          />
+        )}
+
+        {/* Modal Canceled Customer */}
+        {canceledCustomerModal.data && (
+          <CanceledCustomerSession
+            data={canceledCustomerModal.data}
+            isOpen={canceledCustomerModal.isOpen}
+            onClose={canceledCustomerModal.closeModal}
+          />
+        )}
+
+
       </div>
     </div>
   );
 }
 
+/*
+  filterSessions
+  @param sessions: ISessionWithDetails[]
+  @param filter: string
+  @param status: string
+  @returns ISessionWithDetails[]
+*/
 function filterSessions(
   sessions: ISessionWithDetails[],
   filter: string,
@@ -220,6 +292,3 @@ function filterSessions(
     }
   });
 }
-
-
-
