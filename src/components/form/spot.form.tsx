@@ -42,6 +42,7 @@ const createDynamicSchema = (fields: Array<any>) => {
 };
 
 export type TSpotForm = {
+  _id?: string;
   name: string;
   description: string | undefined;
   gpsCoordinates: string;
@@ -59,22 +60,22 @@ export type TSpotForm = {
 };
 
 export  function SpotForm({
-  spotData,
+  data,
   isOpen,
   onClose,
 }: {
-  spotData?: ISpot;
+  data?: ISpot;
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const isUpdate = !!spotData;
+  const isUpdate = !!data;
 
   const updateSpot = useSpots((state) => state.updateSpots);
   const activities = useActivities((state) => state.Activities);
   const methods = useForm<TSpotForm>({
     resolver: yupResolver(createDynamicSchema([])) as unknown as Resolver<TSpotForm>,
     defaultValues: {
-      ...spotData,
+      ...data,
     },
   });
 
@@ -85,7 +86,7 @@ export  function SpotForm({
 
   const onSubmit = async (data: TSpotForm) => {
     const result = isUpdate
-      ? await UPDATE_SPOT(spotData!._id, data as unknown as ISpot)
+      ? await UPDATE_SPOT(data!._id as string, data as unknown as ISpot)
       : await CREATE_SPOT(data as unknown as ISpot);
 
     if (result.success) {
@@ -104,12 +105,12 @@ export  function SpotForm({
   } = methods;
 
   useEffect(() => {
-    if (spotData) {
+    if (data) {
       reset({
-        ...spotData,
+        ...data,
       });
     }
-  }, [spotData, reset]);
+  }, [data, reset]);
 
   const handleClose = () => {
     reset();

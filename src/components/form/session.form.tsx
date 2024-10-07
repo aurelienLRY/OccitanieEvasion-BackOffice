@@ -154,7 +154,7 @@ export function SessionForm({
 
   const onSubmit = async (data: TSessionForm) => {
     const result = isUpdate
-      ? await UPDATE_SESSION(data!._id as string , data as ISession)
+      ? await UPDATE_SESSION(data!._id as string, data as ISession)
       : await CREATE_SESSION(data as ISession);
 
     if (result.success) {

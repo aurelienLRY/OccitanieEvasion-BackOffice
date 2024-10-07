@@ -163,6 +163,8 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
             "Client ajouté avec succès ! \n Voulez-vous envoyer un email au client ?"
           )
         ) {
+          alert("je dois coder l'envoi d'email ");
+          /*
           if (sessionWithDetails && customer) {
             const myContent = customerConfirmation(
               customer,
@@ -179,7 +181,7 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
             } else {
               toast.error("Erreur lors de l'envoi de l'email");
             }
-          }
+          }*/
         }
         onClose();
         methods.reset();
