@@ -41,7 +41,7 @@ const SessionPage = () => {
       <SessionForm
         isOpen={isOpenCreate}
         onClose={() => setIsOpenCreate(false)}
-        sessionData={undefined}
+        data={undefined}
       />
     </div>
   );

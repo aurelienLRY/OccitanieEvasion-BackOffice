@@ -28,6 +28,7 @@ import ToasterAction from "@/components/ToasterAction";
 import { formatDate } from "@/utils/date";
 
 export type TSessionForm = {
+  _id?: string;
   date: Date | string;
   startTime: string;
   status: string;
@@ -153,7 +154,7 @@ export function SessionForm({
 
   const onSubmit = async (data: TSessionForm) => {
     const result = isUpdate
-      ? await UPDATE_SESSION(data!._id, data as ISession)
+      ? await UPDATE_SESSION(data!._id as string, data as ISession)
       : await CREATE_SESSION(data as ISession);
 
     if (result.success) {
