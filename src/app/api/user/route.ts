@@ -28,12 +28,12 @@ export async function POST(req: Request) {
       return handleError("Request body is required", 400);
     }
 
-    const { email, password, username } = body;
-    if (!email || !password || !username) {
+    const { email, password, username, name } = body;
+    if (!email || !password || !username || !name) {
       return handleError("All fields are required", 400);
     }
 
-    await userSchema.validate({ email, password, username });
+    await userSchema.validate({ email, password, username, name });
 
     await connectDB();
     const hashedPassword = await bcrypt.hash(password, 10);

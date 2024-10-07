@@ -20,7 +20,7 @@ import ToasterAction from "./ToasterAction";
  * @returns JSX.Element
  */
 function CustomerFiche({ customer }: { customer: ICustomerSession }) {
-  console.log("CustomerFcihe componant  >>>>  this is the customer", customer);
+  console.log("Customer Fiche componant  >>>>  this is the customer", customer);
   const { updateSessionWithDetails } = useSessionWithDetails();
 
   const removePerson = async (index: number) => {
