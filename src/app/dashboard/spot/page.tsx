@@ -17,6 +17,9 @@ import { SearchInObject } from "@/utils/search";
 
 /* types */
 import { ISpot, IActivity } from "@/types";
+/* hooks */
+
+import { useModal } from "@/hook";
 
 type Props = {};
 
@@ -31,6 +34,7 @@ function SpotPage({}: Props) {
     "all"
   );
   const [filteredSpots, setFilteredSpots] = useState<ISpot[]>(spots);
+  const updateSpot = useModal<ISpot>();
 
   useEffect(() => {
     if (selectedActivity) {
@@ -92,17 +96,27 @@ function SpotPage({}: Props) {
 
         <div className=" grid grid-cols-1 xl:grid-cols-2 justify-items-center  gap-4">
           {filteredSpots.map((spot) => (
-            <SpotCard key={spot._id} spot={spot} />
+            <SpotCard
+              key={spot._id}
+              spot={spot}
+              updateSpotModal={updateSpot.openModal}
+            />
           ))}
         </div>
-      
-      
-      
       </div>
-      <SpotForm
-        isOpen={openModalCreate}
-        onClose={() => setOpenModalCreate(false)}
-      />
+
+      {updateSpot.data ? (
+        <SpotForm
+          data={updateSpot.data}
+          isOpen={updateSpot.isOpen}
+          onClose={updateSpot.closeModal}
+        />
+      ) : (
+        <SpotForm
+          isOpen={openModalCreate}
+          onClose={() => setOpenModalCreate(false)}
+        />
+      )}
     </section>
   );
 }

@@ -22,11 +22,11 @@ import { IoPeople } from "react-icons/io5";
 
 type Props = {
   activity: IActivity;
+  updateActivityModal: (activity: IActivity) => void;
 };
 
-function ActivityCard({ activity }: Props) {
-  const [isUpdateActivityModalOpen, setIsUpdateActivityModalOpen] =
-    useState(false);
+function ActivityCard({ activity , updateActivityModal }: Props) {
+
 
   const [isDelete, setIsDelete] = useState(false);
 
@@ -213,7 +213,7 @@ function ActivityCard({ activity }: Props) {
 
         <div className="w-full flex justify-end gap-3">
           <Tooltip title="Modifier l'activité">
-            <button onClick={() => setIsUpdateActivityModalOpen(true)}>
+            <button onClick={() => updateActivityModal(activity)}>
               <MdOutlineUpdate className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
             </button>
           </Tooltip>
@@ -225,11 +225,6 @@ function ActivityCard({ activity }: Props) {
         </div>
 
       </ItemCard>
-      <ActivityForm
-        data={activity}
-        isOpen={isUpdateActivityModalOpen}
-        onClose={() => setIsUpdateActivityModalOpen(false)}
-      />
     </>
   );
 }

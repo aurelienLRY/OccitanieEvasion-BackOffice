@@ -24,7 +24,7 @@ import { useSpots, useSessionWithDetails } from "@/context/store";
 import { RiCalendarCloseFill } from "react-icons/ri";
 import { MdOutlineUpdate } from "react-icons/md";
 
-export default function SpotCard({ spot }: { spot: ISpot }) {
+export default function SpotCard({ spot , updateSpotModal }: { spot: ISpot , updateSpotModal: (spot: ISpot) => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const { deleteSpots } = useSpots();
@@ -122,7 +122,7 @@ export default function SpotCard({ spot }: { spot: ISpot }) {
         {/* footer */}
         <div className="flex px-6 py-2  gap-3 w-full justify-end">
           <Tooltip title="Modifier le spot">
-            <button onClick={() => setIsOpen(true)}>
+            <button onClick={() => updateSpotModal(spot)}>
               <MdOutlineUpdate className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
             </button>
           </Tooltip>
@@ -134,14 +134,6 @@ export default function SpotCard({ spot }: { spot: ISpot }) {
           </Tooltip>
         </div>
       </div>
-
-      <SpotForm
-        spotData={spot}
-        isOpen={isOpen}
-        onClose={() => {
-          setIsOpen(false);
-        }}
-      />
     </ItemCard>
   );
 }

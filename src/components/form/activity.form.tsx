@@ -110,16 +110,16 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
               </tr>
             </thead>
             <tbody>
-              <tr className="flex flex-col md:flex-row justify-around gap-4 w-full">
+              <tr className="flex flex-col md:flex-row justify-around gap-2 w-full">
                 <td className="p-2 flex justify-center items-center">
-                  <tr className="flex flex-col md:flex-row gap-2">
+                  <tr className="flex flex-col items-center  gap-2">
                     <SimpleCheckboxInput name="half_day" label="Demi-journée" />
                     <Input name="duration.half" type="text" label="Durée estimée" disabled={!watchHalfDay} />
                   </tr>
                   
                 </td>
                 <td className="p-2 flex justify-center items-center">
-                  <tr className="flex flex-col md:flex-row gap-2">
+                  <tr className="flex flex-col items-center  gap-2">
                     <SimpleCheckboxInput name="full_day" label="Journée complète" />
                     <Input name="duration.full" type="text" label="Durée estimée" disabled={!watchFullDay} />
                   </tr>
