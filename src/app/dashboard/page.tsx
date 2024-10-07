@@ -3,7 +3,9 @@
 import React from "react";
 /* Components */
 import SessionCard from "@/components/SessionCard";
-
+import SessionDetailCard from "@/components/SessionDetailCard";
+import { SessionForm , CustomerSessionForm } from "@/components/form";
+import CanceledCustomerSession from "@/components/CanceledCustomerSession";
 /* Utils */
 import { getMonthString, getYearString } from "@/utils/date";
 import { calculateSessionIncomeByMonth } from "@/utils/price";
@@ -18,12 +20,24 @@ import {
 /* Store */
 import { useSessionWithDetails } from "@/context/store";
 
+/* Types */
+import { ISessionWithDetails } from "@/types";
+
+/* Hook */
+import { useModal } from "@/hook";
+
 const Dashboard = () => {
   const sessionsWithDetails = useSessionWithDetails(
     (state) => state.SessionWithDetails
   );
 
   const filteredSessions = filterSessionsForDashboard(sessionsWithDetails);
+
+  const detailsModal = useModal<ISessionWithDetails>();
+  const updateSessionModal = useModal<ISessionWithDetails>();
+  const customerModal = useModal<ISessionWithDetails>();
+  const canceledCustomerModal = useModal<ISessionWithDetails>();
+
 
   const DisplayHeaderMessage = (n: number) => {
     if (1 <= n && n <= 4) {
@@ -80,9 +94,24 @@ const Dashboard = () => {
                 { DisplayHeaderMessage(sessionsWithDetails.length)}
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-center">
                   {filteredSessions.map((session) => (
-                    <SessionCard key={session._id} sessionWithDetails={session} />
+                    <SessionCard 
+                    key={session._id}
+                     sessionWithDetails={session} 
+                     detailsModal={detailsModal.openModal}
+                     updateSessionModal={updateSessionModal.openModal}
+                      addCustomerModal={customerModal.openModal}
+                      canceledCustomerModal={canceledCustomerModal.openModal}
+                      />
                   ))}
                 </div>
+                {/* Modal Details */}
+                {detailsModal.data && <SessionDetailCard data={detailsModal.data} isOpen={detailsModal.isOpen} onClose={detailsModal.closeModal} />}
+                {/* Modal Update */}
+                {updateSessionModal.data && <SessionForm data={updateSessionModal.data} isOpen={updateSessionModal.isOpen} onClose={updateSessionModal.closeModal} />}
+                {/* Modal Customer */}
+                {customerModal.data && <CustomerSessionForm session={customerModal.data} isOpen={customerModal.isOpen} onClose={customerModal.closeModal} />} 
+                {/* Modal Canceled Customer */}
+                {canceledCustomerModal.data && <CanceledCustomerSession data={canceledCustomerModal.data} isOpen={canceledCustomerModal.isOpen} onClose={canceledCustomerModal.closeModal} />} 
               </>
             )}
           </CardContainer>

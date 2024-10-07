@@ -40,15 +40,15 @@ export type TSessionForm = {
 };
 
 export function SessionForm({
-  sessionData,
+  data,
   isOpen,
   onClose,
 }: {
-  sessionData?: ISessionWithDetails;
+  data?: ISessionWithDetails;
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const isUpdate = !!sessionData;
+  const isUpdate = !!data;
 
   const addSessionWithDetails = useSessionWithDetails(
     (state) => state.addSessionWithDetails
@@ -74,12 +74,12 @@ export function SessionForm({
   const methods = useForm<TSessionForm>({
     resolver: yupResolver(sessionSchema as any), // Ajout de 'as any' pour contourner l'erreur de typage
     defaultValues: {
-      ...sessionData,
-      date: sessionData?.date && formatDate(sessionData.date),
-      activity: sessionData ? sessionData.activity._id : "",
-      spot: sessionData ? sessionData.spot._id : "",
-      status: sessionData ? sessionData.status : "Actif",
-      placesReserved: sessionData ? sessionData.placesReserved : 0,
+      ...data,
+      date: data?.date && formatDate(data.date),
+      activity: data ? data.activity._id : "",
+      spot: data ? data.spot._id : "",
+      status: data ? data.status : "Actif",
+      placesReserved: data ? data.placesReserved : 0,
     },
   });
 
@@ -91,15 +91,15 @@ export function SessionForm({
   } = methods;
 
   useEffect(() => {
-    if (sessionData) {
+    if (data) {
       reset({
-        ...sessionData,
-        date: sessionData?.date && formatDate(sessionData.date),
-        activity: sessionData.activity._id,
-        spot: sessionData.spot._id,
+        ...data,
+        date: data?.date && formatDate(data.date),
+        activity: data.activity._id,
+        spot: data.spot._id,
       });
     }
-  }, [sessionData, reset]);
+  }, [data, reset]);
 
   const watchSpot = methods.watch("spot");
   const watchActivity = methods.watch("activity");
@@ -153,7 +153,7 @@ export function SessionForm({
 
   const onSubmit = async (data: TSessionForm) => {
     const result = isUpdate
-      ? await UPDATE_SESSION(sessionData!._id, data as ISession)
+      ? await UPDATE_SESSION(data!._id, data as ISession)
       : await CREATE_SESSION(data as ISession);
 
     if (result.success) {

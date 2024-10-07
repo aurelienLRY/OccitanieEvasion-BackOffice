@@ -31,6 +31,10 @@ import { MdOutlineUpdate } from "react-icons/md";
 
 type Props = {
   sessionWithDetails: ISessionWithDetails;
+  detailsModal: (session: ISessionWithDetails) => void;
+  updateSessionModal: (session: ISessionWithDetails) => void;
+  addCustomerModal: (session: ISessionWithDetails) => void;
+  canceledCustomerModal: (session: ISessionWithDetails) => void;
 };
 
 /**
@@ -38,16 +42,7 @@ type Props = {
  * @param customerSession: ISessionWithDetails
  * @returns JSX.Element
  */
-function SessionCard({ sessionWithDetails }: Props) {
-  // GESTION DES MODALS
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // modal details
-  const [isAddCustomerModalOpen, setIsAddCustomerModalOpen] = useState(false); // modal add customer
-  const [isUpdateSessionModalOpen, setIsUpdateSessionModalOpen] =
-    useState(false); // modal update session
-  const [
-    isCanceledCustomerSessionModalOpen,
-    setIsCanceledCustomerSessionModalOpen,
-  ] = useState(false);
+function SessionCard({ sessionWithDetails, detailsModal , updateSessionModal , addCustomerModal , canceledCustomerModal  }: Props) {
   const [calculateRevenue, setCalculateRevenue] = useState(0);
 
   // modal canceled customer session
@@ -121,7 +116,7 @@ function SessionCard({ sessionWithDetails }: Props) {
       !checked.isArchived &&
       !checked.customerIsCancelled
     ) {
-      setIsCanceledCustomerSessionModalOpen(true);
+      canceledCustomerModal(sessionWithDetails);
     }
   };
 
@@ -183,7 +178,7 @@ function SessionCard({ sessionWithDetails }: Props) {
           {checked.isReserved && (
             <Tooltip title="Voir les détails">
               <button
-                onClick={() => setIsDetailsModalOpen(true)}
+                onClick={() => detailsModal(sessionWithDetails)}
                 className="relative"
               >
                 <TbListDetails
@@ -205,13 +200,13 @@ function SessionCard({ sessionWithDetails }: Props) {
           {!checked.isArchived && (
             <>
               <Tooltip title="Ajouter des participants">
-                <button onClick={() => setIsAddCustomerModalOpen(true)}>
+                <button onClick={() => addCustomerModal(sessionWithDetails)}>
                   <IoMdPersonAdd className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
                 </button>
               </Tooltip>
 
               <Tooltip title="Modifier la session">
-                <button onClick={() => setIsUpdateSessionModalOpen(true)}>
+                <button onClick={() => updateSessionModal(sessionWithDetails)}>
                   <MdOutlineUpdate className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
                 </button>
               </Tooltip>
@@ -239,30 +234,6 @@ function SessionCard({ sessionWithDetails }: Props) {
           )}
         </div>
       </ItemCard>
-      {/* MODALS DETAILS */}
-      <Modal
-        isOpen={isDetailsModalOpen}
-        onClose={() => setIsDetailsModalOpen(false)}
-      >
-        <SessionDetailCard customerSession={sessionWithDetails} />
-      </Modal>
-      <CanceledCustomerSession
-        isOpen={isCanceledCustomerSessionModalOpen}
-        data={sessionWithDetails}
-        onClose={() => setIsCanceledCustomerSessionModalOpen(false)}
-      />
-
-      <SessionForm
-        sessionData={sessionWithDetails}
-        isOpen={isUpdateSessionModalOpen}
-        onClose={() => setIsUpdateSessionModalOpen(false)}
-      />
-
-      <CustomerSessionForm
-        session={sessionWithDetails}
-        isOpen={isAddCustomerModalOpen}
-        onClose={() => setIsAddCustomerModalOpen(false)}
-      />
     </>
   );
 }
