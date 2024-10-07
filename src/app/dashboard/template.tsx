@@ -36,45 +36,16 @@ export default function Template({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [sessionWithDetails, spots, activities, customerSessions] = await Promise.all([
-          GET_SESSIONS_WITH_DETAILS(),
-          GET_SPOTS(),
-          GET_ACTIVITIES(),
-          GET_CUSTOMER_SESSIONS(),
+        await Promise.all([
+          useSessionWithDetails.getState().fetchSessionWithDetails(),
+          useSpots.getState().fetchSpots(),
+          useActivities.getState().fetchActivities(),
+          useCustomerSessions.getState().fetchCustomerSessions(),
         ]);
-
-        // Get Sessions with details and add them to the store
-        if (sessionWithDetails.success && sessionWithDetails.data) {
-          useSessionWithDetails.setState({
-            SessionWithDetails: sessionWithDetails.data,
-          });
-        }
-        else if (!sessionWithDetails.success) {
-          ToasterAction({result: sessionWithDetails, defaultMessage: "Erreur lors du chargement des sessions avec détails"})
-        }
-
-        // Get Customer Sessions and add them to the store
-        if (customerSessions.success && customerSessions.data) {
-          useCustomerSessions.setState({
-            CustomerSessions: customerSessions.data,
-          });
-        }
-        // Get Spots and add them to the store
-        if (spots.success && spots.data) {
-          useSpots.setState({
-            Spots: spots.data,
-          });
-        }
-        // Get Activities and add them to the store
-        if (activities.success && activities.data) {
-          useActivities.setState({
-            Activities: activities.data,
-          });
-        }
-
-        setIsLoading(false);
       } catch (error) {
         console.error("Erreur lors de la récupération des données:", error);
+        setIsLoading(false);
+      } finally {
         setIsLoading(false);
       }
     };
@@ -87,8 +58,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const sessionsWithDetails = useSessionWithDetails(
     (state) => state.SessionWithDetails
   );
-
-
 
   // If the user status is loading, return a loading message
   if (status === "loading" || isLoading) {
@@ -123,9 +92,7 @@ export const getPathname = (pathname: string) => {
     case "/dashboard/email":
       return "Email";
 
-    
-    
-      default:
+    default:
       return "Dashboard";
   }
 };
