@@ -12,11 +12,8 @@ import { UPDATE_SESSION } from "@/libs/actions";
 import { useSessionWithDetails } from "@/context/store";
 
 /*components*/
-import Modal from "@/components/Modal";
-import SessionDetailCard from "@/components/SessionDetailCard";
-import { SessionForm, CustomerSessionForm } from "@/components/form";
-import CanceledCustomerSession from "@/components/CanceledCustomerSession";
 import { ItemCard, ItemCardInner } from "@/components/ItemCard";
+import { DetailButton, EditButton, DeleteButton } from "@/components/Button";
 
 /* utils */
 import { calculateSessionIncome } from "@/utils/price";
@@ -42,7 +39,13 @@ type Props = {
  * @param customerSession: ISessionWithDetails
  * @returns JSX.Element
  */
-function SessionCard({ sessionWithDetails, detailsModal , updateSessionModal , addCustomerModal , canceledCustomerModal  }: Props) {
+function SessionCard({
+  sessionWithDetails,
+  detailsModal,
+  updateSessionModal,
+  addCustomerModal,
+  canceledCustomerModal,
+}: Props) {
   const [calculateRevenue, setCalculateRevenue] = useState(0);
 
   // modal canceled customer session
@@ -100,7 +103,7 @@ function SessionCard({ sessionWithDetails, detailsModal , updateSessionModal , a
           ...session,
           activity: session.activity._id as string,
           spot: session.spot._id as string,
-          status: "Archived" ,
+          status: "Archived",
         });
         if (result.success) {
           updateSessionWithDetails({ ...session, status: "Archived" });
@@ -121,9 +124,9 @@ function SessionCard({ sessionWithDetails, detailsModal , updateSessionModal , a
   };
 
   return (
-    <>
+   
       <ItemCard
-        className={`flex flex-col gap-4 w-full max-w-[400px] box-border ${
+        className={`flex flex-col justify-between gap-4 w-full max-w-[400px] box-border ${
           checked.isArchived
             ? "opacity-60 border-e-8 border-red-500"
             : checked.isPending
@@ -174,27 +177,22 @@ function SessionCard({ sessionWithDetails, detailsModal , updateSessionModal , a
           </p>
         </ItemCardInner>
 
-        <div className="flex justify-end items-center gap-4 w-full text-slate-400">
+        <div id="session-card-footer" className="flex justify-end items-center gap-4 pb-2 w-full text-slate-400">
           {checked.isReserved && (
-            <Tooltip title="Voir les détails">
-              <button
+              <DetailButton
                 onClick={() => detailsModal(sessionWithDetails)}
-                className="relative"
+                className={`relative ${
+                  checked.customerIsWaiting
+                    ? "text-orange-600"
+                    : "text-slate-400"
+                }`}
               >
-                <TbListDetails
-                  className={`text-2xl hover:text-slate-200 cursor-pointer transition-all ${
-                    checked.customerIsWaiting
-                      ? "text-orange-600"
-                      : "text-slate-400"
-                  }`}
-                />
                 {checked.customerIsWaiting && (
                   <span className="absolute -top-1 -right-2 bg-orange-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                     {customerWaitingCount()}
                   </span>
                 )}
-              </button>
-            </Tooltip>
+              </DetailButton>
           )}
 
           {!checked.isArchived && (
@@ -205,25 +203,23 @@ function SessionCard({ sessionWithDetails, detailsModal , updateSessionModal , a
                 </button>
               </Tooltip>
 
-              <Tooltip title="Modifier la session">
-                <button onClick={() => updateSessionModal(sessionWithDetails)}>
-                  <MdOutlineUpdate className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
-                </button>
-              </Tooltip>
+              <EditButton
+                title="Modifier la session"
+                onClick={() => updateSessionModal(sessionWithDetails)}
+              />
 
-              <Tooltip
+              <DeleteButton
                 title={
                   checked.isReserved
                     ? "Annuler les réservations"
                     : "Archiver la session"
                 }
-              >
-                <button onClick={() => SwitchAction(sessionWithDetails)}>
-                  <RiCalendarCloseFill className="text-2xl hover:text-red-500 cursor-pointer transition-all" />
-                </button>
-              </Tooltip>
+                onClick={() => SwitchAction(sessionWithDetails)}
+              />
             </>
           )}
+
+        
 
           {checked.isArchived && checked.customerIsCancelled && (
             <Tooltip title="Supprimer la session">
@@ -234,7 +230,7 @@ function SessionCard({ sessionWithDetails, detailsModal , updateSessionModal , a
           )}
         </div>
       </ItemCard>
-    </>
+
   );
 }
 

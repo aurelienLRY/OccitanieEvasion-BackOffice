@@ -12,10 +12,9 @@ import { ISpot, ICallback } from "@/types";
 import { DELETE_SPOT } from "@/libs/actions";
 
 /* Components */
-
-import { SpotForm } from "@/components/form";
 import ToasterAction from "@/components/ToasterAction";
 import { ItemCard, ItemCardInner, ItemCardHeader } from "@/components/ItemCard";
+import { EditButton , DeleteButton } from "@/components/Button";
 
 /* store */
 import { useSpots, useSessionWithDetails } from "@/context/store";
@@ -25,7 +24,7 @@ import { RiCalendarCloseFill } from "react-icons/ri";
 import { MdOutlineUpdate } from "react-icons/md";
 
 export default function SpotCard({ spot , updateSpotModal }: { spot: ISpot , updateSpotModal: (spot: ISpot) => void }) {
-  const [isOpen, setIsOpen] = useState(false);
+
   const [isDelete, setIsDelete] = useState(false);
   const { deleteSpots } = useSpots();
   const { SessionWithDetails } = useSessionWithDetails();
@@ -114,24 +113,15 @@ export default function SpotCard({ spot , updateSpotModal }: { spot: ISpot , upd
               </div>
             </ItemCardInner>
           </div>
-          <div className="min-w-[40%] flex items-center justify-center  ">
+          <div className="min-w-[40%] flex items-center justify-center shadow-md  ">
             <MapCustomerNoSSR spot={spot} />
           </div>
         </div>
 
         {/* footer */}
-        <div className="flex px-6 py-2  gap-3 w-full justify-end">
-          <Tooltip title="Modifier le spot">
-            <button onClick={() => updateSpotModal(spot)}>
-              <MdOutlineUpdate className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
-            </button>
-          </Tooltip>
-
-          <Tooltip title="Supprimer le spot">
-            <button onClick={handleDelete}>
-              <RiCalendarCloseFill className="text-2xl hover:text-red-500 cursor-pointer transition-all" />
-            </button>
-          </Tooltip>
+        <div id="spot-card-footer" className="flex px-6 py-2  gap-3 w-full justify-end">
+          <EditButton onClick={() => updateSpotModal(spot)}/>
+          <DeleteButton onClick={handleDelete}/>
         </div>
       </div>
     </ItemCard>

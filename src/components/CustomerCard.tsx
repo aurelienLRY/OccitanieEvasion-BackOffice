@@ -14,6 +14,8 @@ import CustomerFiche from "@/components/CustomerFiche";
 import { Tooltip } from "antd";
 import ToasterAction from "@/components/ToasterAction";
 import { ItemCard, ItemCardInner } from "@/components/ItemCard";
+import { DeleteButton, DetailButton } from "@/components/Button";
+import { GlobalPriceBadge, CustomerPriceBadge } from "@/components/badge";
 
 /* Utils */
 import { capitalizeFirstLetter } from "@/utils/typo";
@@ -103,35 +105,24 @@ const CustomerCard = ({
                 {customer.people_list.length} personnes
               </p>
             </ItemCardInner>
-            <ItemCardInner className="flex flex-col  p-2 r">
+            <ItemCardInner className="flex flex-col  p-2 ">
               <h3 className="text-lg font-semibold text-center pb-2">Prix</h3>
-              <p className="  inline-flex items-center gap-1">
-                <span className="font-semibold">Par personne: </span>
-                {customer.price_applicable} €
-              </p>
-              <p className="  inline-flex items-center gap-1">
-                <span className="font-semibold">Total: </span>
-                {customer.price_total} €
-              </p>
+              <div className="flex  gap-2">
+                <CustomerPriceBadge price={customer.price_applicable} />
+                <GlobalPriceBadge price={customer.price_total} />
+              </div>
             </ItemCardInner>
-            <div className="flex justify-end gap-6 md:gap-2 p-1">
-              <Tooltip title="Voir les détails">
-                <button onClick={() => setIsDetailsModalOpen(true)}>
-                  <TbListDetails className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
-                </button>
-              </Tooltip>
-
-              {!IsCanceled && (
-                <Tooltip title="Annuler le client">
-                  <button onClick={CancelCustomer}>
-                    <RiCalendarCloseFill className="text-2xl hover:text-red-500 cursor-pointer transition-all" />
-                  </button>
-                </Tooltip>
-              )}
-            </div>
+          </div>
+          <div
+            id="customer-card-footer"
+            className="flex justify-end gap-4 p-1 text-slate-400"
+          >
+            <DetailButton onClick={() => setIsDetailsModalOpen(true)} />
+            {!IsCanceled && <DeleteButton onClick={CancelCustomer} />}
           </div>
         </div>
       </ItemCard>
+
       <Modal isOpen={isDetailsModalOpen} onClose={OncloseDetailsModal}>
         <CustomerFiche customer={customer} />
       </Modal>

@@ -13,6 +13,7 @@ const sessionSchema = new Schema<ISession>({
     placesMax: { type: Number, required: true },
     placesReserved: { type: Number, required: true , default: 0 },
     type_formule: { type: String, required: true },
+    duration: { type: String, required: true },
   });
 
   const Session = mongoose.models.Session || mongoose.model<ISession>('Session', sessionSchema);

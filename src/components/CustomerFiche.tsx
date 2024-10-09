@@ -2,10 +2,13 @@
 import React from "react";
 import { Tooltip } from "antd";
 import { capitalizeFirstLetter } from "@/utils/typo";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 
 /* ACTIONS */
 import { UPDATE_CUSTOMER_SESSION } from "@/libs/actions";
+
+/* COMPONENTS */
+import { DeleteButton } from "@/components/Button";
 
 /*stores*/
 import { useSessionWithDetails } from "@/context/store";
@@ -20,7 +23,7 @@ import ToasterAction from "./ToasterAction";
  * @returns JSX.Element
  */
 function CustomerFiche({ customer }: { customer: ICustomerSession }) {
-  console.log("Customer Fiche componant  >>>>  this is the customer", customer);
+
   const { updateSessionWithDetails } = useSessionWithDetails();
 
   const removePerson = async (index: number) => {
@@ -132,12 +135,7 @@ function CustomerFiche({ customer }: { customer: ICustomerSession }) {
               {person.size} cm | {person.weight}kg
             </p>
             {!IsCanceled && (
-              <button
-                className="hover:bg-red-500 text-white px-2 py-1 rounded-md border border-red-500 transition-all duration-300 text-sm"
-                onClick={() => removePerson(index)}
-              >
-                Retirer
-              </button>
+              <DeleteButton title="Retirer" onClick={() => removePerson(index)}/>
             )}
           </div>
         ))}

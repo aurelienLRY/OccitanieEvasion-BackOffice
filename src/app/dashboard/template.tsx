@@ -91,7 +91,6 @@ export const getPathname = (pathname: string) => {
       return "Activités";
     case "/dashboard/email":
       return "Email";
-
     default:
       return "Dashboard";
   }
