@@ -1,7 +1,6 @@
 /* LIBRAIRIES */
 import React from "react";
 import { Tooltip } from "antd";
-import { capitalizeFirstLetter } from "@/utils/typo";
 import { toast } from "sonner";
 
 /* ACTIONS */
@@ -9,6 +8,10 @@ import { UPDATE_CUSTOMER_SESSION } from "@/libs/actions";
 
 /* COMPONENTS */
 import { DeleteButton } from "@/components/Button";
+import Modal from "@/components/Modal";
+
+/* utils */
+import { getCustomerStatusDisplay } from "@/utils";
 
 /*stores*/
 import { useSessionWithDetails } from "@/context/store";
@@ -17,15 +20,16 @@ import { useSessionWithDetails } from "@/context/store";
 import { ICustomerSession } from "@/types";
 import ToasterAction from "./ToasterAction";
 
-/*
+/**
  * CustomerFiche Component
  * @param customer: ICustomerSession
  * @returns JSX.Element
  */
-function CustomerFiche({ customer }: { customer: ICustomerSession }) {
-
+function CustomerFiche({ customer , isOpen , onClose }: { customer: ICustomerSession , isOpen: boolean , onClose : () => void }) {
   const { updateSessionWithDetails } = useSessionWithDetails();
+   if (!customer) return null;
 
+   
   const removePerson = async (index: number) => {
     if (customer.number_of_people === 1) {
       toast.error(
@@ -42,7 +46,10 @@ function CustomerFiche({ customer }: { customer: ICustomerSession }) {
         ...customer,
         people_list,
         number_of_people: people_list.length,
-        price_total: people_list.reduce((acc, person) => acc + person.price_applicable, 0),
+        price_total: people_list.reduce(
+          (acc, person) => acc + person.price_applicable,
+          0
+        ),
       };
       const result = await UPDATE_CUSTOMER_SESSION(
         customer._id,
@@ -64,22 +71,15 @@ function CustomerFiche({ customer }: { customer: ICustomerSession }) {
   const IsCanceled = customer.status === "Canceled";
 
   return (
+    <Modal isOpen = {isOpen} onClose={onClose}>
     <div className="flex flex-col gap-6 min-w-[300px] w-[80vw] max-w-[600px]">
       <div className="flex justify-between items-center">
         <p className="text-2xl font-bold">
           {customer.first_names} {customer.last_name.toUpperCase()}
         </p>
-        <Tooltip
-          title={
-            capitalizeFirstLetter(customer.status) === "Validated"
-              ? "Validé"
-              : "Annulé"
-          }
-        >
+        <Tooltip title={getCustomerStatusDisplay(customer.status).name}>
           <span className="text-4xl cursor-pointer">
-            {capitalizeFirstLetter(customer.status) === "Validated"
-              ? "👍"
-              : "🖕"}
+            {getCustomerStatusDisplay(customer.status).icon}
           </span>
         </Tooltip>
       </div>
@@ -135,12 +135,16 @@ function CustomerFiche({ customer }: { customer: ICustomerSession }) {
               {person.size} cm | {person.weight}kg
             </p>
             {!IsCanceled && (
-              <DeleteButton title="Retirer" onClick={() => removePerson(index)}/>
+              <DeleteButton
+                title="Retirer"
+                onClick={() => removePerson(index)}
+              />
             )}
           </div>
         ))}
       </div>
     </div>
+    </Modal>
   );
 }
 

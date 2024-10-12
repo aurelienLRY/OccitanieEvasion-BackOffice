@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { crypto } from "@/utils/crypto";
+import { crypto } from "@/utils/crypto.utils";
 
 /* types */
 import { ICustomerSession } from "@/types";

@@ -26,7 +26,7 @@ import ToasterAction from "@/components/ToasterAction";
 import InfoTooltips from "@/components/InfoTooltips";
 
 /* UTILS */
-import { formatDate } from "@/utils/date";
+import { formatDate } from "@/utils/date.utils";
 
 export type TSessionForm = {
   _id?: string;

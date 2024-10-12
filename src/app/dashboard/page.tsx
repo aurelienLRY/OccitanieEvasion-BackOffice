@@ -7,15 +7,15 @@ import SessionDetailCard from "@/components/SessionDetailCard";
 import { SessionForm , CustomerSessionForm } from "@/components/form";
 import CanceledCustomerSession from "@/components/CanceledCustomerSession";
 /* Utils */
-import { getMonthString, getYearString } from "@/utils/date";
-import { calculateSessionIncomeByMonth } from "@/utils/price";
+import { getMonthString, getYearString } from "@/utils/date.utils";
+import { calculateSessionIncomeByMonth } from "@/utils/price.utils";
 import {
   calculateNumberOfSessions,
   filterSessionsForDashboard,
   calculateInscrit,
   classifySpots,
   classifyActivities,
-} from "@/utils/utilSession";
+} from "@/utils";
 
 /* Store */
 import { useSessionWithDetails } from "@/context/store";

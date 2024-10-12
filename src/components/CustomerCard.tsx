@@ -18,34 +18,33 @@ import { DeleteButton, DetailButton } from "@/components/Button";
 import { GlobalPriceBadge, CustomerPriceBadge } from "@/components/badge";
 
 /* Utils */
-import { capitalizeFirstLetter } from "@/utils/typo";
+import { capitalizeFirstLetter , getCustomerStatusDisplay , customerIsCancelled, customerIsWaiting } from "@/utils";
 
 /* Icons */
 import { MdOutlineEmail } from "react-icons/md";
 import { FaPhoneAlt } from "react-icons/fa";
 import { MdPeopleAlt } from "react-icons/md";
-import { RiCalendarCloseFill } from "react-icons/ri";
-import { TbListDetails } from "react-icons/tb";
 
-/*
- * CustomerCard Component
- * @param customer: ICustomerSession
- * @returns JSX.Element
+
+/**
+ * Composant CustomerCard
+ * @param {ICustomerSession} customer - La session du client
+ * @param {string} [className] - Classe CSS optionnelle pour le style personnalisé
+ * @returns {JSX.Element} - Élément JSX représentant la carte du client
  */
 const CustomerCard = ({
   customer,
   className,
+  detailsCustomer
 }: {
   customer: ICustomerSession;
   className?: string;
+  detailsCustomer: (data : ICustomerSession) => void
 }) => {
-  const IsCanceled = capitalizeFirstLetter(customer.status) === "Canceled";
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false); // modal details
 
-  const OncloseDetailsModal = () => {
-    setIsDetailsModalOpen(false);
-  };
 
+  const IsCanceled = customerIsCancelled([customer])
+  const IsWaiting = customerIsWaiting([customer])
   const { updateSessionWithDetails } = useSessionWithDetails();
 
   const CancelCustomer = async () => {
@@ -61,19 +60,15 @@ const CustomerCard = ({
     }
   };
 
-  const displayStatus = {
-    Validated: { icon: "👍", name: "Validé" },
-    Canceled: { icon: "🖕", name: "Annulé" },
-    Waiting: { icon: "🕒", name: "En attente" },
-  };
+
 
   return (
-    <>
+  
       <ItemCard
         className={`min-w-[200px] relative ${
           IsCanceled
-            ? "opacity-50  shadow-red-500"
-            : " shadow-sky-600 opacity-100"
+            ? "opacity-50"
+            : IsWaiting ? "border-2 border-orange-500 shadow-orange-500 dark:shadow-orange-500": ""
         } ${className}`}
       >
         <div className="flex flex-col gap-4">
@@ -81,9 +76,9 @@ const CustomerCard = ({
             <p className="text-xl font-bold">
               {customer.first_names} {customer.last_name.toUpperCase()}
             </p>
-            <Tooltip title={displayStatus[customer.status].name}>
+            <Tooltip title={getCustomerStatusDisplay(customer.status).name}>
               <span className="text-xl cursor-pointer">
-                {displayStatus[customer.status].icon}
+                {getCustomerStatusDisplay(customer.status).icon}
               </span>
             </Tooltip>
           </div>
@@ -117,16 +112,14 @@ const CustomerCard = ({
             id="customer-card-footer"
             className="flex justify-end gap-4 p-1 text-slate-400"
           >
-            <DetailButton onClick={() => setIsDetailsModalOpen(true)} />
+            <DetailButton onClick={()=> detailsCustomer(customer)} />
+           
             {!IsCanceled && <DeleteButton onClick={CancelCustomer} />}
           </div>
         </div>
       </ItemCard>
 
-      <Modal isOpen={isDetailsModalOpen} onClose={OncloseDetailsModal}>
-        <CustomerFiche customer={customer} />
-      </Modal>
-    </>
+  
   );
 };
 

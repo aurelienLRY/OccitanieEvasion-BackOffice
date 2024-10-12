@@ -8,12 +8,24 @@ import { DetailButton, EditButton, DeleteButton } from "@/components/Button";
 import { GlobalPriceBadge, StatusBadge } from "@/components/badge";
 
 /* Utils */
-import { cn } from "@/utils/cn";
+import {
+  cn,
+  capitalizeFirstLetter,
+  typeOfReservation,
+  customerWaitingCount,
+} from "@/utils";
 /* Types */
-import { ISessionWithDetails } from "@/types";
+import { ISessionWithDetails, ICustomerSession } from "@/types";
+
+/* icons*/
+import { FaUser } from "react-icons/fa";
+import { FaUserGroup } from "react-icons/fa6";
 
 type Props = {
   data: ISessionWithDetails;
+  customerFiche: (data: ICustomerSession) => void;
+  editCustomer: (data: {data: ICustomerSession, session: ISessionWithDetails}) => void;
+  deleteCustomer:(data: ICustomerSession) => void;
 };
 
 const variants = {
@@ -21,20 +33,26 @@ const variants = {
   closed: { opacity: 0, height: 0, transition: { duration: 0.2 } },
 };
 
-export default function CustomerBookingTable({ data }: Props) {
+export default function CustomerBookingTable({ data, customerFiche , editCustomer, deleteCustomer  }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleTable = () => {
     setIsOpen(!isOpen);
   };
+  const C_WaitingCount = customerWaitingCount(data.customerSessions)
 
   return (
-    <article className="overflow-hidden w-full border border-slate-300 dark:border-sky-700 rounded-md ">
+    <article className={cn(C_WaitingCount > 0 && "shadow-md shadow-orange-500","overflow-hidden w-full border border-slate-300 dark:border-sky-700 rounded-md relative")}>
+      {C_WaitingCount > 0 && (
+        <span className="absolute top-1 right-1 w-5 h-5 bg-orange-600 rounded-full text-white p-1 text-xs flex justify-center items-center opacity-80">
+          {C_WaitingCount}
+        </span>
+      )}
       <div
         id="customer-booking-table-header"
         className="flex justify-between items-center bg-slate-500 dark:bg-sky-900 px-4 py-3 rounded-t-md w-full text-white"
       >
-        <h3 className="text-xl font-bold text-center md:text-left">
+        <h3 className="text-xl font-bold text-center md:text-left relative">
           {data.activity.name} du {new Date(data.date).toLocaleDateString()}
         </h3>
         <DetailButton
@@ -62,6 +80,7 @@ export default function CustomerBookingTable({ data }: Props) {
                   <th className="text-center py-2 px-1">Contact</th>
                   <th className="text-center py-2 px-1">Status</th>
                   <th className="text-center py-2 px-1">Enregistré par</th>
+                  <th className="text-center py-2 px-1">Groupe de</th>
                   <th className="text-center py-2 px-1">Prix total</th>
                   <th className="text-center py-2 px-1"></th>
                 </tr>
@@ -75,14 +94,8 @@ export default function CustomerBookingTable({ data }: Props) {
                     <td className="text-center px-2">
                       <div className="flex flex-col text-xl font-bold">
                         <span>
-                          {customerSession.last_name.charAt(0).toUpperCase() +
-                            customerSession.last_name
-                              .slice(1)
-                              .toLocaleLowerCase()}{" "}
-                          {customerSession.first_names.charAt(0).toUpperCase() +
-                            customerSession.first_names
-                              .slice(1)
-                              .toLocaleLowerCase()}
+                          {capitalizeFirstLetter(customerSession.last_name)}{" "}
+                          {capitalizeFirstLetter(customerSession.first_names)}
                         </span>
                         <Tooltip title="Appeler">
                           <a
@@ -97,7 +110,10 @@ export default function CustomerBookingTable({ data }: Props) {
 
                     <td className="text-center  px-1">
                       <Tooltip title="Envoyer un email">
-                        <a href={`mailto:${customerSession.email}`} className="">
+                        <a
+                          href={`mailto:${customerSession.email}`}
+                          className=""
+                        >
                           {customerSession.email}
                         </a>
                       </Tooltip>
@@ -114,32 +130,51 @@ export default function CustomerBookingTable({ data }: Props) {
 
                     <td className="text-center px-1">
                       <div className="flex flex-col">
-                        <span>{typeOfReservation(customerSession.typeOfReservation)}</span>
-                        <span className="text-xs font-normal text-slate-500">{new Date(customerSession.createdAt).toLocaleDateString()}</span>
+                        <span>
+                          {typeOfReservation(customerSession.typeOfReservation)}
+                        </span>
+                        <span className="text-xs font-normal text-slate-500">
+                          {new Date(
+                            customerSession.createdAt
+                          ).toLocaleDateString()}
+                        </span>
                       </div>
                     </td>
 
-
-
+                    <td className="text-center px-1">
+                      <div className="flex items-center justify-center  gap-1 font-semibold">
+                        <span className="">
+                          {customerSession.number_of_people}
+                        </span>
+                        {customerSession.number_of_people > 1 ? (
+                          <FaUserGroup />
+                        ) : (
+                          <FaUser />
+                        )}
+                      </div>
+                    </td>
 
                     <td className="text-center  px-1">
                       <div className="flex justify-center items-center">
-                        <GlobalPriceBadge price={customerSession.price_total} label={false}/>
+                        <GlobalPriceBadge
+                          price={customerSession.price_total}
+                          label={false}
+                        />
                       </div>
                     </td>
                     <td className="text-center px-2">
                       <div className="flex gap-3 items-center justify-center ">
                         <DetailButton
-                          title="Voir le détail"
-                          onClick={() => alert("tu dois le coder")}
+                          title="Voir la fiche client"
+                          onClick={() => customerFiche(customerSession)}
                         />
                         <EditButton
                           title="Modifier"
-                          onClick={() => alert("tu dois le coder")}
+                          onClick={() => editCustomer({data: customerSession, session: data})}
                         />
                         <DeleteButton
                           title="Annuler"
-                          onClick={() => alert("tu dois le coder")}
+                          onClick={() => deleteCustomer(customerSession)}
                         />
                       </div>
                     </td>
@@ -152,16 +187,4 @@ export default function CustomerBookingTable({ data }: Props) {
       </AnimatePresence>
     </article>
   );
-}
-
-// affiche une équivalence pou ui en fonction de la customerSession.typeOfReservation
-const typeOfReservation = (typeOfReservation: string) => {
-  switch (typeOfReservation) {
-    case "ByCompany":
-      return "Entreprise";
-    case "ByWeb":
-      return "site web";
-    case "ByPhone":
-      return "Téléphone";
-  }
 }

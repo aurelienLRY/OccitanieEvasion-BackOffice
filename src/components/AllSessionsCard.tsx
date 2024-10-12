@@ -9,8 +9,8 @@ import { SessionForm , CustomerSessionForm  } from "@/components/form";
 import CanceledCustomerSession from "@/components/CanceledCustomerSession";
 
 /* Utils */
-import { getSessionByStatus } from "@/utils/utilSession";
-import { SearchInObject } from "@/utils/search";
+import { getSessionByStatus } from "@/utils";
+import { SearchInObject } from "@/utils/search.utils";
 import SessionDetailCard from "./SessionDetailCard";
 
 /* Types */
@@ -61,6 +61,8 @@ const canceledCustomerModal = useModal<ISessionWithDetails>();
     setFilteredSessions(resultSearch as ISessionWithDetails[]);
   }, [filter, sessionsWithDetails, status, search]);
 
+
+  
   if (isLoading || sessionsWithDetails.length === 0) {
     if (sessionsWithDetails.length === 0) {
       return (
@@ -241,8 +243,6 @@ const canceledCustomerModal = useModal<ISessionWithDetails>();
             onClose={canceledCustomerModal.closeModal}
           />
         )}
-
-
       </div>
     </div>
   );

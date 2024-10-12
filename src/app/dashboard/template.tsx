@@ -1,7 +1,7 @@
 "use client";
 /* Libs */
 import React, { useEffect, useState } from "react";
-import { useAuth } from "@/utils/useAuth";
+import { useAuth } from "@/hook/useAuth";
 import { Spin } from "antd";
 
 /* Actions */

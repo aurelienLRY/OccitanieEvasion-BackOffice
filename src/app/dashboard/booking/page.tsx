@@ -1,29 +1,32 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 /* store */
-import { useSessionWithDetails, useCustomerSessions } from "@/context/store";
+import { useSessionWithDetails } from "@/context/store";
 /* COMPONENTS */
-import { DetailButton, EditButton, DeleteButton } from "@/components/Button";
-import { GlobalPriceBadge } from "@/components/badge";
 import CustomerBookingTable from "@/components/CustomerBookingTable";
+import {CustomerSessionForm} from "@/components/form"
+import CustomerFiche from "@/components/CustomerFiche";
+
+/*Hook*/
+import { useModal } from "@/hook";
 
 /* types */
 import { ICustomerSession, ISessionWithDetails } from "@/types";
 
 /* utils */
-import { getMonthValue } from "@/utils/date";
-import CustomerCard from "@/components/CustomerCard";
-/* icons*/
-import { FaRegEye } from "react-icons/fa";
-import { Tooltip } from "antd";
-import { BiEditAlt } from "react-icons/bi";
-
+import { getMonthValue } from "@/utils";
 
 const BookingPage = () => {
-  const sessionWithDetails = useSessionWithDetails(
+  const sessionWithDetails = [...useSessionWithDetails(
     (state) => state.SessionWithDetails
-  ).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  )].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  const [sortedSession, setSortedSession] = useState<any[]>([]);
+
+  useEffect(() => {
+    setSortedSession(getSortedSessionByMonthAndYear(sessionWithDetails));
+  }, [sessionWithDetails]);
 
   function getSortedSessionByMonthAndYear(
     sessionWithDetails: ISessionWithDetails[]
@@ -44,7 +47,16 @@ const BookingPage = () => {
     return sortedSession;
   }
 
-  const sortedSession = getSortedSessionByMonthAndYear(sessionWithDetails);
+
+
+type TEditData = {
+  data: ICustomerSession, 
+  session: ISessionWithDetails
+}
+  const editCustomer = useModal<TEditData>()
+  const detailCustomerModal= useModal<ICustomerSession>()
+
+  console.log("editCustomer", editCustomer)
 
   return (
   <>
@@ -59,7 +71,13 @@ const BookingPage = () => {
                 {arraySessionWithDetails.map(
                   (sessionWithDetails: any, index3: number) =>
                     sessionWithDetails.customerSessions.length >= 1 && (
-                      <CustomerBookingTable key={index3} data={sessionWithDetails}/>
+                      <CustomerBookingTable 
+                      key={index3}
+                      data={sessionWithDetails} 
+                      customerFiche={detailCustomerModal.openModal}
+                      editCustomer={editCustomer.openModal}
+                      deleteCustomer={() => alert("tu dois coder")}
+                      />
                     )
                 )}
               </div>
@@ -67,51 +85,31 @@ const BookingPage = () => {
           ))}
         </div>
       ))}
+
+      {/* les modals*/}
+      {
+        editCustomer.data && 
+      <CustomerSessionForm 
+      isOpen={editCustomer.isOpen}
+      onClose={editCustomer.closeModal}
+      data={editCustomer.data.data}
+      session={editCustomer.data.session}
+      />}
+
+      
+      
+      {detailCustomerModal.data &&
+      <CustomerFiche 
+      customer={detailCustomerModal.data}
+      onClose={detailCustomerModal.closeModal}
+      isOpen={detailCustomerModal.isOpen}  
+      />
+      }
+
+
   </>
   );
 };
 
 export default BookingPage;
 
-/*
- *  @description: displayStatusBadge est une fonction qui affiche le badge de statut en fonction du statut du customerSession
- *  @param {ICustomerSession} customerSession
- *  @returns {React.ReactNode}
- */
-function displayStatusBadge(customerSession: ICustomerSession) {
-  switch (customerSession.status) {
-    case "Waiting":
-      return (
-        <p className="p-1 bg-yellow-500 bg-opacity-50 border border-yellow-500 rounded-md text-sm flex flex-col items-center">
-          <span className="">en attente</span>{" "}
-          <span className="text-xs text-yellow-500">
-            depuis le{" "}
-            {customerSession.createdAt &&
-              new Date(customerSession.createdAt).toLocaleDateString()}
-          </span>
-        </p>
-      );
-    case "Validated":
-      return (
-        <p className="p-1 bg-green-500 bg-opacity-50 border border-green-500 rounded-md text-sm flex flex-col items-center">
-          <span className="">Confirmé</span>{" "}
-          <span className="text-xs text-green-500">
-            le{" "}
-            {customerSession.validatedAt &&
-              new Date(customerSession.validatedAt).toLocaleDateString()}
-          </span>
-        </p>
-      );
-    case "Canceled":
-      return (
-        <p className="p-1 bg-red-500 bg-opacity-50 border border-red-500 rounded-md text-sm flex flex-col items-center">
-          <span className="">Annulé</span>{" "}
-          <span className="text-xs text-red-500">
-            le{" "}
-            {customerSession.canceledAt &&
-              new Date(customerSession.canceledAt).toLocaleDateString()}
-          </span>
-        </p>
-      );
-  }
-}

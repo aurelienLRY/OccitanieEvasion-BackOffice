@@ -16,15 +16,16 @@ import { ItemCard, ItemCardInner } from "@/components/ItemCard";
 import { DetailButton, EditButton, DeleteButton } from "@/components/Button";
 
 /* utils */
-import { calculateSessionIncome } from "@/utils/price";
+import { calculateSessionIncome , customerIsCancelled , customerIsWaiting , customerWaitingCount  } from "@/utils";
 
 /* Types */
 import { ISessionWithDetails } from "@/types";
+
+
 /*icons*/
-import { RiCalendarCloseFill } from "react-icons/ri";
-import { TbListDetails } from "react-icons/tb";
+import { RiCalendarCloseFill } from "react-icons/ri"
 import { IoMdPersonAdd } from "react-icons/io";
-import { MdOutlineUpdate } from "react-icons/md";
+
 
 type Props = {
   sessionWithDetails: ISessionWithDetails;
@@ -52,24 +53,12 @@ function SessionCard({
   const { updateSessionWithDetails, deleteSessionWithDetails } =
     useSessionWithDetails();
 
-  // Vérifie si tous les clients sont annulés
-  const customerIsCancelled = () =>
-    sessionWithDetails?.customerSessions?.every(
-      (cs) => cs.status === "Canceled"
-    );
 
-  const customerIsWaiting = () =>
-    sessionWithDetails?.customerSessions?.some((cs) => cs.status === "Waiting");
-
-  const customerWaitingCount = () =>
-    sessionWithDetails?.customerSessions?.filter(
-      (cs) => cs.status === "Waiting"
-    ).length;
 
   // Statuts vérifiés
   const checked = {
-    customerIsCancelled: customerIsCancelled(),
-    customerIsWaiting: customerIsWaiting(),
+    customerIsCancelled: customerIsCancelled(sessionWithDetails.customerSessions),
+    customerIsWaiting: customerIsWaiting(sessionWithDetails.customerSessions),
     isArchived: sessionWithDetails.status === "Archived",
     isReserved: +sessionWithDetails.placesReserved > 0,
     isPending: sessionWithDetails.status === "Pending",
@@ -189,7 +178,7 @@ function SessionCard({
               >
                 {checked.customerIsWaiting && (
                   <span className="absolute -top-1 -right-2 bg-orange-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                    {customerWaitingCount()}
+                    {customerWaitingCount(sessionWithDetails.customerSessions)}
                   </span>
                 )}
               </DetailButton>
