@@ -6,9 +6,8 @@ import { Spin } from "antd";
 import { toast } from "sonner";
 /* Components */
 import ToasterAction from "@/components/ToasterAction";
-import { ActivityForm } from "@/components/form";
 import { ItemCardHeader, ItemCardInner , ItemCard} from "@/components/ItemCard";
-
+import { EditButton , DeleteButton } from "@/components/Button";
 /* Actions */
 import { DELETE_ACTIVITY } from "@/libs/actions";
 
@@ -211,17 +210,9 @@ function ActivityCard({ activity , updateActivityModal }: Props) {
           </div>
         </div>
 
-        <div className="w-full flex justify-end gap-3">
-          <Tooltip title="Modifier l'activité">
-            <button onClick={() => updateActivityModal(activity)}>
-              <MdOutlineUpdate className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
-            </button>
-          </Tooltip>
-          <Tooltip title="Supprimer l'activité">
-            <button onClick={() => deleteActivity(activity._id as string)}>
-              <RiCalendarCloseFill className="text-2xl hover:text-red-500 cursor-pointer transition-all" />
-            </button>
-          </Tooltip>
+        <div id="activity-card-footer" className="w-full flex justify-end gap-4 p-2">
+          <EditButton onClick={() => updateActivityModal(activity)}/>
+          <DeleteButton onClick={() => deleteActivity(activity._id as string)}/>
         </div>
 
       </ItemCard>

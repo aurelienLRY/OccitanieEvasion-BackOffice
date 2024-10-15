@@ -23,9 +23,10 @@ import { ISession, ISessionWithDetails, IActivity } from "@/types";
 import Modal from "@/components/Modal";
 import { Input, SelectInput } from "@/components/Inputs";
 import ToasterAction from "@/components/ToasterAction";
+import InfoTooltips from "@/components/InfoTooltips";
 
 /* UTILS */
-import { formatDate } from "@/utils/date";
+import { formatDate } from "@/utils/date.utils";
 
 export type TSessionForm = {
   _id?: string;
@@ -38,6 +39,7 @@ export type TSessionForm = {
   placesMax: number;
   placesReserved: number;
   type_formule: string;
+  duration: string;
 };
 
 export function SessionForm({
@@ -50,7 +52,6 @@ export function SessionForm({
   onClose: () => void;
 }) {
   const isUpdate = !!data;
-
   const addSessionWithDetails = useSessionWithDetails(
     (state) => state.addSessionWithDetails
   );
@@ -81,6 +82,7 @@ export function SessionForm({
       spot: data ? data.spot._id : "",
       status: data ? data.status : "Actif",
       placesReserved: data ? data.placesReserved : 0,
+      duration: data ? data.duration : "",
     },
   });
 
@@ -88,7 +90,7 @@ export function SessionForm({
     handleSubmit,
     reset,
     setError,
-    formState: { isSubmitting  },
+    formState: { isSubmitting },
   } = methods;
 
   useEffect(() => {
@@ -105,6 +107,7 @@ export function SessionForm({
   const watchSpot = methods.watch("spot");
   const watchActivity = methods.watch("activity");
   const watchDate = methods.watch("date");
+  const watchFormule = methods.watch("type_formule");
 
   useEffect(() => {
     const interActivities =
@@ -141,7 +144,9 @@ export function SessionForm({
   useEffect(() => {
     if (!isUpdate) {
       const sessionExists = sessionsWithDetails.some(
-        (session) => new Date(session.date).toDateString() === new Date(watchDate).toDateString()
+        (session) =>
+          new Date(session.date).toDateString() ===
+          new Date(watchDate).toDateString()
       );
       if (sessionExists) {
         setError("date", {
@@ -150,11 +155,37 @@ export function SessionForm({
         });
       }
     }
-  }, [watchDate , sessionsWithDetails ,setError , isUpdate , isSubmitting]);
+  }, [watchDate, sessionsWithDetails, setError, isUpdate, isSubmitting]);
+
+  useEffect(() => {
+    // si update on ne change pas la durée sauf si la formule change
+    if (watchFormule) {
+      const isActivity = activities.find(
+        (activity) => activity._id === watchActivity
+      );
+      if (isUpdate) {
+        // Ne change la durée que si la formule change
+        if (watchFormule === "half_day" && data?.type_formule !== "half_day") {
+          methods.setValue("duration", isActivity?.duration?.half || "");
+        } else if (watchFormule === "full_day" && data?.type_formule !== "full_day") {
+          methods.setValue("duration", isActivity?.duration?.full || "");
+        }
+      } else {
+        // Pour une nouvelle session, définir la durée selon la formule
+        if (watchFormule === "half_day") {
+          methods.setValue("duration", isActivity?.duration?.half || "");
+        } else if (watchFormule === "full_day") {
+          methods.setValue("duration", isActivity?.duration?.full || "");
+        } else {
+          methods.setValue("duration", "");
+        }
+      }
+    }
+  }, [watchFormule, isUpdate, data, activities, watchActivity, methods]);
 
   const onSubmit = async (data: TSessionForm) => {
     const result = isUpdate
-      ? await UPDATE_SESSION(data!._id as string, data as ISession)
+      ?  await UPDATE_SESSION(data!._id as string, data as ISession)
       : await CREATE_SESSION(data as ISession);
 
     if (result.success) {
@@ -173,12 +204,11 @@ export function SessionForm({
         : "Session créée avec succès",
     });
   };
-  
+
   const handleOnClose = () => {
     reset();
     onClose();
-  }
-
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={handleOnClose}>
@@ -196,7 +226,10 @@ export function SessionForm({
 
           {/* FORM */}
           <div className="flex flex-col gap-3 items-center md:justify-evenly border-2 rounded-md border-sky-500 w-full p-2">
-            <p className="text-sky-500 text-xl font-bold">Activité & Lieu</p>
+            <p className="text-sky-500 text-xl font-bold flex items-center gap-2">
+              Activité & Lieu
+              <InfoTooltips title="Sélectionnez l'activité et le lieu de la session." />
+            </p>
             <div className="flex flex-col md:flex-row gap-2 justify-around w-full">
               <SelectInput
                 name="spot"
@@ -217,27 +250,36 @@ export function SessionForm({
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-1 w-full p-2">
+          <div className="flex flex-col  items-center gap-2">
+            <p className="text-sky-500 text-xl font-bold flex items-center gap-2">
+              Formule & Durée
+              <InfoTooltips title="Sélectionnez le type de formule et la durée de la séssion." />
+            </p>
+
+            <div className="flex flex-col md:flex-row gap-2">
+              {filteredTypeFormule && (
+                <SelectInput
+                  name="type_formule"
+                  options={filteredTypeFormule}
+                  label="Type de formule"
+                />
+              )}
+              <Input name="duration" type="text" label="Durée" />
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-1 w-full p-2 rounded-md border-2 border-sky-500 ">
             <p className="text-sky-500 text-xl font-bold">Créneau horaire</p>
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-col md:flex-row gap-2">
-                {filteredTypeFormule && (
-                  <SelectInput
-                    name="type_formule"
-                    options={filteredTypeFormule}
-                    label="Type de formule"
-                  />
-                )}
+            <div className="flex flex-col md:flex-row gap-2 w-full">
                 <Input name="date" type="date" label="Date" />
-              </div>
-              <div className="flex flex-col md:flex-row gap-2">
+              <div className="flex  md:flex-col  items-center justify-between gap-2 w-full">
                 <Input name="startTime" type="time" label="Heure de début" />
                 <Input name="endTime" type="time" label="Heure de fin" />
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-1 border-2 rounded-md border-sky-500 w-full p-2">
+          <div className="flex flex-col items-center gap-1  rounded-md w-full p-2">
             <p className="text-sky-500 text-xl font-bold">Gestion des places</p>
             <div className="flex flex-col md:flex-row gap-2">
               <Input name="placesMax" type="number" label="Places max" />
@@ -249,17 +291,17 @@ export function SessionForm({
             </div>
           </div>
           {isUpdate && (
-            <div className="flex flex-col items-center gap-1">
-            <p className="text-sky-500 text-xl font-bold">Statut</p>
-            <SelectInput
-              name="status"
-              options={[
-                { id: "Actif", name: "Validé" },
-                { id: "Pending", name: "En attente" },
-              ]}
-              label="Statut"
-            />
-          </div>
+            <div className="flex flex-col items-center gap-1 p-2 rounded-md border-2 border-sky-500 w-full">
+              <p className="text-sky-500 text-xl font-bold">Statut</p>
+              <SelectInput
+                name="status"
+                options={[
+                  { id: "Actif", name: "Validé" },
+                  { id: "Pending", name: "En attente" },
+                ]}
+                label="Statut"
+              />
+            </div>
           )}
 
           {/* FOOTER */}

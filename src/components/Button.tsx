@@ -3,6 +3,14 @@ import { Tooltip } from "antd";
 
 
 
+/*icons */ 
+import { BiEditAlt } from "react-icons/bi";
+import { FaRegEye } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+
+
+
+
 /*
  * Ce composant représente un bouton personnalisé avec une icône.
  * Il utilise un `Tooltip` de Material-UI pour afficher un titre lorsque l'utilisateur survole le bouton.
@@ -35,4 +43,83 @@ export function IconButton({
         </button>
     </Tooltip>
   );
+}
+
+
+
+
+
+
+ export  function EditButton({
+  title,
+  onClick,
+  className,
+  children,
+}: {
+  title?: string;
+  onClick: () => void;
+  className?: string;
+  children?: React.ReactNode;
+}) {
+return (
+  <Tooltip title={`${title ? title : "Modifier"}`}>
+    <button
+      onClick={onClick}
+      className={`text-2xl group ${className}`}
+    >
+      <BiEditAlt className="group-hover:text-orange-600 transition-all duration-300" />
+      {children}
+    </button>
+  </Tooltip>
+  )
+}
+
+
+export function DetailButton({
+  title,
+  onClick,
+  className,
+  children,
+}: {
+  title?: string;
+  onClick: () => void;
+  className?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <Tooltip title={`${title ? title : "Voir le détail"}`}>
+      <button
+        onClick={onClick}
+        className={`text-2xl group ${className}`}
+      >
+        <FaRegEye className="group-hover:text-slate-200 transition-all duration-300 " />
+        {children}
+      </button>
+    </Tooltip>
+  )
+}
+
+
+export function DeleteButton({
+  title,
+  onClick,
+  className,
+  children,
+}: {
+  title?: string;
+  onClick: () => void;
+  className?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <Tooltip title={`${title ? title : "Supprimer"}`}>
+      <button
+        onClick={onClick}
+        className={`text-2xl group ${className}`}
+      >
+        <MdDelete className="group-hover:text-red-500 transition-all duration-300 " />
+        {children}
+      </button>
+    </Tooltip>
+  )
 }

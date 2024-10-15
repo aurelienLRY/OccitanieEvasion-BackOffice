@@ -120,7 +120,7 @@ let total = 0;
     return activities;
   };
 
-/*
+/** 
  * Function qui retourne le nombre de session par statut
  * @param sessions : ISessionWithDetails[]
  * @param status : string

@@ -2,7 +2,7 @@
 import React from "react";
 
 /*types*/
-import { ISessionWithDetails } from "@/types";
+import { ICustomerSession, ISessionWithDetails } from "@/types";
 
 /*components*/
 import CustomerCard from "@/components/CustomerCard";
@@ -10,7 +10,11 @@ import Modal from "@/components/Modal";
 
 /*utils*/
 import { cn } from "@/utils/cn";
-import { calculateSessionIncome } from "@/utils/price";
+import { calculateSessionIncome } from "@/utils/price.utils";
+
+/* Hooks */ 
+import { useModal } from "@/hook";
+import CustomerFiche from "./CustomerFiche";
 
 /*
  * SessionDetailCard Component
@@ -18,6 +22,12 @@ import { calculateSessionIncome } from "@/utils/price";
  * @returns JSX.Element
  */
 export default function SessionDetailCard({ data, isOpen, onClose }: { data: ISessionWithDetails, isOpen: boolean, onClose: () => void }) {
+
+
+
+  const detailsCustomerModal = useModal<ICustomerSession>()
+
+   console.log(detailsCustomerModal)
 
   const getPrice_total = calculateSessionIncome(data);
   return (
@@ -66,10 +76,17 @@ export default function SessionDetailCard({ data, isOpen, onClose }: { data: ISe
           <CustomerCard
             customer={customerSession}
             key={customerSession._id}
+            detailsCustomer={detailsCustomerModal.openModal}
           />
         ))}
       </div>
     </div>
+    { detailsCustomerModal && (
+    <CustomerFiche 
+    customer={detailsCustomerModal.data as ICustomerSession}
+    isOpen = {detailsCustomerModal.isOpen}
+    onClose={detailsCustomerModal.closeModal}
+    /> )}
     </Modal>
   );
 }

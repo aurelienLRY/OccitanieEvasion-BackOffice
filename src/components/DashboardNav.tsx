@@ -10,7 +10,7 @@ import { cn } from "@/utils/cn";
 import { ISessionWithDetails } from "@/types";
 
 /*utils*/
-import { getSessionByStatus } from "@/utils/utilSession";
+import { getSessionByStatus , countAllWaitingCustomers } from "@/utils";
 
 /**
  * DashboardNav Component
@@ -26,6 +26,9 @@ const DashboardNav = ({
   const isActive = (path: string) => {
     return pathname.toString() === path;
   };
+
+   const sessionPendingCount = getSessionByStatus(sessionsWithDetails, "Pending")
+   const customerWaitingCount = countAllWaitingCustomers(sessionsWithDetails);
 
   return (
     <nav className="flex flex-col md:flex-row items-center gap-1 md:gap-2  bg-sky-950 dark:bg-sky-800 text-white text-xs font-light p-1 rounded-md">
@@ -51,9 +54,9 @@ const DashboardNav = ({
         )}
       >
         {sessionsWithDetails &&
-          getSessionByStatus(sessionsWithDetails, "Pending") > 0 && (
+          sessionPendingCount > 0  && (
             <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 rounded-full text-white p-1 text-xs flex justify-center items-center opacity-80">
-              {getSessionByStatus(sessionsWithDetails, "Pending")}
+              {sessionPendingCount }
             </span>
           )}
         Sessions
@@ -64,9 +67,15 @@ const DashboardNav = ({
           isActive("/dashboard/booking")
             ? "font-semibold bg-sky-700 dark:bg-sky-900"
             : "",
-          "p-1 px-2 rounded-md transition-all hover:font-semibold "
+          "p-1 px-2 rounded-md transition-all hover:font-semibold  relative"
         )}
       >
+          {sessionsWithDetails &&
+          customerWaitingCount > 0  && (
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 rounded-full text-white p-1 text-xs flex justify-center items-center opacity-80">
+              {customerWaitingCount}
+            </span>
+          )}
         Réservations
       </Link>
       </div>

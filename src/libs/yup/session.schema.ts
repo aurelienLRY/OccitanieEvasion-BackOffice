@@ -21,6 +21,7 @@ import * as yup from "yup";
       .typeError("le nombre de place réservé est requis")
       .required("le nombre de place réservé est requis")
       .integer().default(0),
-    type_formule: yup.string().required("Le champ formule est requis"),
+    type_formule: yup.string().required("Renseignez la formule"),
+    duration: yup.string().required("Renseignez la durée de la séance"),
   });
 

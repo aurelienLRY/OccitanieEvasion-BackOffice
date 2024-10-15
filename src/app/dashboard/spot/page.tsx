@@ -13,7 +13,7 @@ import { IoMdAddCircle } from "react-icons/io";
 import { useSpots, useActivities } from "@/context/store";
 
 /* utils */
-import { SearchInObject } from "@/utils/search";
+import { SearchInObject } from "@/utils/search.utils";
 
 /* types */
 import { ISpot, IActivity } from "@/types";
