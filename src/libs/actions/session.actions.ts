@@ -56,6 +56,7 @@ export const xssSession = (session: ISession): ISession => {
       activity: xss(session.activity),
       spot: xss(session.spot),
       type_formule: xss(session.type_formule),
+      duration: session.duration ? (xss(session.duration)) : null,
     };
     return JSON.parse(JSON.stringify(xssSession));
   } catch (error) {
@@ -255,6 +256,7 @@ export const UPDATE_SESSION = async (
       placesMax: xssData.placesMax,
       placesReserved: xssData.placesReserved,
       type_formule: xssData.type_formule,
+      duration: xssData.duration,
     };
 
     await connectDB();

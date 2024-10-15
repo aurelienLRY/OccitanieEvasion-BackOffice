@@ -17,6 +17,7 @@ import {
 } from "@/components/Inputs";
 import ToasterAction from "@/components/ToasterAction";
 import EditEmail from "@/components/EditEmail";
+import { DeleteButton } from "@/components/Button";
 
 /* types */
 import { ISessionWithDetails, ICustomerSession } from "@/types";
@@ -79,10 +80,7 @@ type Props = {
 
 export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
   const { updateSessionWithDetails } = useSessionWithDetails();
-  const [isOpenEmail, setIsOpenEmail] = useState(false);
-  const [customer, setCustomer] = useState<ICustomerSession | null>(null);
-  const [sessionWithDetails, setSessionWithDetails] =
-    useState<ISessionWithDetails | null>(null);
+
 
   /* Form */
   const methods = useForm({
@@ -138,7 +136,7 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
       ),
     };
 
-    setCustomer(newCustomer);
+ 
 
     let result;
     if (data?._id && newCustomer) {
@@ -157,7 +155,6 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
     if (result.success) {
       if (result.data) {
         updateSessionWithDetails(result.data);
-        setSessionWithDetails(result.data);
         if (
           window.confirm(
             "Client ajouté avec succès ! \n Voulez-vous envoyer un email au client ?"
@@ -413,15 +410,12 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
                         )}
 
                         {index > 0 && (
-                          <button
-                            type="button"
+                          <DeleteButton
+                            title="Retirer"
                             onClick={() => {
                               remove(index);
                             }}
-                            className="m-1 border-2 border-red-500 hover:bg-red-600 transition-all duration-300 text-white w-fit px-2 p-1 rounded-md flex items-center justify-center  "
-                          >
-                            Retirer
-                          </button>
+                          />
                         )}
                       </div>
                     </div>

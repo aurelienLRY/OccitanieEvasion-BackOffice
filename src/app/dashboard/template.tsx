@@ -1,7 +1,7 @@
 "use client";
 /* Libs */
 import React, { useEffect, useState } from "react";
-import { useAuth } from "@/utils/useAuth";
+import { useAuth } from "@/hook/useAuth";
 import { Spin } from "antd";
 
 /* Actions */
@@ -91,7 +91,6 @@ export const getPathname = (pathname: string) => {
       return "Activités";
     case "/dashboard/email":
       return "Email";
-
     default:
       return "Dashboard";
   }

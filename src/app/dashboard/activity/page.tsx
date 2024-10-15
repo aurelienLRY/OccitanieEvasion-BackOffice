@@ -12,7 +12,7 @@ import { ActivityForm } from "@/components/form";
 import { IoMdAddCircle } from "react-icons/io";
 
 /* Utils */
-import { SearchInObject } from "@/utils/search";
+import { SearchInObject } from "@/utils/search.utils";
 
 /* store */
 import { useActivities } from "@/context/store";

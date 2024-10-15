@@ -1,7 +1,7 @@
 /* LIBRAIRIES */
 import React from "react";
 import { useFormContext } from "react-hook-form";
-import { getNestedValue } from "@/utils/customLodash";
+import { getNestedValue } from "@/utils/customLoadash.utils";
 
 type InputProps = {
   name: string;
