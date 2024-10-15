@@ -19,8 +19,6 @@ import { getMonthValue } from "@/utils";
 
 const BookingPage = () => {
   const { SessionWithDetails: sessionWithDetails } = useSessionWithDetails(); // Correction de l'expression
-
-
   const [sortedSession, setSortedSession] = useState<ISessionWithDetails[][]>([]); // Utilisation du type correct
 
   useEffect(() => {
@@ -28,8 +26,11 @@ const BookingPage = () => {
       new Date(a.date).getTime() - new Date(b.date).getTime()
     );
     setSortedSession(getSortedSessionByMonthAndYear(sortSession));
+
   }, [sessionWithDetails]);
 
+  
+  
   function getSortedSessionByMonthAndYear(
     sessionWithDetails: ISessionWithDetails[]
   ) {
@@ -114,3 +115,4 @@ type TEditData = {
 };
 
 export default BookingPage;
+
