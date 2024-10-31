@@ -1,61 +1,83 @@
-# Projet de gestion de Reservation d’activités 
-![occitanie evasion](https://github.com/user-attachments/assets/b3cd8efd-ddd6-4bd3-a2c4-060fd405b335)
+# Projet de Gestion de Réservation d’Activités
+![Occitanie Évasion](https://github.com/user-attachments/assets/b3cd8efd-ddd6-4bd3-a2c4-060fd405b335)
+
+## Table des Matières
+1. [À propos](#1-à-propos)
+2. [Stack Technique](#2-stack-technique)
+3. [Créateur](#3-créateur)
+4. [Architecture](#4-architecture)
+5. [Configuration](#5-configuration)
+6. [Utilisation](#6-utilisation)
 
 
+---
 
-## 1. A propos
-Ce projet est une application de gestion de réservation d'activités. Il permet de gérer les réservations des clients pour les activités proposées par l'entreprise.
+## 1. À propos
+Ce projet est une **application de gestion de réservation d'activités** développée pour faciliter les réservations clients dans une entreprise de loisirs. Elle permet de gérer les créneaux horaires, les clients et les disponibilités des activités en temps réel.
+
+---
 
 ## 2. Stack Technique
-[![Next.js](https://img.shields.io/badge/next%20js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+Cette application repose sur les technologies suivantes :
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 
+---
 
+## 3. Créateur
+**Nom du Créateur**  
+Contact : [email@example.com](mailto:email@example.com)  
+Profil GitHub : [GitHub](https://github.com/utilisateur)
 
+---
 
+## 4. Architecture
+Le projet est organisé selon une architecture modulaire et maintenable, avec des dossiers spécifiques pour chaque type de fonctionnalité et composant.
 
-
-## Créateur
-
-
-## Architecture 
-Dossiers :
-- app : Utilise l'API App Router pour définir les pages et les routes. Chaque page a son propre répertoire avec un fichier page.tsx pour le rendu et un layout.tsx pour les layouts de page.
-- components : Contient des composants réutilisables. Diviser en sous-dossiers, comme ui pour les éléments d'interface et modules pour les composants propres à certaines pages ou fonctionnalités.
-- hooks : Stocke les hooks React personnalisés, permettant de séparer la logique de composants.
-- lib : Fournit des fonctions, helpers, ou instances externes (ex. configuration d’axios).
-- context : Contient les contextes d’état global pour faciliter la gestion de l’état global sans Redux.
-- services : Accueille les fonctions de communication avec les API, facilitant leur gestion centralisée.
-- store : Emplacement des fichiers d’état global (Redux, Zustand, etc.) si utilisé.
-- utils et types : Pour les utilitaires, constantes, et types TypeScript globaux.
-```
+**Structure du dossier :**
+```plaintext
 /src
-├── /app               # Nouvelle API App Router (Next.js 13+)
-│   ├── /(routes)      # Dossiers spécifiques pour chaque route (groupement optionnel)
-│   ├── /api           # Endpoints API
-│   ├── /dashboard     # Ex: une route principale avec des sous-routes
-│   ├── layout.tsx     # Layout principal
+├── /app               # API App Router de Next.js 13+
+│   ├── /(routes)      # Routes regroupées par dossier (optionnel)
+│   ├── /api           # Endpoints API pour la gestion des données
+│   ├── /dashboard     # Exemple : route principale avec sous-routes
+│   ├── layout.tsx     # Layout principal partagé par toutes les pages
 │   └── page.tsx       # Page d'accueil (racine de l'application)
 │
-├── /components        # Composants réutilisables dans l'app
-│   ├── /ui            # Composants d'interface utilisateur génériques (boutons, formulaires, etc.)
-│   └── /modules       # Composants spécifiques à des modules/fonctionnalités
+├── /components        # Composants réutilisables dans l'application
+│   ├── /ui            # Composants d'interface (boutons, formulaires, etc.)
+│   └── /modules       # Composants propres à des fonctionnalités précises
 │
 ├── /hooks             # Hooks React personnalisés
 │
 ├── /lib               # Fonctions utilitaires, helpers, et instances (ex. axios, firebase)
 │
-├── /styles            # Fichiers CSS/SCSS, modules CSS, styles globaux
+├── /styles            # CSS global et styles spécifiques
 │
-├── /context           # Fournisseurs de contexte (context API pour l'état global)
+├── /context           # Fournisseurs de contexte pour l'état global (Context API)
 │
-├── /services          # Fonctions de communication avec les API externes (ou répertoires par API)
+├── /services          # Fonctions pour la communication avec les API
 │
-├── /store             # État global (ex. Redux, Zustand)
+├── /store             # Gestion d'état global (ex. Redux, Zustand)
 │
 ├── /utils             # Fonctions utilitaires, constantes et types
 │
 ├── /types             # Types TypeScript et interfaces globales
 │
-└── /assets            # Images, polices, et autres ressources statiques ```
+└── /assets            # Images, polices, et autres ressources statiques
+ ```
+## 5. Configuration
+Prérequis .env
+Copier le code
+MONGODB_URI=your_mongodb_uri
+NEXT_PUBLIC_API_KEY=your_api_key
+
+
+## 6. Utilisation
+### démarrer l'application en mode développement 
+### Création d'un utilisateur 
+
+Pour démarrer l'application en mode développement :
+
+
