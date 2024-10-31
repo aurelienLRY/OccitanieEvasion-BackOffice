@@ -12,16 +12,50 @@ Ce projet est une application de gestion de réservation d'activités. Il permet
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 
 
-## 3. Features
-- [ ] Gestion des activités
-- [ ] Gestion des Lieux
-- [ ] Gestion des clients et leurs réservations
-- [ ] Automatisation des emails de confirmation et de rappel
-- [ ] Gestion des Templates emails
-- [ ] Gestion des utilisateurs
-- [ ] Gestion du calendrier (Clients et Admin)
-- [ ] Gestion des statistiques
 
 
 
-#Créateur
+
+## Créateur
+
+
+## Architecture 
+Dossiers :
+- app : Utilise l'API App Router pour définir les pages et les routes. Chaque page a son propre répertoire avec un fichier page.tsx pour le rendu et un layout.tsx pour les layouts de page.
+- components : Contient des composants réutilisables. Diviser en sous-dossiers, comme ui pour les éléments d'interface et modules pour les composants propres à certaines pages ou fonctionnalités.
+- hooks : Stocke les hooks React personnalisés, permettant de séparer la logique de composants.
+- lib : Fournit des fonctions, helpers, ou instances externes (ex. configuration d’axios).
+- context : Contient les contextes d’état global pour faciliter la gestion de l’état global sans Redux.
+- services : Accueille les fonctions de communication avec les API, facilitant leur gestion centralisée.
+- store : Emplacement des fichiers d’état global (Redux, Zustand, etc.) si utilisé.
+- utils et types : Pour les utilitaires, constantes, et types TypeScript globaux.
+```
+/src
+├── /app               # Nouvelle API App Router (Next.js 13+)
+│   ├── /(routes)      # Dossiers spécifiques pour chaque route (groupement optionnel)
+│   ├── /api           # Endpoints API
+│   ├── /dashboard     # Ex: une route principale avec des sous-routes
+│   ├── layout.tsx     # Layout principal
+│   └── page.tsx       # Page d'accueil (racine de l'application)
+│
+├── /components        # Composants réutilisables dans l'app
+│   ├── /ui            # Composants d'interface utilisateur génériques (boutons, formulaires, etc.)
+│   └── /modules       # Composants spécifiques à des modules/fonctionnalités
+│
+├── /hooks             # Hooks React personnalisés
+│
+├── /lib               # Fonctions utilitaires, helpers, et instances (ex. axios, firebase)
+│
+├── /styles            # Fichiers CSS/SCSS, modules CSS, styles globaux
+│
+├── /context           # Fournisseurs de contexte (context API pour l'état global)
+│
+├── /services          # Fonctions de communication avec les API externes (ou répertoires par API)
+│
+├── /store             # État global (ex. Redux, Zustand)
+│
+├── /utils             # Fonctions utilitaires, constantes et types
+│
+├── /types             # Types TypeScript et interfaces globales
+│
+└── /assets            # Images, polices, et autres ressources statiques ```
