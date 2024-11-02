@@ -1,27 +1,133 @@
-# Projet de gestion de Reservation d’activités 
-![occitanie evasion](https://github.com/user-attachments/assets/b3cd8efd-ddd6-4bd3-a2c4-060fd405b335)
+# Projet de Gestion de Réservation d’Activités
+![Occitanie Évasion](https://github.com/user-attachments/assets/b3cd8efd-ddd6-4bd3-a2c4-060fd405b335)
+
+## Table des Matières
+1. [À propos](#1-à-propos)
+2. [Stack Technique](#2-stack-technique)
+3. [Créateur](#3-créateur)
+4. [Architecture](#4-architecture)
+5. [Configuration](#5-configuration)
+6. [Utilisation](#6-utilisation)
 
 
+---
 
-## 1. A propos
-Ce projet est une application de gestion de réservation d'activités. Il permet de gérer les réservations des clients pour les activités proposées par l'entreprise.
+## 1. À propos
+Ce projet est une **application de gestion de réservation d'activités** développée pour faciliter les réservations clients dans une entreprise de loisirs. Elle permet de gérer les créneaux horaires, les clients et les disponibilités des activités en temps réel.
+
+---
 
 ## 2. Stack Technique
-[![Next.js](https://img.shields.io/badge/next%20js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+Cette application repose sur les technologies suivantes :
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 
+---
 
-## 3. Features
-- [ ] Gestion des activités
-- [ ] Gestion des Lieux
-- [ ] Gestion des clients et leurs réservations
-- [ ] Automatisation des emails de confirmation et de rappel
-- [ ] Gestion des Templates emails
-- [ ] Gestion des utilisateurs
-- [ ] Gestion du calendrier (Clients et Admin)
-- [ ] Gestion des statistiques
+## 3. Créateur
+**Nom du Créateur**  
+Contact : [leroyaurelien11@gmail.com](mailto:leroyaurelien11@gmail.com)  
+Profil GitHub : [GitHub](https://github.com/aurelienLRY/)
+
+---
+
+## 4. Architecture
+Le projet est organisé selon une architecture modulaire et maintenable, avec des dossiers spécifiques pour chaque type de fonctionnalité et composant.
+
+**Structure du dossier :**
+```plaintext
+/src
+├── /app               # API App Router de Next.js 13+
+│   ├── /(routes)      # Routes regroupées par dossier (optionnel)
+│   ├── /api           # Endpoints API pour la gestion des données
+│   ├── /dashboard     # Exemple : route principale avec sous-routes
+│   ├── layout.tsx     # Layout principal partagé par toutes les pages
+│   └── page.tsx       # Page d'accueil (racine de l'application)
+│
+├── /components        # Composants réutilisables dans l'application
+│   ├── /ui            # Composants d'interface (boutons, formulaires, etc.)
+│   └── /modules       # Composants propres à des fonctionnalités précises
+│
+├── /hooks             # Hooks React personnalisés
+│
+├── /lib               # Fonctions utilitaires, helpers, et instances (ex. axios, firebase)
+│
+├── /styles            # CSS global et styles spécifiques
+│
+├── /context           # Fournisseurs de contexte pour l'état global (Context API)
+│
+├── /services          # Fonctions pour la communication avec les API
+│
+├── /store             # Gestion d'état global (ex. Redux, Zustand)
+│
+├── /utils             # Fonctions utilitaires, constantes et types
+│
+├── /types             # Types TypeScript et interfaces globales
+│
+└── /assets            # Images, polices, et autres ressources statiques
+ ```
+## 5. Configuration
+### Prérequis .env
+```env
+# URL de l'application pour NextAuth
+NEXTAUTH_URL='string'
+
+# Clé secrète pour NextAuth (générée automatiquement)
+NEXTAUTH_SECRET="string"
+
+# URI de connexion pour MongoDB
+MONGODB_URI="mongodb+srv://<username>:<password>@...."
+
+# Clé d'encryption pour les données sensibles
+ENCRYPTION_KEY="string"
+
+# Jeton d'API pour la création d'un utilisateur
+NEXT_API_TOKEN="string"
+
+# Configuration SMTP pour l'envoi d'emails
+SMTP_HOST=""
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_EMAIL="email"
+SMTP_PASSWORD=""
 
 
+```
 
-#Créateur
+
+## 6. Utilisation
+### Ajout d'un Administrateur
+Pour ajouter un administrateur, suivez les étapes ci-dessous. Cela nécessite de configurer un jeton dans le fichier .env.local et de faire une requête POST à l'API.
+
+1. Configurer le jeton d'API dans le fichier .env.local : Assurez-vous d'avoir un jeton valide en ajoutant la variable suivante dans votre fichier .env.local (ou en la modifiant si elle existe déjà) :
+```env
+NEXT_API_TOKEN="votre_token_securisé_ici"
+```
+2. Faire une requête API pour créer un administrateur : Utilisez le code suivant pour envoyer une requête POST à l'API afin de créer un administrateur. Assurez-vous de personnaliser le corps de la requête avec les informations de l’administrateur: 
+```javascript
+const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+myHeaders.append("Authorization", "••••••");
+
+const raw = JSON.stringify({
+  "email": "exemple@exemple.com",
+  "password": "alpha#",
+  "username": "admin",
+  "name": "admin"
+});
+
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch("http://localhost:3000/api/user", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+```
+
+
