@@ -27,8 +27,8 @@ Cette application repose sur les technologies suivantes :
 
 ## 3. Créateur
 **Nom du Créateur**  
-Contact : [email@example.com](mailto:email@example.com)  
-Profil GitHub : [GitHub](https://github.com/utilisateur)
+Contact : [leroyaurelien11@gmail.com](mailto:leroyaurelien11@gmail.com)  
+Profil GitHub : [GitHub](https://github.com/aurelienLRY/)
 
 ---
 
@@ -68,16 +68,66 @@ Le projet est organisé selon une architecture modulaire et maintenable, avec de
 └── /assets            # Images, polices, et autres ressources statiques
  ```
 ## 5. Configuration
-Prérequis .env
-Copier le code
-MONGODB_URI=your_mongodb_uri
-NEXT_PUBLIC_API_KEY=your_api_key
+### Prérequis .env
+```env
+# URL de l'application pour NextAuth
+NEXTAUTH_URL='string'
+
+# Clé secrète pour NextAuth (générée automatiquement)
+NEXTAUTH_SECRET="string"
+
+# URI de connexion pour MongoDB
+MONGODB_URI="mongodb+srv://<username>:<password>@...."
+
+# Clé d'encryption pour les données sensibles
+ENCRYPTION_KEY="string"
+
+# Jeton d'API pour la création d'un utilisateur
+NEXT_API_TOKEN="string"
+
+# Configuration SMTP pour l'envoi d'emails
+SMTP_HOST=""
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_EMAIL="email"
+SMTP_PASSWORD=""
+
+
+```
 
 
 ## 6. Utilisation
-### démarrer l'application en mode développement 
-### Création d'un utilisateur 
+### Ajout d'un Administrateur
+Pour ajouter un administrateur, suivez les étapes ci-dessous. Cela nécessite de configurer un jeton dans le fichier .env.local et de faire une requête POST à l'API.
 
-Pour démarrer l'application en mode développement :
+1. Configurer le jeton d'API dans le fichier .env.local : Assurez-vous d'avoir un jeton valide en ajoutant la variable suivante dans votre fichier .env.local (ou en la modifiant si elle existe déjà) :
+```env
+NEXT_API_TOKEN="votre_token_securisé_ici"
+```
+2. Faire une requête API pour créer un administrateur : Utilisez le code suivant pour envoyer une requête POST à l'API afin de créer un administrateur. Assurez-vous de personnaliser le corps de la requête avec les informations de l’administrateur: 
+```javascript
+const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+myHeaders.append("Authorization", "••••••");
+
+const raw = JSON.stringify({
+  "email": "exemple@exemple.com",
+  "password": "alpha#",
+  "username": "admin",
+  "name": "admin"
+});
+
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch("http://localhost:3000/api/user", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+```
 
 
