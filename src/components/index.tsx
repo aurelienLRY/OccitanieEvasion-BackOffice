@@ -16,7 +16,7 @@ export {ItemCard,ItemCardInner,ItemCardHeader} from "@/components/ui/ItemCard"
 export { default as MapCustomer } from "@/components/ui/MapCustomer"
 export {Modal} from "@/components/ui/Modal"
 
-
+export { default as EmailCard } from "@/components/ui/EmailCard"
 export { default as SingOutBtn } from "@/components/ui/singOut"
 export { default as ThemeToggle } from "@/components/ui/ThemeToggle"
 export { default as ToasterAction } from "@/components/ui/ToasterAction"
@@ -29,6 +29,7 @@ export { CustomerSessionForm } from "@/components/ui/customerSession.form"
 export { LoginForm } from "@/components/ui/login.form"
 export { SessionForm } from "@/components/ui/session.form"
 export { SpotForm } from "@/components/ui/spot.form"
+export { EmailForm } from "@/components/ui/Email.form"
 
 
 

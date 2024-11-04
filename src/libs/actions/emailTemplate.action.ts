@@ -5,7 +5,7 @@ import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 /* Models */
 import EmailTemplate from "@/libs/database/models/EmailTemplate";
 /* Types */
-import { IEmailTemplate , ICallbackForEmailTemplate } from "@/types";
+import { IEmailTemplate , ICallbackForEmailTemplate, ICallbackForEmailTemplates } from "@/types";
 
 
 /*
@@ -17,7 +17,7 @@ export const CREATE_EMAIL_TEMPLATE = async (emailTemplate: IEmailTemplate): Prom
   try {
     await connectDB();
     const newEmailTemplate = new EmailTemplate(emailTemplate) ;
-    await newEmailTemplate.save();
+    await newEmailTemplate.save() as IEmailTemplate;
     if (!newEmailTemplate || newEmailTemplate === null) {
         throw new Error("Template email non créé");
      }
@@ -46,10 +46,10 @@ export const CREATE_EMAIL_TEMPLATE = async (emailTemplate: IEmailTemplate): Prom
  * Get all email templates  
  * @returns The callback for the email template
  */
-export const GET_EMAIL_TEMPLATE = async (): Promise<ICallbackForEmailTemplate> => {
+export const GET_EMAIL_TEMPLATE = async (): Promise<ICallbackForEmailTemplates> => {
   try {
     await connectDB();
-    const emailTemplate = await EmailTemplate.find();
+    const emailTemplate = await EmailTemplate.find() as IEmailTemplate[];
     if (!emailTemplate || emailTemplate === null) {
         throw new Error("Template email non trouvé");
      }
@@ -83,7 +83,7 @@ export const GET_EMAIL_TEMPLATE = async (): Promise<ICallbackForEmailTemplate> =
 export const GET_EMAIL_TEMPLATE_BY_SCENARIO = async (scenario: string): Promise<ICallbackForEmailTemplate> => {
   try {
     await connectDB();
-    const emailTemplate = await EmailTemplate.findOne({ scenario });
+    const emailTemplate = await EmailTemplate.findOne({ scenario }) as IEmailTemplate;
     if (!emailTemplate || emailTemplate === null) {
         throw new Error("Template email non trouvé");
      }
@@ -115,7 +115,7 @@ export const GET_EMAIL_TEMPLATE_BY_SCENARIO = async (scenario: string): Promise<
 export const UPDATE_EMAIL_TEMPLATE = async (emailTemplate: IEmailTemplate): Promise<ICallbackForEmailTemplate> => {
   try {
     await connectDB();
-    const email = await EmailTemplate.findByIdAndUpdate(emailTemplate._id, emailTemplate, { new: true });
+    const email = await EmailTemplate.findByIdAndUpdate(emailTemplate._id, emailTemplate, { new: true }) as IEmailTemplate;
     if (!email || email === null) {
         throw new Error("Template email non trouvé");
      }

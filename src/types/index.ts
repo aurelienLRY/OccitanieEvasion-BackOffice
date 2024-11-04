@@ -17,6 +17,7 @@ export type {
   ICallbackForCustomerSession,
   ICallbackForSessionWithDetailsArray,
   ICallbackForEmailTemplate,
+  ICallbackForEmailTemplates,
 } from "@/types/callback.action.type";
 export type { IEmailTemplate } from "@/types/emailTemplate.type";
 

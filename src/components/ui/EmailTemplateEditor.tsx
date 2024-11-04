@@ -1,33 +1,29 @@
 import React from "react";
 import { Editor } from "@tinymce/tinymce-react";
 
-
+ /* components */
+import { Modal } from "@/components";
 
 
  type Props = {
-  Mail : string
-  dynamicData ? : object
+  Mail? : string
+  EmailContent ? : (content: any) => void
+  isOpen : boolean
+  onClose : () => void
  }
+
+ 
 export const EmailTemplateEditor = (props : Props) => {
-
-  const variables = {
-    ...props?.dynamicData,
-    "customer.Last_name": "Nom de famille",
-    "customer.First_name": "Prénom",
-
-    // Ajoute d'autres variables ici
-  };
-
   const handleEditorChange = (content: string) => {
-    console.log('Contenu édité:', content);
+   props.EmailContent && props.EmailContent(content)
   };
-
   return (
+    <Modal isOpen={props.isOpen} onClose={props.onClose}>
     <Editor
-      apiKey="b9bgyhby8s8j54dawuecurbr976t0bb4onsx0vjtt5esxfu7" // Remplace par ta clé API TinyMCE
-      initialValue={props.Mail}
+      apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY} // Remplace par ta clé API TinyMCE
+      initialValue={props.Mail || ""}
       init={{
-        height: 800,
+        height: 600,
         menubar: true,
         plugins: [
           'advlist autolink lists link image charmap print preview anchor',
@@ -35,24 +31,12 @@ export const EmailTemplateEditor = (props : Props) => {
           'searchreplace visualblocks code fullscreen',
           'insertdatetime media table paste code help wordcount'
         ],
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat | variables',
-        setup: (editor) => {
-          editor.ui.registry.addMenuButton('variables', {
-            text: 'Insérer une variable ',
-            fetch: (callback) => {
-              const items = Object.keys(variables).map((key) => ({
-                type: 'menuitem',
-                text: variables[key],
-                onAction: () => editor.insertContent(`{{${key}}}`)
-              }));
-              callback(items);
-            }
-          });
-        },
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat ',
         language: 'fr_FR', // Pour mettre l'interface en français
       }}
       onEditorChange={handleEditorChange}
     />
+    </Modal>
   );
 };
 
