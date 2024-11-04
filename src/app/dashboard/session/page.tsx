@@ -1,19 +1,15 @@
 "use client";
 import React, { useState } from "react";
 
-
-
 /* Store */
-import { useSessionWithDetails } from "@/context/store";
+import { useSessionWithDetails } from "@/store";
 
 /* Components */
-import { IconButton } from "@/components/Button";
-import { SessionForm } from "@/components/form";
-import AllSessionsCard from "@/components/AllSessionsCard";
+import { IconButton  , SessionForm  , AllSessionsCard  } from "@/components";
+
 /* Icons */
 import { IoMdAddCircle } from "react-icons/io";
-import { RiCalendarCloseFill } from "react-icons/ri";
-import { MdOutlineUpdate } from "react-icons/md";
+
 
 /**
  * SessionPage Component

@@ -7,24 +7,20 @@ import { HtmlBase , MailContent } from "@/libs/sendBox/template/base";
 import { GET_EMAIL_TEMPLATE } from "@/libs/actions";
 
 /* Store */
-import { useCustomerSessions , useSessionWithDetails } from "@/context/store";
+import { useCustomerSessions , useSessionWithDetails } from "@/store";
 
 /* Components */
-import EditEmail from "@/components/EditEmail";
-import ToasterAction from "@/components/ToasterAction";
+import { ToasterAction , EmailTemplateEditor } from "@/components";
+import { dynamicDataTemplate } from "@/libs/sendBox/dynamicData";
 
 
 
 export default function EmailPage() {
     const customer = useCustomerSessions(state => state.CustomerSessions);
     const sessionWithDetails = useSessionWithDetails(state => state.SessionWithDetails);
-
     const [templateEmail , setTemplateEmail] = React.useState<any>(null);
-
      const {subject , content} = customerConfirmation(customer[0], sessionWithDetails[0]);
- 
-  
-  const EmailConfirmation = MailContent(subject, content);
+     const EmailConfirmation = MailContent(subject, content);
   
   React.useEffect(() => {
     const fetchTemplateEmail = async () => {
@@ -39,16 +35,14 @@ export default function EmailPage() {
     fetchTemplateEmail();
   }, []);
 
-  console.log( "templateEmail : " ,templateEmail);
 
 
     return (
       <>
       {/* affiche EmailConfirmation dans  */}
-      <div className="w-full h-full bg-white">
-        <div dangerouslySetInnerHTML={{ __html: EmailConfirmation }} />
-      </div>
-     <EditEmail isOpen={false} onClose={() => {}} myContent={EmailConfirmation}  />
+      <EmailTemplateEditor Mail={EmailConfirmation} dynamicData={dynamicDataTemplate} />
       </>
     ) ;
 }
+
+

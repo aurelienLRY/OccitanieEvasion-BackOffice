@@ -1,5 +1,9 @@
 import * as yup from "yup";
 
+/**
+ * Activity Schema
+ * @returns Activity Schema
+ */
 export const activitySchema = yup.object().shape({
     name: yup.string().required("Le champ name est requis"),
     description: yup.string().nullable(),

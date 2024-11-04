@@ -5,7 +5,7 @@ import { ConfigProvider , theme} from "antd";
 
 
 /*components */
-import Header from "@/components/Header";
+import { Header } from "@/components/ui/Header";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

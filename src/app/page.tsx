@@ -1,6 +1,6 @@
 'use client';
 /*components*/
-import { LoginForm } from '@/components/form';
+import { LoginForm } from '@/components';
 
 export default function HomePage() {
 

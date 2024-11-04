@@ -2,10 +2,10 @@
 /* Libs */
 import React from "react";
 /* Components */
-import SessionCard from "@/components/SessionCard";
-import SessionDetailCard from "@/components/SessionDetailCard";
-import { SessionForm , CustomerSessionForm } from "@/components/form";
-import CanceledCustomerSession from "@/components/CanceledCustomerSession";
+import { SessionCard } from "@/components";
+import { SessionDetailCard } from "@/components";
+import { SessionForm , CustomerSessionForm } from "@/components";
+import { CanceledCustomerSession } from "@/components";
 /* Utils */
 import { getMonthString, getYearString } from "@/utils/date.utils";
 import { calculateSessionIncomeByMonth } from "@/utils/price.utils";
@@ -18,7 +18,7 @@ import {
 } from "@/utils";
 
 /* Store */
-import { useSessionWithDetails } from "@/context/store";
+import { useSessionWithDetails } from "@/store";
 
 /* Types */
 import { ISessionWithDetails } from "@/types";
