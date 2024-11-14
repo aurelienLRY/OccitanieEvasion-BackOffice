@@ -17,9 +17,11 @@ import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 /* Models */
 import Session from "@/libs/database/models/Session";
 /*  actions */
-import { GET_SERVER_SESSIONS_WITH_DETAILS , GET_SERVER_SESSION_WITH_DETAILS } from "@/libs/actions/sessionWithDetail.actions";
+import {
+  GET_SERVER_SESSIONS_WITH_DETAILS,
+  GET_SERVER_SESSION_WITH_DETAILS,
+} from "@/libs/actions/sessionWithDetail.actions";
 import { sessionSchema } from "@/libs/yup";
-
 
 /**
  * Validate session
@@ -45,7 +47,7 @@ export const validateSession = async (
  * @param session - The session to xss
  * @returns The xss session
  */
-export const xssSession = (session: ISession): ISession => {
+export const xssSession = async (session: ISession): Promise<ISession> => {
   try {
     const xssSession = {
       ...session,
@@ -56,7 +58,7 @@ export const xssSession = (session: ISession): ISession => {
       activity: xss(session.activity),
       spot: xss(session.spot),
       type_formule: xss(session.type_formule),
-      duration: session.duration ? (xss(session.duration)) : null,
+      duration: session.duration ? xss(session.duration) : null,
     };
     return JSON.parse(JSON.stringify(xssSession));
   } catch (error) {
@@ -202,14 +204,10 @@ export async function GET_SESSIONS_WITH_DETAILS(): Promise<ICallbackForSessionWi
   try {
     await connectDB();
 
-
-
-    const sessionsWithDetails = await GET_SERVER_SESSIONS_WITH_DETAILS()
+    const sessionsWithDetails = await GET_SERVER_SESSIONS_WITH_DETAILS();
     return {
       success: true,
-      data: JSON.parse(
-        JSON.stringify(sessionsWithDetails)
-      ),
+      data: JSON.parse(JSON.stringify(sessionsWithDetails)),
       error: null,
       feedback: null,
     };
@@ -301,8 +299,8 @@ export const UPDATE_SESSION = async (
 };
 
 /**
- * 
- * @param sessionId 
+ *
+ * @param sessionId
  * @returns {success: boolean, data: ISession | null, error: string | null, feedback: string | null}
  */
 export const DELETE_SESSION = async (
@@ -310,7 +308,7 @@ export const DELETE_SESSION = async (
 ): Promise<ICallbackForSession> => {
   try {
     await connectDB();
-    const session = await Session.findById(sessionId) as ISession;
+    const session = (await Session.findById(sessionId)) as ISession;
     if (!session) {
       throw new Error("Session not found");
     }
