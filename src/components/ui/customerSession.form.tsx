@@ -1,3 +1,5 @@
+"use client";
+
 /* LIBRAIRIES */
 import React, { useEffect, useState } from "react";
 import { useForm, FormProvider, useFieldArray } from "react-hook-form";
@@ -8,7 +10,14 @@ import { Spin } from "antd";
 import { Tooltip } from "antd";
 
 /* Component */
-import { Modal , Input , SelectInput , CheckboxInput , ToasterAction , DeleteButton } from "@/components";
+import {
+  Modal,
+  Input,
+  SelectInput,
+  CheckboxInput,
+  ToasterAction,
+  DeleteButton,
+} from "@/components";
 
 /* types */
 import { ISessionWithDetails, ICustomerSession } from "@/types";
@@ -72,7 +81,6 @@ type Props = {
 export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
   const { updateSessionWithDetails } = useSessionWithDetails();
 
-
   /* Form */
   const methods = useForm({
     resolver: yupResolver(createDynamicSchema([])),
@@ -126,8 +134,6 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
         0
       ),
     };
-
- 
 
     let result;
     if (data?._id && newCustomer) {
@@ -287,9 +293,7 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
             className="flex flex-col items-center  gap-4 text-white"
           >
             <h2 className="text-2xl font-bold text-center">
-              {data?._id
-                ? "Modifier le client"
-                : "Ajouter un client"}
+              {data?._id ? "Modifier le client" : "Ajouter un client"}
             </h2>
 
             <SelectInput

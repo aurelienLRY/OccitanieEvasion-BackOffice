@@ -8,6 +8,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Spin } from "antd";
+import { ItemContainer } from "./ItemCard";
 
 export type LoginFormData = {
   email: string;
@@ -48,59 +49,60 @@ export const LoginForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-2 items-center justify-center h-screen"
-    >
-      <h1 className="text-2xl font-bold">Se connecter</h1>
-      <div className="flex flex-col gap-2">
-        <label htmlFor="email" className="sr-only">
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          placeholder="Email"
-          className={`w-full rounded-md border border-gray-300 bg-white py-3 px-6 text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
-            errors.email
-              ? "border-red-500 shadow-md shadow-red-500"
-              : "focus:border-emerald-600 focus:shadow-md focus:shadow-emerald-600 "
-          }`}
-          {...register("email")}
-          aria-invalid={errors.email ? "true" : "false"}
-        />
-        <span role="alert" className="text-red-500 text-sm min-h-3">
-          {errors.email?.message}
-        </span>
-      </div>
-      <div className="flex flex-col gap-2">
-        <label htmlFor="password" className="sr-only">
-          Mot de passe
-        </label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Mot de passe"
-          className={`w-full rounded-md border border-gray-300 bg-white py-3 px-6 text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
-            errors.password
-              ? "border-red-500 shadow-md shadow-red-500"
-              : "focus:border-emerald-600 focus:shadow-md focus:shadow-emerald-600"
-          }`}
-          {...register("password")}
-          aria-invalid={errors.password ? "true" : "false"}
-        />
-        <span role="alert" className="text-red-500 text-sm min-h-3">
-          {errors.password?.message}
-        </span>
-      </div>
-      <button
-        type="submit"
-        className="bg-sky-500 text-white px-4 py-1 rounded-md"
-        disabled={isSubmitting}
+    <div className="min-h-[500px]   max-h-[700px] min-w-[350px] max-w-[400px] bg-sky-400 bg-opacity-5 backdrop-blur-sm flex flex-col justify-center items-center absolute top-1/3 right-1/4 rounded-md">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-2 items-center justify-center h-full"
       >
-        {isSubmitting ? <Spin /> : "Se connecter"}
-      </button>
-    </form>
+        <h1 className="text-2xl font-bold">Se connecter</h1>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="email" className="sr-only">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            placeholder="Email"
+            className={`w-full rounded-md border border-gray-300 bg-white py-3 px-6 text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
+              errors.email
+                ? "border-red-500 shadow-md shadow-red-500"
+                : "focus:border-emerald-600 focus:shadow-md focus:shadow-emerald-600 "
+            }`}
+            {...register("email")}
+            aria-invalid={errors.email ? "true" : "false"}
+          />
+          <span role="alert" className="text-red-500 text-sm min-h-3">
+            {errors.email?.message}
+          </span>
+        </div>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="password" className="sr-only">
+            Mot de passe
+          </label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Mot de passe"
+            className={`w-full rounded-md border border-gray-300 bg-white py-3 px-6 text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
+              errors.password
+                ? "border-red-500 shadow-md shadow-red-500"
+                : "focus:border-emerald-600 focus:shadow-md focus:shadow-emerald-600"
+            }`}
+            {...register("password")}
+            aria-invalid={errors.password ? "true" : "false"}
+          />
+          <span role="alert" className="text-red-500 text-sm min-h-3">
+            {errors.password?.message}
+          </span>
+        </div>
+        <button
+          type="submit"
+          className="bg-sky-500 text-white px-4 py-1 rounded-md"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? <Spin /> : "Se connecter"}
+        </button>
+      </form>
+    </div>
   );
 };
-

@@ -3,17 +3,61 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import { getNestedValue } from "@/utils/customLoadash.utils";
 
-type InputProps = {
+/**
+ * ErrorMessage Component for Inputs
+ * @param errorMessage: string
+ */
+const ErrorMessage = ({ errorMessage }: { errorMessage: string }) => {
+  if (!errorMessage) return null;
+  return (
+    <span role="alert" className="text-red-400 text-sm min-h-3 text-center">
+      {errorMessage}
+    </span>
+  );
+};
+/**
+ * Wrapper Component for Inputs
+ * @param children: React.ReactNode
+ * @param className: string
+ * @param wIsRaw: boolean (default: false)
+ */
+const Wrapper = ({
+  children,
+  className,
+  wIsRaw = true,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  wIsRaw?: boolean;
+}) => {
+  return (
+    <div
+      className={`flex ${
+        wIsRaw
+          ? "flex-col md:flex-row md:items-center md:text-right items-start gap-0 md:gap-2"
+          : " flex-col items-start gap-0 "
+      } flex-1  ${className}`}
+    >
+      {children}
+    </div>
+  );
+};
+
+type TInputBase = {
+  wIsRaw?: boolean;
   name: string;
-  type: string;
-  checked?: boolean;
   placeholder?: string;
   label?: string;
-  disabled?: boolean;
   className?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   errorsName?: string;
-  defaultValue?: string | number ;
+  disabled?: boolean;
+};
+
+type InputProps = TInputBase & {
+  type: string;
+  checked?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  defaultValue?: string | number;
 };
 
 /**
@@ -36,6 +80,7 @@ export const Input = ({
   onChange,
   defaultValue,
   errorsName = name,
+  wIsRaw = true,
 }: InputProps) => {
   const {
     register,
@@ -45,39 +90,36 @@ export const Input = ({
   const errorMessage = getNestedValue(errors, errorsName)?.message as string;
 
   return (
-      <div className={`flex flex-col md:flex-row items-start md:items-center gap-0 md:gap-2  ${className && className}`}>
-        {label && (
-          <label htmlFor={name} className="text-sm font-light opacity-70 min-w-28 md:text-right ">
-            {label}
-          </label>
-        )}
-        <div className="flex flex-col gap-0 w-full">
-          <input
-            id={name}
-            type={type}
-            placeholder={placeholder}
-            {...register(name)}
-            onChange={onChange}
-            className={` rounded-md border border-gray-300 bg-white py-2 px-2 md:px-6  text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
-              errorMessage
-                ? "border-red-500 shadow-md shadow-red-500"
-                : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
-            } ${disabled ? "opacity-50" : ""}  ${type === "number" ? "max-w-40" : ""}`}
-            aria-invalid={errorMessage ? "true" : "false"}
-            disabled={disabled}
-            defaultValue={defaultValue}
-          />
-          {errorMessage && (
-            <span
-              role="alert"
-              className="text-red-500 text-sm min-h-3 text-center"
-            >
-              {errorMessage}
-            </span>
-          )}
-        </div>
+    <Wrapper wIsRaw={wIsRaw} className={className && className}>
+      {label && (
+        <label
+          htmlFor={name}
+          className="text-sm font-light opacity-70 min-w-28  "
+        >
+          {label}
+        </label>
+      )}
+      <div className="flex flex-col flex-1 gap-0 w-full">
+        <input
+          id={name}
+          type={type}
+          placeholder={placeholder}
+          {...register(name)}
+          onChange={onChange}
+          className={` rounded-md border border-gray-300 bg-white py-2 px-2 md:px-6  text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
+            errorMessage
+              ? "border-red-500 shadow-md shadow-red-500"
+              : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
+          } ${disabled ? "opacity-70" : ""}  ${
+            type === "number" ? "max-w-40" : ""
+          }`}
+          aria-invalid={errorMessage ? "true" : "false"}
+          disabled={disabled}
+          defaultValue={defaultValue}
+        />
+        <ErrorMessage errorMessage={errorMessage} />
       </div>
-
+    </Wrapper>
   );
 };
 
@@ -96,13 +138,9 @@ export const SelectInput = ({
   className,
   errorsName = name,
   disabled = false,
-}: {
-  name: string;
+  wIsRaw = true,
+}: TInputBase & {
   options: { id: string; name: string }[];
-  label?: string;
-  className?: string;
-  errorsName?: string;
-  disabled?: boolean;
 }) => {
   const {
     register,
@@ -112,45 +150,41 @@ export const SelectInput = ({
   const errorMessage = getNestedValue(errors, errorsName)?.message as string;
 
   return (
-      <div className={`flex flex-col md:flex-row items-start md:items-center gap-0 md:gap-2  ${className && className}`}>
-        {label && (
-          <label htmlFor={name} className="text-sm font-light opacity-70 min-w-40 max-w-20 md:text-right">
-            {label}
-          </label>
-        )}
-        <div className="flex flex-col gap-0 max-w-2/3">
-          <select
-            id={name}
-            {...register(name)}
-            className={`border border-none rounded-md py-2 px-2 md:px-4 dark:text-black focus-visible:outline-none
+    <Wrapper wIsRaw={wIsRaw} className={className}>
+      {label && (
+        <label
+          htmlFor={name}
+          className="text-sm font-light opacity-70 min-w-40 max-w-20 "
+        >
+          {label}
+        </label>
+      )}
+      <div className="flex flex-col gap-0 max-w-2/3">
+        <select
+          id={name}
+          {...register(name)}
+          className={`border border-none rounded-md py-2 px-2 md:px-4 dark:text-black focus-visible:outline-none
         ${
           errorMessage
             ? "border-red-500 shadow-md shadow-red-500"
             : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
         } ${disabled ? "bg-gray-100" : ""}`}
           disabled={disabled}
-          >
-            <option value="">Sélectionnez une option</option>
-            {options.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.name}
-              </option>
-            ))}
-          </select>
-          {errorMessage && (
-            <span
-              role="alert"
-              className="text-red-500 text-sm min-h-3 text-center"
-            >
-              {errorMessage}
-            </span>
-          )}
-        </div>
+        >
+          <option value="">Sélectionnez une option</option>
+          {options.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+        <ErrorMessage errorMessage={errorMessage} />
       </div>
+    </Wrapper>
   );
 };
 
-/** 
+/**
  * CheckboxInput Component
  * @param name: string
  * @param value: string
@@ -168,12 +202,8 @@ export const CheckboxInput = ({
   errorsName = name,
   checked,
   onChange,
-}: {
-  name: string;
+}: TInputBase & {
   value?: string;
-  label?: string;
-  className?: string;
-  errorsName?: string;
   checked?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
@@ -205,17 +235,10 @@ export const CheckboxInput = ({
           {label}
         </label>
       )}
-      {errorMessage && (
-        <span role="alert" className="text-red-500 text-sm min-h-3 text-center">
-          {errorMessage}
-        </span>
-      )}
+      <ErrorMessage errorMessage={errorMessage} />
     </div>
   );
 };
-
-
-
 
 /**
  * SimpleCheckboxInput Component
@@ -231,12 +254,8 @@ export const SimpleCheckboxInput = ({
   label,
   className,
   errorsName = name,
-}: {
-  name: string;
+}: TInputBase & {
   value?: string;
-  label?: string;
-  className?: string;
-  errorsName?: string;
 }) => {
   const {
     register,
@@ -264,16 +283,10 @@ export const SimpleCheckboxInput = ({
           {label}
         </label>
       )}
-      {errorMessage && (
-        <span role="alert" className="text-red-500 text-sm min-h-3 text-center">
-          {errorMessage}
-        </span>
-      )}
+      <ErrorMessage errorMessage={errorMessage} />
     </div>
   );
 };
-
-
 
 /**
  * Textarea Component
@@ -291,14 +304,16 @@ export const Textarea = ({
   errorsName = name,
   rows = 3,
   cols = 30,
+  wIsRaw = true,
 }: {
   name: string;
   label?: string;
   className?: string;
   placeholder?: string;
-  errorsName?: string; 
+  errorsName?: string;
   rows?: number;
   cols?: number;
+  wIsRaw?: boolean;
 }) => {
   const {
     register,
@@ -308,33 +323,30 @@ export const Textarea = ({
   const errorMessage = getNestedValue(errors, errorsName)?.message as string;
 
   return (
-      <div className={`flex flex-col md:flex-row items-start md:items-center gap-0 md:gap-2 w-full ${className && className}`}>
-        {label && (
-          <label htmlFor={name} className="text-sm font-light opacity-70 min-w-28">
-            {label}
-          </label>
-        )}
-
-          <textarea
-            id={name}
-            placeholder={placeholder}
-            {...register(name)}
-            className={`min-w-60 w-full rounded-md border border-gray-300 bg-white py-2 px-2 md:px-6  text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
-              errorMessage
-                ? "border-red-500 shadow-md shadow-red-500"
-                : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
-            }`}
-            aria-invalid={errorMessage ? "true" : "false"}
-            rows={rows}
-            cols={cols}
-          />
-
-        {errorMessage && (
-        <span role="alert" className="text-red-500 text-sm min-h-3 text-center">
-          {errorMessage}
-        </span>
+    <Wrapper wIsRaw={wIsRaw} className={className}>
+      {label && (
+        <label
+          htmlFor={name}
+          className="text-sm font-light opacity-70 min-w-28"
+        >
+          {label}
+        </label>
       )}
-      </div>
 
+      <textarea
+        id={name}
+        placeholder={placeholder}
+        {...register(name)}
+        className={`min-w-60 w-full rounded-md border border-gray-300 bg-white py-2 px-2 md:px-6  text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
+          errorMessage
+            ? "border-red-500 shadow-md shadow-red-500"
+            : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
+        }`}
+        aria-invalid={errorMessage ? "true" : "false"}
+        rows={rows}
+        cols={cols}
+      />
+      <ErrorMessage errorMessage={errorMessage} />
+    </Wrapper>
   );
 };

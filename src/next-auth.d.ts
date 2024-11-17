@@ -1,12 +1,11 @@
 // next-auth.d.ts
-import 'next-auth';
+import "next-auth";
 
-declare module 'next-auth' {
-  interface User {
-    id: string;
-    username: string;
-    email: string;
-    image: string | null;
+import { IUser } from "@/types";
+
+declare module "next-auth" {
+  interface User extends IUser {
+    password?: string;
   }
 
   interface Session {

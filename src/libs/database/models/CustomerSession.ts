@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
-import { crypto } from "@/utils/crypto.utils";
+
+/* utils */
+import { crypto, capitalizeFirstLetter } from "@/utils";
 
 /* types */
 import { ICustomerSession } from "@/types";
@@ -36,8 +38,8 @@ const CustomerSessionSchema = new mongoose.Schema<ICustomerSession>({
 
 CustomerSessionSchema.pre("save", async function (next) {
   if (this.isModified("last_name") || this.isModified("first_names")) {
-    this.last_name = this.last_name.toUpperCase();
-    this.first_names = this.first_names.toUpperCase();
+    this.last_name = capitalizeFirstLetter(this.last_name);
+    this.first_names = capitalizeFirstLetter(this.first_names);
     this.last_name = await crypto.encrypt(this.last_name);
     this.first_names = await crypto.encrypt(this.first_names);
   }
@@ -69,20 +71,17 @@ CustomerSessionSchema.pre("findOneAndUpdate", async function (next) {
 });
 
 CustomerSessionSchema.post("find", async function (docs: ICustomerSession[]) {
-    await Promise.all(
-      docs.map(async (doc: ICustomerSession) => {
-        doc.last_name = (await crypto.decrypt(doc.last_name)) as string;
-        doc.first_names = (await crypto.decrypt(doc.first_names)) as string;
-        doc.email = (await crypto.decrypt(doc.email)) as string;
-        doc.phone = (await crypto.decrypt(doc.phone)) as string;
-      })
-    );
-  });
-  
+  await Promise.all(
+    docs.map(async (doc: ICustomerSession) => {
+      doc.last_name = (await crypto.decrypt(doc.last_name)) as string;
+      doc.first_names = (await crypto.decrypt(doc.first_names)) as string;
+      doc.email = (await crypto.decrypt(doc.email)) as string;
+      doc.phone = (await crypto.decrypt(doc.phone)) as string;
+    })
+  );
+});
 
-
-
-  CustomerSessionSchema.post("findOne", async function (doc: ICustomerSession) {
+CustomerSessionSchema.post("findOne", async function (doc: ICustomerSession) {
   if (doc.last_name !== null) {
     doc.last_name = (await crypto.decrypt(doc.last_name)) as string;
   }

@@ -15,7 +15,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         await connectDB();
-        const userFound  = await User.findOne({
+        const userFound = await User.findOne({
           email: credentials?.email,
         });
 
@@ -39,20 +39,33 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
+      // On ajoute les informations de l'utilisateur au token
       if (user) {
-        token.id = user.id as string;
+        token.id = user._id as string;
         token.email = user.email as string;
-        token.username = user.username as string; // Ajoutez le nom d'utilisateur au jeton
+        token.username = user.username as string;
+        token.avatar = user.avatar as string;
+        token.calendar = user.calendar as boolean;
+        token.tokenCalendar = user.tokenCalendar as string;
+        token.firstName = user.firstName as string;
+        token.lastName = user.lastName as string;
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
+        // On ajoute les informations du token à la session utilisateur
         session.user = {
           id: token.id as string,
+          _id: token.id as string,
           email: token.email as string,
+          phone: token.phone as string,
           username: token.username as string,
-          image: token.image as string | null,
+          avatar: token.avatar as string,
+          calendar: token.calendar as boolean,
+          tokenCalendar: token.tokenCalendar as string,
+          firstName: token.firstName as string,
+          lastName: token.lastName as string,
         };
       }
       return session;

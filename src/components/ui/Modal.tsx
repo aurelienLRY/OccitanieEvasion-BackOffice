@@ -1,3 +1,5 @@
+"use client";
+
 /* LIBRAIRIES */
 import { Tooltip } from "antd";
 import React, { useEffect } from "react";
@@ -59,14 +61,12 @@ export const Modal = ({ isOpen, onClose, children }: Props) => {
               <span className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
               <span className="w-3 h-3 bg-green-500 rounded-full"></span>
             </div>
-            
-           
+
             <Tooltip title="Fermer">
               <button onClick={handleClose}>
                 <IoMdCloseCircle className="text-4xl text-white text-right p-1 hover:text-red-500 transition-all duration-300" />
               </button>
             </Tooltip>
-        
           </div>
           <div className="px-4 pb-4 flex justify-center items-center w-full">
             {children}
@@ -75,4 +75,4 @@ export const Modal = ({ isOpen, onClose, children }: Props) => {
       </div>
     </>
   );
-}
+};
