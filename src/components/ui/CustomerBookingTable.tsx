@@ -1,10 +1,18 @@
+"use client";
+
 /* Librairies */
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tooltip } from "antd";
 
 /* Components */
-import { DetailButton, EditButton, DeleteButton , GlobalPriceBadge, StatusBadge } from "@/components";
+import {
+  DetailButton,
+  EditButton,
+  DeleteButton,
+  GlobalPriceBadge,
+  StatusBadge,
+} from "@/components";
 
 /* Utils */
 import {
@@ -23,8 +31,11 @@ import { FaUserGroup } from "react-icons/fa6";
 type Props = {
   data: ISessionWithDetails;
   customerFiche: (data: ICustomerSession) => void;
-  editCustomer: (data: {data: ICustomerSession, session: ISessionWithDetails}) => void;
-  deleteCustomer:(data: ICustomerSession) => void;
+  editCustomer: (data: {
+    data: ICustomerSession;
+    session: ISessionWithDetails;
+  }) => void;
+  deleteCustomer: (data: ICustomerSession) => void;
 };
 
 const variants = {
@@ -40,16 +51,26 @@ const variants = {
  * @param {(data: ICustomerSession) => void} props.deleteCustomer - La fonction à exécuter lorsque le bouton de suppression est cliqué.
  * @returns {JSX.Element} Le composant table des réservations des clients.
  */
-export const CustomerBookingTable = ({ data, customerFiche , editCustomer, deleteCustomer  }: Props) => {
+export const CustomerBookingTable = ({
+  data,
+  customerFiche,
+  editCustomer,
+  deleteCustomer,
+}: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleTable = ()=> {
+  const toggleTable = () => {
     setIsOpen(!isOpen);
-  };  
-  const C_WaitingCount = customerWaitingCount(data.customerSessions)
+  };
+  const C_WaitingCount = customerWaitingCount(data.customerSessions);
 
   return (
-    <article className={cn(C_WaitingCount > 0 && "shadow-md shadow-orange-500","overflow-hidden w-full border border-slate-300 dark:border-sky-700 rounded-md relative")}>
+    <article
+      className={cn(
+        C_WaitingCount > 0 && "shadow-md shadow-orange-500",
+        "overflow-hidden w-full border border-slate-300 dark:border-sky-700 rounded-md relative"
+      )}
+    >
       {C_WaitingCount > 0 && (
         <span className="absolute top-1 right-1 w-5 h-5 bg-orange-600 rounded-full text-white p-1 text-xs flex justify-center items-center opacity-80">
           {C_WaitingCount}
@@ -177,7 +198,12 @@ export const CustomerBookingTable = ({ data, customerFiche , editCustomer, delet
                         />
                         <EditButton
                           title="Modifier"
-                          onClick={() => editCustomer({data: customerSession, session: data})}
+                          onClick={() =>
+                            editCustomer({
+                              data: customerSession,
+                              session: data,
+                            })
+                          }
                         />
                         <DeleteButton
                           title="Annuler"
@@ -194,4 +220,4 @@ export const CustomerBookingTable = ({ data, customerFiche , editCustomer, delet
       </AnimatePresence>
     </article>
   );
-}
+};

@@ -1,9 +1,9 @@
-
+"use client";
 import React, { useState } from "react";
 import { Spin } from "antd";
 
 /*Components*/
-import { ToasterAction , Modal } from "@/components";
+import { ToasterAction, Modal } from "@/components";
 
 /*Actions*/
 import { CANCEL_CUSTOMER_SESSION } from "@/libs/actions";
@@ -16,7 +16,6 @@ import { ISessionWithDetails, ICustomerSession } from "@/types";
 /*Icons*/
 import { MdOutlineEmail, MdPeopleAlt } from "react-icons/md";
 import { FaPhoneAlt } from "react-icons/fa";
-
 
 type Props = {
   isOpen: boolean;
@@ -32,11 +31,7 @@ type Props = {
  * @param {ISessionWithDetails} props.data - Les données de la session.
  * @returns {JSX.Element} Le composant fenêtre d'annulation des clients.
  */
-  export const CanceledCustomerSession = ({
-  isOpen,
-  onClose,
-  data,
-}: Props) => {
+export const CanceledCustomerSession = ({ isOpen, onClose, data }: Props) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col gap-6">
@@ -55,31 +50,36 @@ type Props = {
       </div>
     </Modal>
   );
-}
+};
 /**
  * Ce composant représente un client annulé.
  * @param {object} props - Les propriétés du composant.
  * @param {ICustomerSession} props.customer - Le client à afficher.
  * @returns {JSX.Element} Le composant client annulé.
  */
-export const CustomerCanceled = ({ customer }: { customer: ICustomerSession }) => {
+export const CustomerCanceled = ({
+  customer,
+}: {
+  customer: ICustomerSession;
+}) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { updateSessionWithDetails } = useSessionWithDetails();
 
   const handleCancel = async () => {
-    window.confirm(`Voulez-vous annuler ${customer.first_names} ${customer.last_name} ?`);
+    window.confirm(
+      `Voulez-vous annuler ${customer.first_names} ${customer.last_name} ?`
+    );
     {
       setIsSubmitting(true);
-  
-        const result = await CANCEL_CUSTOMER_SESSION(customer._id);
-        if (result.success) {
-          if (result.data) {
-            updateSessionWithDetails(result.data);
-          }
-        } 
-        ToasterAction({result, defaultMessage: 'Client annulé avec succès'})
-        setIsSubmitting(false);
-      
+
+      const result = await CANCEL_CUSTOMER_SESSION(customer._id);
+      if (result.success) {
+        if (result.data) {
+          updateSessionWithDetails(result.data);
+        }
+      }
+      ToasterAction({ result, defaultMessage: "Client annulé avec succès" });
+      setIsSubmitting(false);
     }
   };
 
@@ -141,4 +141,4 @@ export const CustomerCanceled = ({ customer }: { customer: ICustomerSession }) =
       </div>
     </div>
   );
-}
+};

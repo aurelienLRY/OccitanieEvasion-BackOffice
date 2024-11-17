@@ -2,10 +2,17 @@
 /* Libs */
 import React from "react";
 /* Components */
-import { SessionCard } from "@/components";
-import { SessionDetailCard } from "@/components";
-import { SessionForm , CustomerSessionForm } from "@/components";
-import { CanceledCustomerSession } from "@/components";
+
+import {
+  SessionForm,
+  CustomerSessionForm,
+  CanceledCustomerSession,
+  CalendarCard,
+  SessionDetailCard,
+  SessionCard,
+  ItemContainer,
+} from "@/components";
+
 /* Utils */
 import { getMonthString, getYearString } from "@/utils/date.utils";
 import { calculateSessionIncomeByMonth } from "@/utils/price.utils";
@@ -38,7 +45,6 @@ const Dashboard = () => {
   const customerModal = useModal<ISessionWithDetails>();
   const canceledCustomerModal = useModal<ISessionWithDetails>();
 
-
   const DisplayHeaderMessage = (n: number) => {
     if (1 <= n && n <= 4) {
       return (
@@ -57,7 +63,6 @@ const Dashboard = () => {
     if (n >= 11 && n <= 20) {
       return (
         <p className="text-xl font-bold opacity-50">
-
           <span className="text-2xl">🚀🚀🚀</span> Tu es un machine 🤖
         </p>
       );
@@ -76,7 +81,7 @@ const Dashboard = () => {
     <section className="w-full md:p-4 flex flex-col gap-12 items-center">
       <article className="w-full md:p-4 flex flex-col gap-12 items-center">
         <div className="w-full flex flex-col xl:flex-row gap-4">
-          <CardContainer title="Mes sessions à venir">
+          <ItemContainer title="Mes sessions à venir">
             {filteredSessions.length === 0 ? (
               <div className="flex flex-col gap-4 justify-center items-center h-full">
                 <p className="text-xl font-bold ">
@@ -91,37 +96,56 @@ const Dashboard = () => {
               </div>
             ) : (
               <>
-                { DisplayHeaderMessage(sessionsWithDetails.length)}
+                {DisplayHeaderMessage(sessionsWithDetails.length)}
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-center">
                   {filteredSessions.map((session) => (
-                    <SessionCard 
-                    key={session._id}
-                     sessionWithDetails={session} 
-                     detailsModal={detailsModal.openModal}
-                     updateSessionModal={updateSessionModal.openModal}
+                    <SessionCard
+                      key={session._id}
+                      sessionWithDetails={session}
+                      detailsModal={detailsModal.openModal}
+                      updateSessionModal={updateSessionModal.openModal}
                       addCustomerModal={customerModal.openModal}
                       canceledCustomerModal={canceledCustomerModal.openModal}
-                      />
+                    />
                   ))}
                 </div>
                 {/* Modal Details */}
-                {detailsModal.data && <SessionDetailCard data={detailsModal.data} isOpen={detailsModal.isOpen} onClose={detailsModal.closeModal} />}
+                {detailsModal.data && (
+                  <SessionDetailCard
+                    data={detailsModal.data}
+                    isOpen={detailsModal.isOpen}
+                    onClose={detailsModal.closeModal}
+                  />
+                )}
                 {/* Modal Update */}
-                {updateSessionModal.data && <SessionForm data={updateSessionModal.data} isOpen={updateSessionModal.isOpen} onClose={updateSessionModal.closeModal} />}
+                {updateSessionModal.data && (
+                  <SessionForm
+                    data={updateSessionModal.data}
+                    isOpen={updateSessionModal.isOpen}
+                    onClose={updateSessionModal.closeModal}
+                  />
+                )}
                 {/* Modal Customer */}
-                {customerModal.data && <CustomerSessionForm session={customerModal.data} isOpen={customerModal.isOpen} onClose={customerModal.closeModal} />} 
+                {customerModal.data && (
+                  <CustomerSessionForm
+                    session={customerModal.data}
+                    isOpen={customerModal.isOpen}
+                    onClose={customerModal.closeModal}
+                  />
+                )}
                 {/* Modal Canceled Customer */}
-                {canceledCustomerModal.data && <CanceledCustomerSession data={canceledCustomerModal.data} isOpen={canceledCustomerModal.isOpen} onClose={canceledCustomerModal.closeModal} />} 
+                {canceledCustomerModal.data && (
+                  <CanceledCustomerSession
+                    data={canceledCustomerModal.data}
+                    isOpen={canceledCustomerModal.isOpen}
+                    onClose={canceledCustomerModal.closeModal}
+                  />
+                )}
               </>
             )}
-          </CardContainer>
+          </ItemContainer>
 
-          <CardContainer title="Mon calendrier">
-            <iframe
-              src="https://calendar.google.com/calendar/embed?height=600&wkst=2&ctz=Europe%2FParis&bgcolor=%23ffffff&showPrint=0&showCalendars=0&showTz=0&showTabs=0&showTitle=0&showDate=0&src=ZDdlNzFlMzYzMmJkZjI3Mjg2Y2UyZmY5NDE0NmY0M2E1MWE5MTA3Y2FlYTJlM2U0Y2NhNjhmZTQ2OTNkOGYzOUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23F09300"
-              className="w-full min-h-[100vw] lg:min-h-[30vw] rounded-lg"
-            ></iframe>
-          </CardContainer>
+          <CalendarCard />
         </div>
       </article>
 
@@ -139,10 +163,13 @@ const Dashboard = () => {
             />
             <StatisticItem
               label="Chiffre d'affaire"
-              value={`${calculateSessionIncomeByMonth(sessionsWithDetails, "month")} €`}
+              value={`${calculateSessionIncomeByMonth(
+                sessionsWithDetails,
+                "month"
+              )} €`}
             />
           </StatisticCard>
-          
+
           <StatisticCard title={`Statistiques ${getYearString()}`}>
             <StatisticItem
               label="Sessions"
@@ -152,9 +179,12 @@ const Dashboard = () => {
               label="Nombre d'inscriptions"
               value={calculateInscrit(sessionsWithDetails, "year")}
             />
-                 <StatisticItem
+            <StatisticItem
               label="Chiffre d'affaire"
-              value={`${calculateSessionIncomeByMonth(sessionsWithDetails, "year")} €`}
+              value={`${calculateSessionIncomeByMonth(
+                sessionsWithDetails,
+                "year"
+              )} €`}
             />
           </StatisticCard>
           <StatisticCard title="Classement des Lieux">
@@ -190,27 +220,6 @@ const Dashboard = () => {
 export default Dashboard;
 
 /**
- * CardContainer Component
- * @param title: string
- * @param children: React.ReactNode
- * @returns JSX.Element
- */
-function CardContainer({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="w-full flex flex-col gap-4 items-center text-white bg-slate-800 dark:bg-sky-950 p-4 rounded-lg border-2 border-slate-700 dark:border-sky-800 shadow-md shadow-slate-700/50 dark:shadow-sky-800/50">
-      <h3 className="text-2xl font-bold">{title}</h3>
-      {children}
-    </div>
-  );
-}
-
-/**
  * StatisticCard Component
  * @param title: string
  * @param children: React.ReactNode
@@ -226,9 +235,7 @@ function StatisticCard({
   return (
     <div className="w-full flex flex-col gap-4 items-center text-white bg-slate-800 dark:bg-sky-950 p-4 rounded-lg border-2 border-slate-700 dark:border-sky-800 shadow-md shadow-slate-700/50 dark:shadow-sky-800/50">
       <h3 className="text-xl md:text-2xl font-bold">{title}</h3>
-      <div className="w-full flex flex-col gap-1">
-        {children}
-      </div>
+      <div className="w-full flex flex-col gap-1">{children}</div>
     </div>
   );
 }

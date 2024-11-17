@@ -1,3 +1,5 @@
+"use client";
+
 /*Librairies*/
 import { Spin } from "antd";
 import { useState } from "react";
@@ -12,15 +14,25 @@ import { ISpot } from "@/types";
 import { DELETE_SPOT } from "@/libs/actions";
 
 /* Components */
-import { ToasterAction , ItemCard, ItemCardInner, ItemCardHeader , EditButton , DeleteButton } from "@/components";
+import {
+  ToasterAction,
+  ItemCard,
+  ItemCardInner,
+  ItemCardHeader,
+  EditButton,
+  DeleteButton,
+} from "@/components";
 
 /* store */
 import { useSpots, useSessionWithDetails } from "@/store";
 
-
-
-export default function SpotCard ({ spot , updateSpotModal }: { spot: ISpot , updateSpotModal: (spot: ISpot) => void }) {
-
+export default function SpotCard({
+  spot,
+  updateSpotModal,
+}: {
+  spot: ISpot;
+  updateSpotModal: (spot: ISpot) => void;
+}) {
   const [isDelete, setIsDelete] = useState(false);
   const { deleteSpots } = useSpots();
   const { SessionWithDetails } = useSessionWithDetails();
@@ -30,9 +42,12 @@ export default function SpotCard ({ spot , updateSpotModal }: { spot: ISpot , up
     (session) => session.spot._id === spot._id
   );
 
-  const MapCustomerNoSSR = dynamic(() => import("@/components/ui/MapCustomer"), {
-    ssr: false,
-  });
+  const MapCustomerNoSSR = dynamic(
+    () => import("@/components/ui/MapCustomer"),
+    {
+      ssr: false,
+    }
+  );
 
   const handleDelete = async () => {
     //check if the spot is used in a session
@@ -115,9 +130,12 @@ export default function SpotCard ({ spot , updateSpotModal }: { spot: ISpot , up
         </div>
 
         {/* footer */}
-        <div id="spot-card-footer" className="flex px-6 py-2  gap-3 w-full justify-end">
-          <EditButton onClick={() => updateSpotModal(spot)}/>
-          <DeleteButton onClick={handleDelete}/>
+        <div
+          id="spot-card-footer"
+          className="flex px-6 py-2  gap-3 w-full justify-end"
+        >
+          <EditButton onClick={() => updateSpotModal(spot)} />
+          <DeleteButton onClick={handleDelete} />
         </div>
       </div>
     </ItemCard>

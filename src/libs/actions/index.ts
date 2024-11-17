@@ -4,4 +4,4 @@ export * from "./sessionWithDetail.actions";
 export * from "./spot.actions";
 export * from "./session.actions";
 export * from "./emailTemplate.action";
-
+export * from "./user.action";

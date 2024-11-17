@@ -1,2 +1,2 @@
 export { useModal } from "./useModal";
-export {useAuth} from "./useAuth"
+export { useAuth } from "./useAuth";

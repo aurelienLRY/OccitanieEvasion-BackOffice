@@ -20,7 +20,7 @@ interface MapCustomerProps {
  * @param spots - The spots to be displayed on the map.
  */
 export default function MapCustomer({ spot }: MapCustomerProps) {
-  const mapRef = useRef<Map>(null);
+  const mapRef = useRef<any>(null);
   useEffect(() => {
     if (mapRef.current) {
       mapRef.current._leaflet_id = null;

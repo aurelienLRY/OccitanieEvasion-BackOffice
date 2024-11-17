@@ -7,7 +7,7 @@ export {
   customerWaitingCount,
   getCustomerStatusDisplay,
   typeOfReservation,
-  countAllWaitingCustomers
+  countAllWaitingCustomers,
 } from "@/utils/customer.utils";
 export {
   formatDate,
@@ -30,3 +30,4 @@ export {
   getSessionByStatus,
 } from "@/utils/session.utils";
 export { capitalizeFirstLetter } from "@/utils/typo.utils";
+export { uploadAvatarAction } from "@/utils/uploadAvatar.utils";

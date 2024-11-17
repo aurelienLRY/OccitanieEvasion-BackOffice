@@ -12,6 +12,8 @@ export {
   DetailButton,
   EditButton,
   IconButton,
+  PrimaryButton,
+  SecondaryButton,
 } from "@/components/ui/Button";
 
 export { CustomerBookingTable } from "@/components/ui/CustomerBookingTable";
@@ -32,9 +34,11 @@ export {
   ItemCard,
   ItemCardInner,
   ItemCardHeader,
+  ItemContainer,
 } from "@/components/ui/ItemCard";
 export { default as MapCustomer } from "@/components/ui/MapCustomer";
 export { Modal } from "@/components/ui/Modal";
+export { HeaderBtn } from "@/components/ui/HeaderBtn";
 
 export { default as EmailCard } from "@/components/ui/EmailCard";
 export { default as SingOutBtn } from "@/components/ui/singOut";
@@ -47,6 +51,8 @@ export { CustomerSessionForm } from "@/components/ui/customerSession.form";
 export { LoginForm } from "@/components/ui/login.form";
 export { SessionForm } from "@/components/ui/session.form";
 export { SpotForm } from "@/components/ui/spot.form";
+export { ProfilForm } from "@/components/ui/profil.form";
+export { ChangePassword } from "@/components/ui/ChangePassword.form";
 
 /* Modules */
 export { Dashboard } from "@/components/modules/Dashboard";
@@ -58,3 +64,5 @@ export { SessionCard } from "@/components/modules/SessionCard";
 export { default as SpotCard } from "@/components/modules/SpotCard";
 export { default as SessionDetailCard } from "@/components/modules/SessionDetailCard";
 export { default as AllSessionsCard } from "@/components/modules/AllSessionsCard";
+export { AvatarSystem } from "@/components/modules/AvatarSystem";
+export { CalendarCard } from "@/components/modules/CalendarCard";
