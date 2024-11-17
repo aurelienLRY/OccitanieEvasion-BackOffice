@@ -4,9 +4,7 @@
 import React, { useState } from "react";
 
 /* Components */
-import { IconButton } from "@/components/Button";
-import ActivityCard from "@/components/ActivityCard";
-import { ActivityForm } from "@/components/form";
+import { IconButton , ActivityCard , ActivityForm } from "@/components";
 
 /* Icons */
 import { IoMdAddCircle } from "react-icons/io";
@@ -15,7 +13,7 @@ import { IoMdAddCircle } from "react-icons/io";
 import { SearchInObject } from "@/utils/search.utils";
 
 /* store */
-import { useActivities } from "@/context/store";
+import { useActivities } from "@/store";
 
 /* Types */
 import { IActivity } from "@/types";

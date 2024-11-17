@@ -1,7 +1,8 @@
 import * as yup from "yup";
 
-/*
- * Spot schema
+/**
+ * Spot Schema
+ * @returns Spot Schema
  */
 export const spotSchema = yup.object().shape({
   name: yup.string().required("Le champ name est requis"),

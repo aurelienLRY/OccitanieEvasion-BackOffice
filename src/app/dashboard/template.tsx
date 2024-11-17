@@ -4,18 +4,9 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hook/useAuth";
 import { Spin } from "antd";
 
-/* Actions */
-import {
-  GET_SESSIONS_WITH_DETAILS,
-  GET_SPOTS,
-  GET_ACTIVITIES,
-  GET_CUSTOMER_SESSIONS,
-} from "@/libs/actions";
 
 /* Components */
-import SingOutBtn from "@/components/singOut";
-import Dashboard from "@/components/Dashboard";
-import ToasterAction from "@/components/ToasterAction";
+import { SingOutBtn  , Dashboard  } from "@/components";
 
 /* Store */
 import {
@@ -23,7 +14,7 @@ import {
   useSpots,
   useActivities,
   useCustomerSessions,
-} from "@/context/store";
+} from "@/store";
 
 /**
  * Template Component

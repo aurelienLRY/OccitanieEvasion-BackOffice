@@ -2,15 +2,15 @@
 import React, { useState, useEffect } from "react";
 
 /* components */
-import SpotCard from "@/components/SpotCard";
-import { SpotForm } from "@/components/form";
-import { IconButton } from "@/components/Button";
+import { SpotCard } from "@/components";
+import { SpotForm } from "@/components";
+import { IconButton } from "@/components";
 
 /* Icons */
 import { IoMdAddCircle } from "react-icons/io";
 
 /* store */
-import { useSpots, useActivities } from "@/context/store";
+import { useSpots, useActivities } from "@/store";
 
 /* utils */
 import { SearchInObject } from "@/utils/search.utils";

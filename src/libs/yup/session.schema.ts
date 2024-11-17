@@ -3,7 +3,11 @@ import * as yup from "yup";
 
 
 
- export const sessionSchema = yup.object().shape({
+/**
+ * Session Schema
+ * @returns Session Schema
+ */
+export const sessionSchema = yup.object().shape({
     status: yup.string().required("Le champ status est requis"),
     date: yup.date().typeError("Renseignez une date valide").required("Le champ date est requis"),
     startTime: yup.string().typeError("Renseignez une heure valide").required("Le champ heure de début est requis"),

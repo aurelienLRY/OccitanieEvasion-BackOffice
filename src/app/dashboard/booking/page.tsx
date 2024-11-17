@@ -2,11 +2,9 @@
 import React, { useEffect, useState } from "react";
 
 /* store */
-import { useSessionWithDetails } from "@/context/store";
+import { useSessionWithDetails } from "@/store";
 /* COMPONENTS */
-import CustomerBookingTable from "@/components/CustomerBookingTable";
-import {CustomerSessionForm} from "@/components/form"
-import CustomerFiche from "@/components/CustomerFiche";
+import {CustomerBookingTable , CustomerSessionForm , CustomerFiche} from "@/components";
 
 /*Hook*/
 import { useModal } from "@/hook";

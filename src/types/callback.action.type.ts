@@ -116,3 +116,13 @@ export interface ICallbackForCustomerSessions extends ICallback {
 export interface ICallbackForEmailTemplate extends ICallback {
     data: IEmailTemplate | null
 }
+
+
+/*
+ * Interface for a callback for emailTemplates
+ * @extends ICallback
+ * @property {IEmailTemplate[]} data - The emailTemplates
+ */
+export interface ICallbackForEmailTemplates extends ICallback {
+    data: IEmailTemplate[] | null
+}
