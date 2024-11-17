@@ -4,9 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hook/useAuth";
 import { Spin } from "antd";
 
-
 /* Components */
-import { SingOutBtn  , Dashboard  } from "@/components";
+import { SingOutBtn, Dashboard } from "@/components";
 
 /* Store */
 import {
@@ -46,6 +45,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   // Get the user status
   const { status } = useAuth();
+
   const sessionsWithDetails = useSessionWithDetails(
     (state) => state.SessionWithDetails
   );
@@ -82,6 +82,10 @@ export const getPathname = (pathname: string) => {
       return "Activités";
     case "/dashboard/email":
       return "Email";
+    case "/dashboard/account":
+      return "Mon compte";
+    case "/dashboard/setting":
+      return "Paramètres";
     default:
       return "Dashboard";
   }

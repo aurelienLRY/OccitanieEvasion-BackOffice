@@ -18,6 +18,6 @@ export type {
   ICallbackForSessionWithDetailsArray,
   ICallbackForEmailTemplate,
   ICallbackForEmailTemplates,
+  ICallbackForUser,
 } from "@/types/callback.action.type";
 export type { IEmailTemplate } from "@/types/emailTemplate.type";
-
