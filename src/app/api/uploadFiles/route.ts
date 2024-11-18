@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/libs/auth";
-import { uploadAvatarAction } from "@/utils/uploadAvatar.utils";
+import { uploadAvatarAction } from "@/utils";
 
 export async function POST(request: NextRequest) {
   // Vérifier la session utilisateur

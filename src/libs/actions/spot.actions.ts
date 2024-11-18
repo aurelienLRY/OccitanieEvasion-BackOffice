@@ -17,7 +17,6 @@ import { ISpot, ICallbackForSpot, ICallbackForSpots } from "@/types";
 /* Actions */
 import { GET_SERVER_SESSIONS_WITH_DETAILS } from "@/libs/actions/sessionWithDetail.actions";
 
-
 /*
  * Validate the spot
  * @param spot - The spot to validate
@@ -51,8 +50,6 @@ export const xssSpot = async (spot: ISpot): Promise<ISpot | object> => {
         half_day: xss(spot.meetingPoint.half_day),
         full_day: xss(spot.meetingPoint.full_day),
       },
-
-
     };
     return JSON.parse(JSON.stringify(xssData));
   } catch (error) {
@@ -160,7 +157,6 @@ export async function GET_SPOT_BY_ID(id: string): Promise<ICallbackForSpot> {
   }
 }
 
-
 /*
  * Update a spot
  * @param id - The id of the spot to update
@@ -175,8 +171,7 @@ export async function UPDATE_SPOT(
     /* validation & cleaning */
     const YupValidation = await validateSpot(spot);
     const cleanSpot = await xssSpot(YupValidation as ISpot);
-   
-   
+
     await connectDB();
 
     const updatedSpot = await Spot.findByIdAndUpdate(id, cleanSpot, {
@@ -216,27 +211,38 @@ export async function UPDATE_SPOT(
  * @param id - The id of the spot to delete
  * @returns The callback for the spot
  */
-export const DELETE_SPOT = async (spotId: string): Promise<ICallbackForSpot> => {
-    try {
-        await connectDB()
-        const sessionsWithDetails = await GET_SERVER_SESSIONS_WITH_DETAILS()
-        const sessionsWithDetailsBySpot = sessionsWithDetails.filter(session => session.spot._id === spotId )
-        if(sessionsWithDetailsBySpot.length > 0){
-            return {success: false, error: "Ce spot est utilisé dans une session", data: null, feedback: null}
-        }
-        const result = await Spot.findByIdAndDelete(spotId)
-        if (!result) {
-            throw new Error("lieu non trouvé")
-        }
-        return {success: true, data: JSON.parse(JSON.stringify(result)) , error: null, feedback: ["Spot supprimé avec succès"]}
+export const DELETE_SPOT = async (
+  spotId: string
+): Promise<ICallbackForSpot> => {
+  try {
+    await connectDB();
+    const sessionsWithDetails = await GET_SERVER_SESSIONS_WITH_DETAILS();
+    const sessionsWithDetailsBySpot = sessionsWithDetails.filter(
+      (session) => session.spot._id === spotId
+    );
+    if (sessionsWithDetailsBySpot.length > 0) {
+      return {
+        success: false,
+        error: "Ce spot est utilisé dans une session",
+        data: null,
+        feedback: null,
+      };
     }
-    catch (error) {
-        const message = (error as Error).message
-        console.log(message)
-        return {success: false, error: message, data: null, feedback: null}
+    const result = await Spot.findByIdAndDelete(spotId);
+    if (!result) {
+      throw new Error("lieu non trouvé");
     }
-    finally {
-        await disconnectDB()
-    }
-}
-
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(result)),
+      error: null,
+      feedback: ["Spot supprimé avec succès"],
+    };
+  } catch (error) {
+    const message = (error as Error).message;
+    console.log(message);
+    return { success: false, error: message, data: null, feedback: null };
+  } finally {
+    await disconnectDB();
+  }
+};

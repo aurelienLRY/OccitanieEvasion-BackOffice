@@ -1,7 +1,9 @@
 # Projet de Gestion de Réservation d’Activités
+
 ![Occitanie Évasion](https://github.com/user-attachments/assets/b3cd8efd-ddd6-4bd3-a2c4-060fd405b335)
 
 ## Table des Matières
+
 1. [À propos](#1-à-propos)
 2. [Stack Technique](#2-stack-technique)
 3. [Créateur](#3-créateur)
@@ -9,15 +11,16 @@
 5. [Configuration](#5-configuration)
 6. [Utilisation](#6-utilisation)
 
-
 ---
 
 ## 1. À propos
+
 Ce projet est une **application de gestion de réservation d'activités** développée pour faciliter les réservations clients dans une entreprise de loisirs. Elle permet de gérer les créneaux horaires, les clients et les disponibilités des activités en temps réel.
 
 ---
 
 ## 2. Stack Technique
+
 Cette application repose sur les technologies suivantes :
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -26,16 +29,20 @@ Cette application repose sur les technologies suivantes :
 ---
 
 ## 3. Créateur
+
 **Nom du Créateur**  
 Contact : [leroyaurelien11@gmail.com](mailto:leroyaurelien11@gmail.com)  
 Profil GitHub : [GitHub](https://github.com/aurelienLRY/)
+Temps passé : [![wakatime](https://wakatime.com/badge/user/dfdaf0d3-5ae8-4997-92c1-563d24f5d7d4/project/5d7c61d4-7045-45c5-a7a0-20bc00395ad3.svg)](https://wakatime.com/badge/user/dfdaf0d3-5ae8-4997-92c1-563d24f5d7d4/project/5d7c61d4-7045-45c5-a7a0-20bc00395ad3)
 
 ---
 
 ## 4. Architecture
+
 Le projet est organisé selon une architecture modulaire et maintenable, avec des dossiers spécifiques pour chaque type de fonctionnalité et composant.
 
 **Structure du dossier :**
+
 ```plaintext
 /src
 ├── /app               # API App Router de Next.js 13+
@@ -66,9 +73,12 @@ Le projet est organisé selon une architecture modulaire et maintenable, avec de
 ├── /types             # Types TypeScript et interfaces globales
 │
 └── /assets            # Images, polices, et autres ressources statiques
- ```
+```
+
 ## 5. Configuration
+
 ### Prérequis .env
+
 ```env
 # URL de l'application pour NextAuth
 NEXTAUTH_URL='string'
@@ -95,33 +105,37 @@ SMTP_PASSWORD=""
 
 ```
 
-
 ## 6. Utilisation
+
 ### Ajout d'un Administrateur
+
 Pour ajouter un administrateur, suivez les étapes ci-dessous. Cela nécessite de configurer un jeton dans le fichier .env.local et de faire une requête POST à l'API.
 
 1. Configurer le jeton d'API dans le fichier .env.local : Assurez-vous d'avoir un jeton valide en ajoutant la variable suivante dans votre fichier .env.local (ou en la modifiant si elle existe déjà) :
+
 ```env
 NEXT_API_TOKEN="votre_token_securisé_ici"
 ```
-2. Faire une requête API pour créer un administrateur : Utilisez le code suivant pour envoyer une requête POST à l'API afin de créer un administrateur. Assurez-vous de personnaliser le corps de la requête avec les informations de l’administrateur: 
+
+2. Faire une requête API pour créer un administrateur : Utilisez le code suivant pour envoyer une requête POST à l'API afin de créer un administrateur. Assurez-vous de personnaliser le corps de la requête avec les informations de l’administrateur:
+
 ```javascript
 const myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
 myHeaders.append("Authorization", "••••••");
 
 const raw = JSON.stringify({
-  "email": "exemple@exemple.com",
-  "password": "alpha#",
-  "username": "admin",
-  "name": "admin"
+  email: "exemple@exemple.com",
+  password: "alpha#",
+  username: "admin",
+  name: "admin",
 });
 
 const requestOptions = {
   method: "POST",
   headers: myHeaders,
   body: raw,
-  redirect: "follow"
+  redirect: "follow",
 };
 
 fetch("http://localhost:3000/api/user", requestOptions)
@@ -129,5 +143,3 @@ fetch("http://localhost:3000/api/user", requestOptions)
   .then((result) => console.log(result))
   .catch((error) => console.error(error));
 ```
-
-

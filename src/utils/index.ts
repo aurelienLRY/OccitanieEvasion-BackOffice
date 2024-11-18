@@ -9,18 +9,22 @@ export {
   typeOfReservation,
   countAllWaitingCustomers,
 } from "@/utils/customer.utils";
+
 export {
   formatDate,
   getMonthString,
   getMonthValue,
   getYearString,
 } from "@/utils/date.utils";
+
 export {
   calculateSessionIncome,
   calculateSessionIncomeByMonth,
   calculateSessionsIncome,
 } from "@/utils/price.utils";
+
 export { SearchInObject } from "@/utils/search.utils";
+
 export {
   calculateInscrit,
   calculateNumberOfSessions,
@@ -29,5 +33,7 @@ export {
   filterSessionsForDashboard,
   getSessionByStatus,
 } from "@/utils/session.utils";
+
 export { capitalizeFirstLetter } from "@/utils/typo.utils";
-export { uploadAvatarAction } from "@/utils/uploadAvatar.utils";
+
+export { checkAvatarExists, uploadAvatarAction } from "@/utils/avatar.utils";
