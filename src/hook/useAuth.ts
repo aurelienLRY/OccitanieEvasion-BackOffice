@@ -1,6 +1,6 @@
-'use client'
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 /**
@@ -10,13 +10,13 @@ import { useSession } from "next-auth/react";
 export const useAuth = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  
+
   useEffect(() => {
-    if (status === 'loading') return; // Do nothing while loading
-    if (status === 'unauthenticated') {
-      router.push('/'); // Redirect to login page
+    if (status === "loading") return; // Do nothing while loading
+    if (status === "unauthenticated") {
+      router.push("/"); // Redirect to login page
     }
   }, [status, router]);
 
   return { session, status };
-}
+};

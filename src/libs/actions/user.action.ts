@@ -69,7 +69,10 @@ export const UPDATE_USER = async (
     );
 
     if (updatedUser) {
-      const { password, ...userWithoutPassword } = updatedUser;
+      const { password, ...userWithoutPassword } = (
+        updatedUser as any
+      ).toObject();
+
       return {
         success: true,
         data: JSON.parse(JSON.stringify(userWithoutPassword)),

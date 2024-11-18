@@ -2,16 +2,20 @@ import React from "react";
 import Image from "next/image";
 
 /* COMPONENTS */
-import { ItemCard, ItemContainer, SecondaryButton } from "@/components";
+import { ItemContainer, SecondaryButton } from "@/components";
 
-type Props = {};
+type Props = {
+  className?: string;
+};
 
 export const CalendarCard = (props: Props) => {
   const googleCalendarConnect = () => {
     alert("je dois faire la connexion au calendrier google");
   };
   return (
-    <ItemContainer className="flex flex-1 flex-col gap-4 min-w-[300px] min-h-[200px] items-center justify-around p-2">
+    <ItemContainer
+      className={`flex flex-1 flex-col gap-4 min-w-[300px] min-h-[200px] items-center justify-around p-2 ${props.className}`}
+    >
       <div className="flex flex-col items-center justify-center">
         <Image
           src="/img/googleCalendar.png"
