@@ -6,8 +6,8 @@ import { useForm, FormProvider } from "react-hook-form";
 import { InferType } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userSchema } from "@/libs/yup";
-import { useAuth } from "@/hook";
 import { Spin } from "antd";
+import { useSession } from "next-auth/react";
 
 /* COMPONENTS */
 import { Input, SecondaryButton, ToasterAction } from "@/components";
@@ -16,9 +16,11 @@ import { Input, SecondaryButton, ToasterAction } from "@/components";
 import { UPDATE_USER } from "@/libs/actions";
 
 export const ProfilForm = () => {
-  const { session, status } = useAuth();
+  const { data: session, update } = useSession();
   const [isDisabled, setIsDisabled] = useState(true);
   const user = session?.user;
+
+  console.log("user", user);
 
   const methods = useForm<InferType<typeof userSchema>>({
     resolver: yupResolver(userSchema),
@@ -32,18 +34,21 @@ export const ProfilForm = () => {
     },
   });
 
-  if (status === "unauthenticated" || !user) return null;
-
   const {
     handleSubmit,
-    reset,
-    watch,
     formState: { isSubmitting, errors },
   } = methods;
 
   const onSubmit = async (data: InferType<typeof userSchema>) => {
     if (!user || !user._id) return;
+    // update user in database
     const result = await UPDATE_USER(user._id as string, data);
+    if (result.success && result.data) {
+      // update user in session
+      const updateSession = await update({
+        user: { ...result.data },
+      });
+    }
     ToasterAction({
       result,
       defaultMessage: "Profil modifié avec succès",
@@ -101,7 +106,7 @@ export const ProfilForm = () => {
           <Input
             label="Téléphone"
             name="phone"
-            type="tel"
+            type="string"
             disabled={isDisabled}
             placeholder="06 00 00 00 00"
             className="max-w-[250px] md:max-w-[300px]"

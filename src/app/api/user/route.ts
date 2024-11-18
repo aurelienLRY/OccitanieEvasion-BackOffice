@@ -76,8 +76,6 @@ export async function POST(req: Request) {
 export const PUT = async (req: Request): Promise<NextResponse> => {
   try {
     const session = await getServerSession(authOptions);
-    console.log("session >>", session);
-
     if (!session) {
       return createResponse(401, "Unauthorized", [
         "Vous devez être connecté pour modifier votre mot de passe",

@@ -5,7 +5,7 @@ import { Spin } from "antd";
 import { useState } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
-import dynamic from "next/dynamic";
+import { Skeleton, card } from "@nextui-org/react";
 
 /* Types */
 import { ISpot } from "@/types";
@@ -40,13 +40,6 @@ export default function SpotCard({
   //get all sessions with this spot
   const sessionsWithSpot = SessionWithDetails.filter(
     (session) => session.spot._id === spot._id
-  );
-
-  const MapCustomerNoSSR = dynamic(
-    () => import("@/components/ui/MapCustomer"),
-    {
-      ssr: false,
-    }
   );
 
   const handleDelete = async () => {
@@ -110,7 +103,7 @@ export default function SpotCard({
         </ItemCardHeader>
 
         {/* content */}
-        <div className="flex flex-col md:flex-row gap-2 justify-between md:px-4">
+        <div className="flex flex-col md:flex-row gap-2 justify-between md:px-4 h-full">
           <div className="flex flex-col justify-between w-full h-full gap-2">
             <p className="text-sm  dark:text-gray-300 text-center flex items-center justify-center h-full ">
               {spot.description || "Aucune description"}
@@ -124,9 +117,7 @@ export default function SpotCard({
               </div>
             </ItemCardInner>
           </div>
-          <div className="min-w-[40%] flex items-center justify-center shadow-md  ">
-            <MapCustomerNoSSR spot={spot} />
-          </div>
+          <Skeleton className="min-w-[40%] flex items-center justify-center shadow-md h-full rounded-md"></Skeleton>
         </div>
 
         {/* footer */}

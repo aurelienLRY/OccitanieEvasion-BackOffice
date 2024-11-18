@@ -36,7 +36,7 @@ export default function Page() {
         <ChangePassword />
       </div>
 
-      <CalendarCard />
+      <CalendarCard className="max-w-[1400px]" />
     </section>
   );
 }

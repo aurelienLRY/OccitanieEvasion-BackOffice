@@ -3,6 +3,9 @@ import User from "@/libs/database/models/User";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+/*types*/
+import type { IUser } from "@/types";
+import { crypto } from "@/utils";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -18,6 +21,7 @@ export const authOptions: NextAuthOptions = {
         const userFound = await User.findOne({
           email: credentials?.email,
         });
+        console.log("userFound", userFound);
 
         if (!userFound) throw new Error("Email inconnu");
 
@@ -38,11 +42,12 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       // On ajoute les informations de l'utilisateur au token
       if (user) {
         token.id = user._id as string;
         token.email = user.email as string;
+        token.phone = user.phone as string;
         token.username = user.username as string;
         token.avatar = user.avatar as string;
         token.calendar = user.calendar as boolean;
@@ -50,6 +55,36 @@ export const authOptions: NextAuthOptions = {
         token.firstName = user.firstName as string;
         token.lastName = user.lastName as string;
       }
+      if (trigger === "update" && session) {
+        if (session.user.avatar) {
+          token.avatar = session.user.avatar as string;
+        }
+        if (session.user.username) {
+          token.username = session.user.username as string;
+        }
+        if (session.user.firstName) {
+          token.firstName = session.user.firstName as string;
+        }
+        if (session.user.lastName) {
+          token.lastName = session.user.lastName as string;
+        }
+        if (session.user.phone) {
+          token.phone = session.user.phone as string;
+        }
+        if (session.user.calendar) {
+          token.calendar = session.user.calendar as boolean;
+        }
+        if (session.user.tokenCalendar) {
+          token.tokenCalendar = session.user.tokenCalendar as string;
+        }
+        if (session.user.firstName) {
+          token.firstName = session.user.firstName as string;
+        }
+        if (session.user.lastName) {
+          token.lastName = session.user.lastName as string;
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {

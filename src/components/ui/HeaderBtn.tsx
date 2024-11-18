@@ -1,18 +1,18 @@
 "use client";
 
 /* Libs */
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/hook";
 import { Tooltip } from "antd";
-import { useRouter } from "next/navigation";
+import { Skeleton } from "@nextui-org/skeleton";
 
 /* components*/
 import { ItemCard, ItemCardHeader, ThemeToggle } from "@/components";
 
 /* utils*/
-import { cn } from "@/utils";
+import { cn, checkAvatarExists } from "@/utils";
 /* icons*/
 import { MdAdminPanelSettings } from "react-icons/md";
 import { SiAuthelia } from "react-icons/si";
@@ -23,9 +23,12 @@ type Props = {};
 
 export const HeaderBtn = ({}: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string>(
+    "/img/default-avatar.webp"
+  );
   const menuRef = useRef<HTMLDivElement>(null);
   const { status, session } = useAuth();
-  const router = useRouter();
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -33,15 +36,36 @@ export const HeaderBtn = ({}: Props) => {
     };
   }, []);
 
-  if (status === "unauthenticated") {
-    return null;
-  }
-
   const handleClickOutside = (event: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
       setIsOpen(false);
     }
   };
+
+  // function qui vérifie si l'url de l'avatar existe et présent dans le dossier public sinon retourne l'avatar par défaut
+  const checkAvatarExists = async (avatarUrl: string) => {
+    try {
+      const response = await fetch(avatarUrl);
+      if (
+        response.ok &&
+        response.headers.get("content-type")?.includes("image")
+      ) {
+        return avatarUrl;
+      } else {
+        return "/img/default-avatar.webp";
+      }
+    } catch (error) {
+      return "/img/default-avatar.webp";
+    }
+  };
+
+  useEffect(() => {
+    if (session?.user?.avatar) {
+      checkAvatarExists(`/${session?.user?.avatar}`).then((url) =>
+        setAvatarUrl(url)
+      );
+    }
+  }, [session]);
 
   return (
     <div className="relative" ref={menuRef}>
@@ -50,13 +74,15 @@ export const HeaderBtn = ({}: Props) => {
           onClick={() => setIsOpen(!isOpen)}
           className="cursor-pointer rounded-full border-4  border-transparent hover:border-opacity-40 hover:border-sky-500 transition-all duration-300"
         >
-          <Image
-            src={`/${session?.user?.avatar}` || "/img/default-avatar.webp"}
-            alt="User Avatar"
-            width={40}
-            height={40}
-            className=" rounded-full "
-          />
+          <Suspense fallback={<SkeletonAvatar />}>
+            <Image
+              src={avatarUrl}
+              alt="User Avatar"
+              width={40}
+              height={40}
+              className=" rounded-full "
+            />
+          </Suspense>
         </div>
       </Tooltip>
       {isOpen && (
@@ -66,7 +92,7 @@ export const HeaderBtn = ({}: Props) => {
               {session?.user?.username}
             </h3>
             <Image
-              src={`/${session?.user?.avatar}` || "/img/default-avatar.webp"}
+              src={avatarUrl}
               alt="User Avatar"
               width={70}
               height={70}
@@ -128,4 +154,8 @@ export const HeaderBtn = ({}: Props) => {
       )}
     </div>
   );
+};
+
+const SkeletonAvatar = () => {
+  return <Skeleton className="flex rounded-full w-12 h-12" />;
 };

@@ -36,7 +36,7 @@ export {
   ItemCardHeader,
   ItemContainer,
 } from "@/components/ui/ItemCard";
-export { default as MapCustomer } from "@/components/ui/MapCustomer";
+//export { default as MapCustomer } from "@/components/ui/MapCustomer";
 export { Modal } from "@/components/ui/Modal";
 export { HeaderBtn } from "@/components/ui/HeaderBtn";
 
