@@ -29,17 +29,11 @@ export async function uploadAvatarAction(formData: FormData, userId: string) {
     const avatarFile = formData.get("avatar") as File;
 
     // Chemin où stocker l'image (public/img/avatar/userId)
-    const uploadPath = path.join(
-      process.cwd(),
-      "public",
-      "img",
-      "avatar",
-      userId
-    );
+    const uploadPath = path.join(process.cwd(), "public", "img");
     // nom de l'image
     const avatarName = `avatar-${new Date().getTime()}.webp`;
     // chemin de l'image
-    const avatarPath = path.join("img", "avatar", userId, avatarName);
+    const avatarPath = path.join("img", avatarName);
 
     // Créer le dossier s'il n'existe pas
     await fs.promises.mkdir(uploadPath, { recursive: true });
