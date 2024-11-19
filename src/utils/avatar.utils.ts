@@ -29,17 +29,11 @@ export async function uploadAvatarAction(formData: FormData, userId: string) {
     const avatarFile = formData.get("avatar") as File;
 
     // Chemin où stocker l'image (public/img/avatar/userId)
-    const uploadPath = path.join(
-      process.cwd(),
-      "public",
-      "img",
-      "avatar",
-      userId
-    );
+    const uploadPath = path.join(process.cwd(), "public", "img", "avatar");
     // nom de l'image
     const avatarName = `avatar-${new Date().getTime()}.webp`;
     // chemin de l'image
-    const avatarPath = path.join("img", "avatar", userId, avatarName);
+    const avatarPath = path.join("img", "avatar", avatarName);
 
     // Créer le dossier s'il n'existe pas
     await fs.promises.mkdir(uploadPath, { recursive: true });
@@ -50,7 +44,7 @@ export async function uploadAvatarAction(formData: FormData, userId: string) {
     // Conversion en WebP et enregistrement
     await sharp(buffer)
       .resize({ width: 100, height: 100 })
-      .webp({ quality: 80, lossless: true })
+      .webp({ quality: 80 })
       .toFile(path.join(uploadPath, avatarName));
 
     // supprime les autres photo du dossier  de l'utilisateur
