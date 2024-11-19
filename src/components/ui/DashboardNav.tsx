@@ -58,7 +58,7 @@ export const DashboardNav = ({
     <nav
       className="flex flex-col sm:flex-row justify-center items-center gap-1 md:gap-2  bg-sky-950 dark:bg-sky-800 text-white text-xs font-light md:p-1 rounded-md
     fixed bottom-10 translate-y-1/2 py-4 w-full md:w-auto  md:top-0 md:left-0 md:right-0 md:bottom-auto z-10
-    "
+    md:relative md:translate-y-0 
     >
       <div className="flex relative  ">
         <Link href="/dashboard" className={isPathActive("/dashboard")}>

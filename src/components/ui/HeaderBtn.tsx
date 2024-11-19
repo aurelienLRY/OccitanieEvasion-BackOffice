@@ -45,11 +45,10 @@ export const HeaderBtn = ({}: Props) => {
   // function qui vérifie si l'url de l'avatar existe et présent dans le dossier public sinon retourne l'avatar par défaut
   const checkAvatarExists = async (avatarUrl: string) => {
     try {
-      const response = await fetch(avatarUrl);
-      if (
-        response.ok &&
-        response.headers.get("content-type")?.includes("image")
-      ) {
+      console.log("Avatar URL >  ", avatarUrl);
+      const response = await fetch(`${avatarUrl}`);
+      console.log("response > ", response);
+      if (response.ok) {
         return avatarUrl;
       } else {
         return "/img/default-avatar.webp";
