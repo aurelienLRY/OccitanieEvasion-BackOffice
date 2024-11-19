@@ -16,13 +16,13 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex  max-h-screen relative -mt-16">
+    <div className=" h-screen relative -mt-16">
       <Image
         src="/img/escalade-scroll.jpg"
-        alt="logo"
+        alt="image de fond de l'application"
         width={4453}
         height={2969}
-        className="object-cover max-h-screen"
+        className="h-full w-full object-cover"
       />
       <LoginForm />
     </div>
