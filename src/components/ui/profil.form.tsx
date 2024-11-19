@@ -20,8 +20,6 @@ export const ProfilForm = () => {
   const [isDisabled, setIsDisabled] = useState(true);
   const user = session?.user;
 
-  console.log("user", user);
-
   const methods = useForm<InferType<typeof userSchema>>({
     resolver: yupResolver(userSchema),
     defaultValues: {
