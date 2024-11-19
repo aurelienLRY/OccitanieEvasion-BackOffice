@@ -49,7 +49,11 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-[500px]   max-h-[700px] min-w-[350px] max-w-[400px] bg-sky-400 bg-opacity-5 backdrop-blur-sm flex flex-col justify-center items-center absolute top-1/3 right-1/4 rounded-md">
+    <div
+      className="min-h-[500px]  max-h-[700px] min-w-[350px] max-w-[400px]
+     bg-sky-400 bg-opacity-5 backdrop-blur-sm flex flex-col justify-center items-center
+      absolute top-1/2 right-1/2  translate-x-1/2 -translate-y-1/2  md:right-1/3  rounded-md"
+    >
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-2 items-center justify-center h-full"

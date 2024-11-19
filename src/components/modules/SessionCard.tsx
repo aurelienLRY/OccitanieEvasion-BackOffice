@@ -12,20 +12,28 @@ import { UPDATE_SESSION } from "@/libs/actions";
 import { useSessionWithDetails } from "@/store";
 
 /*components*/
-import { ItemCard, ItemCardInner, DetailButton, EditButton, DeleteButton} from "@/components";
-
+import {
+  ItemCard,
+  ItemCardInner,
+  DetailButton,
+  EditButton,
+  DeleteButton,
+} from "@/components";
 
 /* utils */
-import { calculateSessionIncome , customerIsCancelled , customerIsWaiting , customerWaitingCount  } from "@/utils";
+import {
+  calculateSessionIncome,
+  customerIsCancelled,
+  customerIsWaiting,
+  customerWaitingCount,
+} from "@/utils";
 
 /* Types */
 import { ISessionWithDetails } from "@/types";
 
-
 /*icons*/
-import { RiCalendarCloseFill } from "react-icons/ri"
+import { RiCalendarCloseFill } from "react-icons/ri";
 import { IoMdPersonAdd } from "react-icons/io";
-
 
 type Props = {
   sessionWithDetails: ISessionWithDetails;
@@ -37,7 +45,7 @@ type Props = {
 
 /**
  * SessionCard Component
-* @param {ISessionWithDetails} customerSession - La session avec les détails du client.
+ * @param {ISessionWithDetails} customerSession - La session avec les détails du client.
  * @returns {JSX.Element} Le composant carte de session.
  */
 export const SessionCard = ({
@@ -53,11 +61,11 @@ export const SessionCard = ({
   const { updateSessionWithDetails, deleteSessionWithDetails } =
     useSessionWithDetails();
 
-
-
   // Statuts vérifiés
   const checked = {
-    customerIsCancelled: customerIsCancelled(sessionWithDetails.customerSessions),
+    customerIsCancelled: customerIsCancelled(
+      sessionWithDetails.customerSessions
+    ),
     customerIsWaiting: customerIsWaiting(sessionWithDetails.customerSessions),
     isArchived: sessionWithDetails.status === "Archived",
     isReserved: +sessionWithDetails.placesReserved > 0,
@@ -84,7 +92,6 @@ export const SessionCard = ({
 
   // Action de bascule (archiver ou annuler les réservations)
 
-  //TODO: pb de soustraction des places réservées
   const SwitchAction = async (session: ISessionWithDetails) => {
     if (checked.customerIsCancelled && !checked.isArchived) {
       if (window.confirm("Voulez-vous vraiment archiver cette session ?")) {
@@ -113,114 +120,109 @@ export const SessionCard = ({
   };
 
   return (
-   
-      <ItemCard
-        className={`flex flex-col justify-between gap-4 w-full max-w-[400px] box-border ${
-          checked.isArchived
-            ? "opacity-60 border-e-8 border-red-500"
-            : checked.isPending
-            ? "border-e-8 border-orange-500"
-            : checked.isActive
-            ? "border-e-8 border-green-500"
-            : "opacity-100"
-        }`}
+    <ItemCard
+      className={`flex flex-col justify-between gap-4 w-full max-w-[400px] box-border ${
+        checked.isArchived
+          ? "opacity-60 border-e-8 border-red-500"
+          : checked.isPending
+          ? "border-e-8 border-orange-500"
+          : checked.isActive
+          ? "border-e-8 border-green-500"
+          : "opacity-100"
+      }`}
+    >
+      <div className="w-full flex flex-col">
+        <p className="text-center text-xl font-semibold m-0">
+          {sessionWithDetails.activity.name}
+        </p>
+        {checked.isReserved && (
+          <small className="text-xs font-light text-orange-500 text-center">
+            🚀 {sessionWithDetails.placesReserved} places réservées 🚀
+          </small>
+        )}
+
+        {checked.isReserved && calculateRevenue > 0 && (
+          <p className="text-center text-sm font-semibold">
+            💲 {calculateRevenue}€ 💲
+          </p>
+        )}
+      </div>
+      <ItemCardInner className="flex flex-col  w-full text-sm">
+        <p>
+          <span className="font-semibold">Date : </span>
+          {new Date(sessionWithDetails.date).toLocaleDateString()}
+        </p>
+        <p>
+          <span className="font-semibold">Horaire : </span>
+          {`de ${sessionWithDetails.startTime} à ${sessionWithDetails.endTime}`}
+        </p>
+        <p>
+          <span className="font-semibold">Lieu : </span>
+          {sessionWithDetails.spot.name}
+        </p>
+        <p>
+          <span className="font-semibold">Places disponibles : </span>
+          {+sessionWithDetails.placesMax - +sessionWithDetails.placesReserved}
+        </p>
+        <p>
+          <span className="font-semibold">Formule : </span>
+          {sessionWithDetails.type_formule === "half_day"
+            ? "demi-journée"
+            : "journée"}{" "}
+        </p>
+      </ItemCardInner>
+
+      <div
+        id="session-card-footer"
+        className="flex justify-end items-center gap-4 pb-2 w-full text-slate-400 "
       >
-        <div className="w-full flex flex-col">
-          <p className="text-center text-xl font-semibold m-0">
-            {sessionWithDetails.activity.name}
-          </p>
-          {checked.isReserved && (
-            <small className="text-xs font-light text-orange-500 text-center">
-              🚀 {sessionWithDetails.placesReserved} places réservées 🚀
-            </small>
-          )}
+        {checked.isReserved && (
+          <DetailButton
+            onClick={() => detailsModal(sessionWithDetails)}
+            className={`relative z-0 ${
+              checked.customerIsWaiting ? "text-orange-600" : "text-slate-400"
+            }`}
+          >
+            {checked.customerIsWaiting && (
+              <span className="absolute -top-1 -right-2 bg-orange-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                {customerWaitingCount(sessionWithDetails.customerSessions)}
+              </span>
+            )}
+          </DetailButton>
+        )}
 
-          {checked.isReserved && calculateRevenue > 0 && (
-            <p className="text-center text-sm font-semibold">
-              💲 {calculateRevenue}€ 💲
-            </p>
-          )}
-        </div>
-        <ItemCardInner className="flex flex-col  w-full text-sm">
-          <p>
-            <span className="font-semibold">Date : </span>
-            {new Date(sessionWithDetails.date).toLocaleDateString()}
-          </p>
-          <p>
-            <span className="font-semibold">Horaire : </span>
-            {`de ${sessionWithDetails.startTime} à ${sessionWithDetails.endTime}`}
-          </p>
-          <p>
-            <span className="font-semibold">Lieu : </span>
-            {sessionWithDetails.spot.name}
-          </p>
-          <p>
-            <span className="font-semibold">Places disponibles : </span>
-            {+sessionWithDetails.placesMax - +sessionWithDetails.placesReserved}
-          </p>
-          <p>
-            <span className="font-semibold">Formule : </span>
-            {sessionWithDetails.type_formule === "half_day"
-              ? "demi-journée"
-              : "journée"}{" "}
-          </p>
-        </ItemCardInner>
-
-        <div id="session-card-footer" className="flex justify-end items-center gap-4 pb-2 w-full text-slate-400">
-          {checked.isReserved && (
-              <DetailButton
-                onClick={() => detailsModal(sessionWithDetails)}
-                className={`relative ${
-                  checked.customerIsWaiting
-                    ? "text-orange-600"
-                    : "text-slate-400"
-                }`}
-              >
-                {checked.customerIsWaiting && (
-                  <span className="absolute -top-1 -right-2 bg-orange-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                    {customerWaitingCount(sessionWithDetails.customerSessions)}
-                  </span>
-                )}
-              </DetailButton>
-          )}
-
-          {!checked.isArchived && (
-            <>
-              <Tooltip title="Ajouter des participants">
-                <button onClick={() => addCustomerModal(sessionWithDetails)}>
-                  <IoMdPersonAdd className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
-                </button>
-              </Tooltip>
-
-              <EditButton
-                title="Modifier la session"
-                onClick={() => updateSessionModal(sessionWithDetails)}
-              />
-
-              <DeleteButton
-                title={
-                  checked.isReserved
-                    ? "Annuler les réservations"
-                    : "Archiver la session"
-                }
-                onClick={() => SwitchAction(sessionWithDetails)}
-              />
-            </>
-          )}
-
-        
-
-          {checked.isArchived && checked.customerIsCancelled && (
-            <Tooltip title="Supprimer la session">
-              <button onClick={() => deleteSession(sessionWithDetails._id)}>
-                <RiCalendarCloseFill className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
+        {!checked.isArchived && (
+          <>
+            <Tooltip title="Ajouter des participants">
+              <button onClick={() => addCustomerModal(sessionWithDetails)}>
+                <IoMdPersonAdd className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
               </button>
             </Tooltip>
-          )}
-        </div>
-      </ItemCard>
 
+            <EditButton
+              title="Modifier la session"
+              onClick={() => updateSessionModal(sessionWithDetails)}
+            />
+
+            <DeleteButton
+              title={
+                checked.isReserved
+                  ? "Annuler les réservations"
+                  : "Archiver la session"
+              }
+              onClick={() => SwitchAction(sessionWithDetails)}
+            />
+          </>
+        )}
+
+        {checked.isArchived && checked.customerIsCancelled && (
+          <Tooltip title="Supprimer la session">
+            <button onClick={() => deleteSession(sessionWithDetails._id)}>
+              <RiCalendarCloseFill className="text-2xl hover:text-slate-200 cursor-pointer transition-all" />
+            </button>
+          </Tooltip>
+        )}
+      </div>
+    </ItemCard>
   );
-}
-
-
+};
