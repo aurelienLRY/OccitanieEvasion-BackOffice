@@ -54,6 +54,7 @@ export const AvatarSystem = () => {
    * @param formData - The form data
    */
   const handleSubmit = async (formData: FormData) => {
+    console.log("formData", formData);
     setIsSubmitting(true);
     // Envoie l'image au serveur
     const fetchAvatar = await fetch("/api/uploadFiles", {
