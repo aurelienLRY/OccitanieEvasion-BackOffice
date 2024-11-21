@@ -19,9 +19,7 @@ import { SiAuthelia } from "react-icons/si";
 import { FaCalendarCheck } from "react-icons/fa";
 import { FaCalendarXmark } from "react-icons/fa6";
 
-type Props = {};
-
-export const HeaderBtn = ({}: Props) => {
+export const HeaderBtn = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>(
     "/img/default-avatar.webp"
@@ -42,9 +40,28 @@ export const HeaderBtn = ({}: Props) => {
     }
   };
 
+  // function qui vérifie si l'url de l'avatar existe et présent dans le dossier public sinon retourne l'avatar par défaut
+  const checkAvatarExists = async (avatarUrl: string) => {
+    try {
+      const response = await fetch(avatarUrl);
+      if (
+        response.ok &&
+        response.headers.get("content-type")?.includes("image")
+      ) {
+        return avatarUrl;
+      } else {
+        return "/img/default-avatar.webp";
+      }
+    } catch (error) {
+      return "/img/default-avatar.webp";
+    }
+  };
+
   useEffect(() => {
     if (session?.user?.avatar) {
-      setAvatarUrl(`/${session?.user?.avatar}`);
+      checkAvatarExists(`/${session?.user?.avatar}`).then((url) =>
+        setAvatarUrl(url)
+      );
     }
   }, [session]);
 
@@ -56,7 +73,8 @@ export const HeaderBtn = ({}: Props) => {
           className="cursor-pointer rounded-full border-4  border-transparent hover:border-opacity-40 hover:border-sky-500 transition-all duration-300"
         >
           <Suspense fallback={<SkeletonAvatar />}>
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={avatarUrl}
               alt="User Avatar"
               width={40}
@@ -74,7 +92,7 @@ export const HeaderBtn = ({}: Props) => {
             </h3>
             <Image
               src={avatarUrl}
-              alt="User Avatar"
+              alt="User Avatar "
               width={70}
               height={70}
               className=" rounded-full absolute bottom-[-30px]  "

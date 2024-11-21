@@ -1,10 +1,8 @@
 /* @type {import('next').NextConfig} */
 
 const nextConfig = {
-  reactStrictMode: false,
-
+  reactStrictMode: true,
   images: {
-    domains: ["beta-occ-evasion-backoffice.yj1ju1.easypanel.host"],
     remotePatterns: [
       {
         protocol: "https",

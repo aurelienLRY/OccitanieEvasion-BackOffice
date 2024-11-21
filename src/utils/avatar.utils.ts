@@ -25,9 +25,7 @@ export async function uploadAvatarAction(formData: FormData, userId: string) {
   const formDataObject = Object.fromEntries(formData);
   try {
     await imageSchema.validate(formDataObject, { abortEarly: false });
-
     const avatarFile = formData.get("avatar") as File;
-
     // Chemin où stocker l'image (public/img/avatar/userId)
     const uploadPath = path.join(process.cwd(), "public", "img", "avatar");
     // nom de l'image
@@ -38,8 +36,7 @@ export async function uploadAvatarAction(formData: FormData, userId: string) {
     // Créer le dossier s'il n'existe pas
     await fs.promises.mkdir(uploadPath, { recursive: true });
 
-    const arrayBuffer = await avatarFile.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    const buffer = Buffer.from(await avatarFile.arrayBuffer());
 
     // Conversion en WebP et enregistrement
     await sharp(buffer)
@@ -60,6 +57,8 @@ export async function uploadAvatarAction(formData: FormData, userId: string) {
     console.log("err", err);
     // Gérer les erreurs de validation
     return { success: false, errors: err };
+  } finally {
+    console.log("Avatar upload terminé");
   }
 }
 
