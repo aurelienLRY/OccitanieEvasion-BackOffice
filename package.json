@@ -32,6 +32,7 @@
     "clsx": "^2.1.1",
     "crypto-js": "^4.2.0",
     "framer-motion": "^11.11.17",
+    "googleapis": "^144.0.0",
     "immer": "^10.1.1",
     "leaflet": "^1.9.4",
     "mongoose": "^8.5.2",
