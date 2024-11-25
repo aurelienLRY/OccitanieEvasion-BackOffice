@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hook/useAuth";
 import { Spin } from "antd";
-
 /* Components */
 import { SingOutBtn, Dashboard } from "@/components";
 

@@ -1,5 +1,8 @@
+"use client";
 import React from "react";
 import Image from "next/image";
+import { useRouter, usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 /* COMPONENTS */
 import { ItemContainer, SecondaryButton } from "@/components";
@@ -9,13 +12,43 @@ type Props = {
 };
 
 export const CalendarCard = (props: Props) => {
-  const googleCalendarConnect = () => {
-    alert("je dois faire la connexion au calendrier google");
+  const { data: session } = useSession();
+
+  const fetchIdCalendar = async () => {
+    const calendar = await fetch("/api/services/google/action", {
+      method: "GET",
+      credentials: "include",
+    });
+    const data = await calendar.json();
+    console.log(data);
   };
+  fetchIdCalendar();
+
   return (
     <ItemContainer
       className={`flex flex-1 flex-col gap-4 min-w-[300px] min-h-[200px] items-center justify-around p-2 ${props.className}`}
     >
+      <ConnectToCalendar />
+    </ItemContainer>
+  );
+};
+
+/**
+ * Composant qui retroune les élément pour se connecter
+ * @returns {JSX.Element}
+ */
+const ConnectToCalendar = () => {
+  const pathname = usePathname(); // Obtenir l'URL actuelle
+  const router = useRouter();
+  const googleCalendarConnect = async () => {
+    await fetch(`/api/services/google?origin=${encodeURIComponent(pathname)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        router.push(data.authUrl);
+      });
+  };
+  return (
+    <>
       <div className="flex flex-col items-center justify-center">
         <Image
           src="/img/googleCalendar.png"
@@ -32,6 +65,7 @@ export const CalendarCard = (props: Props) => {
       <SecondaryButton onClick={googleCalendarConnect} className="px-4 py-2 ">
         Connecter mon calendrier
       </SecondaryButton>
-    </ItemContainer>
+      ;
+    </>
   );
 };

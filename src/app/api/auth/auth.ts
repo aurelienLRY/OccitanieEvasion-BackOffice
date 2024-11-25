@@ -3,9 +3,8 @@ import User from "@/libs/database/models/User";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-/*types*/
-import type { IUser } from "@/types";
-import { crypto } from "@/utils";
+import { object } from "yup";
+import console from "console";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -55,7 +54,9 @@ export const authOptions: NextAuthOptions = {
         token.firstName = user.firstName as string;
         token.lastName = user.lastName as string;
       }
+
       if (trigger === "update" && session) {
+        console.log("TRIGGER UPDATE - SESSION : ", session);
         if (session.user.avatar) {
           token.avatar = session.user.avatar as string;
         }
@@ -84,7 +85,6 @@ export const authOptions: NextAuthOptions = {
           token.lastName = session.user.lastName as string;
         }
       }
-
       return token;
     },
     async session({ session, token }) {

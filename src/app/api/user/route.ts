@@ -4,7 +4,7 @@ import { userSchema } from "@/libs/yup/user.schema";
 import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 import bcrypt from "bcryptjs";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/libs/auth";
+import { authOptions } from "@/app/api/auth/auth";
 
 /**
  * Fonction pour gérer les erreurs
