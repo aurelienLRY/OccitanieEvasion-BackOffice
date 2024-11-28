@@ -1,5 +1,3 @@
-
-
 /* Cache Duration for all stores */
 export const isCacheDuration = 240000; // 4 minutes en millisecondes
 
@@ -9,3 +7,4 @@ export { useCustomerSessions } from "@/store/customerSessions.store"; // Custome
 export { useSessionWithDetails } from "@/store/sessionWithDetails.store"; // Session With Details Store
 export { useSpots } from "@/store/spots.store"; // Spots Store
 export { useActivities } from "@/store/activities.store"; // Activities Store
+export { useProfile } from "@/store/profile.store"; // Profile Store

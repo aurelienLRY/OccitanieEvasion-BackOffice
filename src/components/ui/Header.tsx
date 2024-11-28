@@ -1,5 +1,5 @@
 /* Components */
-import { HeaderBtn } from "./HeaderBtn";
+import { HeaderBtn } from "@/components";
 import { useSession } from "next-auth/react";
 
 /**

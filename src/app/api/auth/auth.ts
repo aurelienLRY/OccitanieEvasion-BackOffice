@@ -3,8 +3,6 @@ import User from "@/libs/database/models/User";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { object } from "yup";
-import console from "console";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -45,46 +43,16 @@ export const authOptions: NextAuthOptions = {
       // On ajoute les informations de l'utilisateur au token
       if (user) {
         token.id = user._id as string;
+        token._id = user.id as string;
         token.email = user.email as string;
-        token.phone = user.phone as string;
-        token.username = user.username as string;
-        token.avatar = user.avatar as string;
-        token.calendar = user.calendar as boolean;
-        token.tokenCalendar = user.tokenCalendar as string;
-        token.firstName = user.firstName as string;
-        token.lastName = user.lastName as string;
       }
 
       if (trigger === "update" && session) {
-        console.log("TRIGGER UPDATE - SESSION : ", session);
-        if (session.user.avatar) {
-          token.avatar = session.user.avatar as string;
-        }
-        if (session.user.username) {
-          token.username = session.user.username as string;
-        }
-        if (session.user.firstName) {
-          token.firstName = session.user.firstName as string;
-        }
-        if (session.user.lastName) {
-          token.lastName = session.user.lastName as string;
-        }
-        if (session.user.phone) {
-          token.phone = session.user.phone as string;
-        }
-        if (session.user.calendar) {
-          token.calendar = session.user.calendar as boolean;
-        }
-        if (session.user.tokenCalendar) {
-          token.tokenCalendar = session.user.tokenCalendar as string;
-        }
-        if (session.user.firstName) {
-          token.firstName = session.user.firstName as string;
-        }
-        if (session.user.lastName) {
-          token.lastName = session.user.lastName as string;
-        }
+        token.id = session.user.id as string;
+        token._id = session.user.id as string;
+        token.email = session.user.email as string;
       }
+
       return token;
     },
     async session({ session, token }) {
@@ -94,13 +62,6 @@ export const authOptions: NextAuthOptions = {
           id: token.id as string,
           _id: token.id as string,
           email: token.email as string,
-          phone: token.phone as string,
-          username: token.username as string,
-          avatar: token.avatar as string,
-          calendar: token.calendar as boolean,
-          tokenCalendar: token.tokenCalendar as string,
-          firstName: token.firstName as string,
-          lastName: token.lastName as string,
         };
       }
       return session;

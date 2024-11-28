@@ -7,7 +7,9 @@ import { InferType } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userSchema } from "@/libs/yup";
 import { Spin } from "antd";
-import { useSession } from "next-auth/react";
+
+/* STORE */
+import { useProfile } from "@/store";
 
 /* COMPONENTS */
 import { Input, SecondaryButton, ToasterAction } from "@/components";
@@ -16,21 +18,17 @@ import { Input, SecondaryButton, ToasterAction } from "@/components";
 import { UPDATE_USER } from "@/libs/actions";
 
 export const ProfilForm = () => {
-  const { data: session, update } = useSession();
+  const { profile, updateProfile } = useProfile();
   const [isDisabled, setIsDisabled] = useState(true);
-  const user = session?.user;
-
-  console.log("user", user);
 
   const methods = useForm<InferType<typeof userSchema>>({
     resolver: yupResolver(userSchema),
     defaultValues: {
-      ...user,
-      email: user?.email || "",
-      username: user?.username || "",
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      phone: user?.phone || "",
+      ...profile,
+      username: profile?.username || "",
+      firstName: profile?.firstName || "",
+      lastName: profile?.lastName || "",
+      phone: profile?.phone || "",
     },
   });
 
@@ -40,14 +38,12 @@ export const ProfilForm = () => {
   } = methods;
 
   const onSubmit = async (data: InferType<typeof userSchema>) => {
-    if (!user || !user._id) return;
+    if (!profile || !profile._id) return;
     // update user in database
-    const result = await UPDATE_USER(user._id as string, data);
+    const result = await UPDATE_USER(profile._id as string, data);
     if (result.success && result.data) {
       // update user in session
-      const updateSession = await update({
-        user: { ...result.data },
-      });
+      updateProfile(result.data);
     }
     ToasterAction({
       result,

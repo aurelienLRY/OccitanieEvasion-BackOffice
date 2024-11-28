@@ -11,8 +11,11 @@ import { Skeleton } from "@nextui-org/skeleton";
 /* components*/
 import { ItemCard, ItemCardHeader, ThemeToggle } from "@/components";
 
+/* store*/
+import { useProfile } from "@/store";
+
 /* utils*/
-import { cn, checkAvatarExists } from "@/utils";
+import { cn } from "@/utils";
 /* icons*/
 import { MdAdminPanelSettings } from "react-icons/md";
 import { SiAuthelia } from "react-icons/si";
@@ -27,9 +30,8 @@ export const HeaderBtn = ({}: Props) => {
     "/img/default-avatar.webp"
   );
   const menuRef = useRef<HTMLDivElement>(null);
-  const { status, session } = useAuth();
-
-  console.log("HEADER BTN - SESSION : ", session);
+  const { status } = useAuth();
+  const { profile } = useProfile();
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -62,12 +64,10 @@ export const HeaderBtn = ({}: Props) => {
   };
 
   useEffect(() => {
-    if (session?.user?.avatar) {
-      checkAvatarExists(`/${session?.user?.avatar}`).then((url) =>
-        setAvatarUrl(url)
-      );
+    if (profile?.avatar) {
+      checkAvatarExists(`/${profile?.avatar}`).then((url) => setAvatarUrl(url));
     }
-  }, [session]);
+  }, [profile]);
 
   return (
     <Suspense fallback={<SkeletonAvatar />}>
@@ -91,9 +91,7 @@ export const HeaderBtn = ({}: Props) => {
         {isOpen && (
           <ItemCard className="absolute right-0 mt-2 min-w-48 w-[80vw]  max-w-[400px] flex flex-col gap-4">
             <ItemCardHeader className="flex flex-col justify-center items-center relative">
-              <h3 className=" font-bold min-h-[50px]">
-                {session?.user?.username}
-              </h3>
+              <h3 className=" font-bold min-h-[50px]">{profile?.username}</h3>
               <Image
                 src={avatarUrl}
                 alt="User Avatar"
@@ -105,10 +103,10 @@ export const HeaderBtn = ({}: Props) => {
             <div className="display flex flex-col gap-2 items-center justify-center mt-8">
               <div className="flex flex-col items-center justify-center">
                 <p className="text-lg font-bold">
-                  {session?.user.lastName} {session?.user?.firstName}
+                  {profile?.lastName} {profile?.firstName}
                 </p>
                 <p className="text-sm text-gray-300 font-extralight italic">
-                  {session?.user?.email}
+                  {profile?.email}
                 </p>
               </div>
               <div className="   flex items-center justify-center gap-3 md:px-5">
@@ -129,7 +127,7 @@ export const HeaderBtn = ({}: Props) => {
                     )}
                   />
                 </Tooltip>
-                {session?.user?.calendar ? (
+                {profile?.calendar ? (
                   <FaCalendarCheck className="text-2xl text-green-500" />
                 ) : (
                   <FaCalendarXmark className="text-2xl text-red-500" />

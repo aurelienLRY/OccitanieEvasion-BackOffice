@@ -1,43 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 import { oauth2Client } from "@/services";
 import { authOptions } from "@/app/api/auth/auth";
-import { connectDB, disconnectDB } from "@/libs/database/mongodb";
-import { IUser } from "@/types";
-import User from "@/libs/database/models/User";
+import { UPDATE_USER, GET_USER_BY_ID } from "@/libs/actions";
 import { getServerSession } from "next-auth";
+import { disconnectDB } from "@/libs/database/mongodb";
+import { IUser } from "@/types";
 
 export async function GET(req: NextRequest, res: NextResponse) {
-  const code = req.nextUrl.searchParams.get("code");
-  const origin = req.nextUrl.searchParams.get("state") || "/dashboard"; // Récupérer l'URL d'origine
-  const session = await getServerSession(authOptions);
-  if (!code || !session) {
-    console.log("API GOOGLE CALLBACK - SESSION : ", session);
-    console.log("API GOOGLE CALLBACK - CODE : ", code);
-    return NextResponse.json({ error: "Element manquant" });
-  }
-
   try {
-    const { tokens } = await oauth2Client.getToken(code);
+    const code = req.nextUrl.searchParams.get("code");
+    const origin = req.nextUrl.searchParams.get("state") || "/dashboard"; // Récupérer l'URL d'origine
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user._id) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+    if (!code) {
+      return NextResponse.json({ error: "Element manquant" }, { status: 400 });
+    }
 
+    const { tokens } = await oauth2Client.getToken(code);
     if (!tokens.access_token) {
-      return NextResponse.json({ error: "Token manquant" });
+      return NextResponse.json({ error: "Token manquant" }, { status: 400 });
     } else {
+      const user = await GET_USER_BY_ID(session.user._id);
+      if (!user.success) {
+        return NextResponse.json(
+          { error: "Utilisateur non trouvé" },
+          { status: 404 }
+        );
+      }
+
       const newUser = {
-        ...session.user,
+        ...user.data,
         tokenCalendar: tokens.access_token,
+        tokenRefreshCalendar: tokens.refresh_token,
         calendar: true,
       };
-      await connectDB();
-      const updateUser: IUser | null = await User.findByIdAndUpdate(
-        session.user._id,
-        newUser,
-        { new: true }
-      );
-      if (!updateUser) {
-        return NextResponse.json({ error: "Utilisateur non trouvé" });
-      }
-      //TODO: Mettre à jour la session avec le nouveau user
 
+      const updateUser = await UPDATE_USER(session.user._id, newUser as IUser);
+      if (!updateUser.success) {
+        return NextResponse.json(
+          { error: "Utilisateur non trouvé" },
+          { status: 404 }
+        );
+      }
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}${origin}`);
     }
   } catch (error) {

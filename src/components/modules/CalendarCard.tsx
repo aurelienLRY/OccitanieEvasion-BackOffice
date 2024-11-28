@@ -3,14 +3,13 @@ import React from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import googleCalendarPlugin from "@fullcalendar/google-calendar";
 
 /* COMPONENTS */
 import { ItemContainer, SecondaryButton } from "@/components";
-
-/* SERVICES */
 
 type Props = {
   className?: string;
@@ -23,37 +22,24 @@ export const CalendarCard = (props: Props) => {
   const [tokenIsValid, setTokenIsValid] = React.useState(false);
 
   async function fetchIdCalendar() {
-    const calendar = await fetch("/api/services/google/action", {
-      method: "GET",
-      credentials: "include",
-    });
-    const data = await calendar.json();
-    setEvents(data.items);
-    console.log("events", data);
+    const fetcherIsValide = await fetch("/api/services/google/action/isValide");
+    const data = await fetcherIsValide.json();
+    if (data.expiry_date) {
+      setTokenIsValid(data.expiry_date > Date.now());
+    } else {
+      setTokenIsValid(false);
+    }
   }
 
   React.useEffect(() => {
     fetchIdCalendar();
-  }, []);
-  /*
-  React.useEffect(() => {
-    if (session?.user.tokenCalendar) {
-      verifyToken(session.user.tokenCalendar).then((tokenIsValid) => {
-        console.log("tokenIsValid", tokenIsValid);
-      });
-    }
-  }, [session?.user.tokenCalendar]);*/
+  }, [session]);
 
   return (
     <ItemContainer
       className={`flex flex-1 flex-col gap-4 min-w-[300px] min-h-[200px] items-center justify-around p-2 ${props.className}`}
     >
-      {session?.user.tokenCalendar ? (
-        <Calendar events={events} />
-      ) : (
-        <ConnectToCalendar />
-      )}
-      <ConnectToCalendar />
+      {tokenIsValid ? <Calendar events={events} /> : <ConnectToCalendar />}
     </ItemContainer>
   );
 };
@@ -90,7 +76,6 @@ const ConnectToCalendar = () => {
       <SecondaryButton onClick={googleCalendarConnect} className="px-4 py-2 ">
         Connecter mon calendrier
       </SecondaryButton>
-      ;
     </>
   );
 };

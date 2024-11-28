@@ -1,4 +1,3 @@
-"use server";
 import { google } from "googleapis";
 
 export const oauth2Client = await new google.auth.OAuth2(
@@ -32,5 +31,5 @@ export const getCalendarEvents = async (token: string) => {
 // function qui vérifie si le token est valide
 export const verifyToken = async (token: string) => {
   const response = await oauth2Client.getTokenInfo(token);
-  return response;
+  return JSON.stringify(response);
 };

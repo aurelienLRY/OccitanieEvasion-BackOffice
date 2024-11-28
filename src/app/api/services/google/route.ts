@@ -13,7 +13,9 @@ export async function GET(req: NextRequest, res: NextResponse) {
   // URL d'autorisation Google
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: "offline",
-    scope: ["https://www.googleapis.com/auth/calendar"],
+    scope: [
+      "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events",
+    ],
     state: origin, // Inclure l'URL d'origine comme état
   });
 

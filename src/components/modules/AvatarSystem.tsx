@@ -20,6 +20,9 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { IUser } from "@/types";
 import { toast } from "sonner";
 
+/* store */
+import { useProfile } from "@/store";
+
 /**
  * Ce composant gère le système d'avatar pour les utilisateurs.
  * Il permet aux utilisateurs de télécharger une nouvelle image d'avatar,
@@ -27,7 +30,7 @@ import { toast } from "sonner";
  * @returns AvatarSystem
  */
 export const AvatarSystem = () => {
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const { profile, updateProfile } = useProfile();
   const [avatarUrl, setAvatarUrl] = useState<string>(
     "/img/default-avatar.webp"
   );
@@ -42,7 +45,7 @@ export const AvatarSystem = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setImagePreview(URL.createObjectURL(file));
+      setAvatarUrl(URL.createObjectURL(file));
       const formData = new FormData();
       formData.append("avatar", file, file.name);
       handleSubmit(formData); // Ajouter l'image à formData et soumettre
@@ -67,22 +70,20 @@ export const AvatarSystem = () => {
 
       // Met à jour l'utilisateur en bdd
       const updateUser = await UPDATE_USER(
-        session?.user._id as string,
+        profile?._id as string,
         {
-          ...session?.user,
+          ...profile,
           avatar: result.path as string,
         } as IUser
       );
 
-      //Met à jour la session
-      if (session) {
-        const updateSession = await update({
-          user: {
-            ...session.user,
-            avatar: result.path as string,
-          },
-        });
+      if (updateUser.success) {
+        updateProfile({
+          ...profile,
+          avatar: result.path as string,
+        } as IUser);
       }
+      setIsUploaded(false);
 
       // Affiche le toast d'état de l'opération
       ToasterAction({
@@ -96,13 +97,13 @@ export const AvatarSystem = () => {
   };
 
   useEffect(() => {
-    if (session?.user?.avatar) {
-      checkAvatarExists(`/${session?.user?.avatar}`).then((url) => {
+    if (profile?.avatar) {
+      checkAvatarExists(`/${profile?.avatar}`).then((url) => {
         setAvatarUrl(url);
         setImagePreview(null);
       });
     }
-  }, [session]);
+  }, [profile]);
 
   return (
     <form action={handleSubmit} className="flex flex-col items-center">
