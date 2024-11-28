@@ -12,19 +12,23 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
   const auth = new google.auth.OAuth2();
   auth.setCredentials({ access_token: session.user.tokenCalendar });
-  const calendar = google.calendar({ version: "v3", auth });
+  const tokenInfo = await auth.getTokenInfo(session.user.tokenCalendar);
+  console.log("tokenInfo", tokenInfo);
 
+  const calendar = google.calendar({ version: "v3", auth });
+  /*
   const events = await calendar.events.list({
     calendarId: "primary",
     timeMin: new Date().toISOString(),
     maxResults: 10,
     singleEvents: true,
     orderBy: "startTime",
-  });
+  });*/
+  const calendarId = await calendar.calendarList.list();
 
-  return NextResponse.json(events.data);
+  return NextResponse.json({ calendarId });
 }
-
+/*
 export async function POST(req: NextRequest, res: NextResponse) {
   const { summary, location, description, start, end } = await req.json();
   const event = {
@@ -40,4 +44,4 @@ export async function POST(req: NextRequest, res: NextResponse) {
     requestBody: event,
   });
   return NextResponse.json(response.data);
-}
+}*/

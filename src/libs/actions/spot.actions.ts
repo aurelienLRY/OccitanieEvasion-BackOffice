@@ -47,8 +47,12 @@ export const xssSpot = async (spot: ISpot): Promise<ISpot | object> => {
       })),
       photo: xss(spot.photo),
       meetingPoint: {
-        half_day: xss(spot.meetingPoint.half_day),
-        full_day: xss(spot.meetingPoint.full_day),
+        half_day: spot.meetingPoint.half_day
+          ? xss(spot.meetingPoint.half_day)
+          : null,
+        full_day: spot.meetingPoint.full_day
+          ? xss(spot.meetingPoint.full_day)
+          : null,
       },
     };
     return JSON.parse(JSON.stringify(xssData));
