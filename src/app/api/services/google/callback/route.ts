@@ -10,6 +10,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const code = req.nextUrl.searchParams.get("code");
     const origin = req.nextUrl.searchParams.get("state") || "/dashboard"; // Récupérer l'URL d'origine
+
     const session = await getServerSession(authOptions);
     if (!session || !session.user._id) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });

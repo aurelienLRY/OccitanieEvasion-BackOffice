@@ -1,5 +1,1 @@
-export {
-  GoogleAuthorization,
-  oauth2Client,
-  getCalendarEvents,
-} from "./GoogleCalendar";
+export * from "./GoogleCalendar";

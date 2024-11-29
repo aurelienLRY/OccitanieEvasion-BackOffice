@@ -8,7 +8,7 @@ import { Header } from "@/components/ui/Header";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider refetchInterval={1 * 60} refetchOnWindowFocus={true}>
+    <SessionProvider>
       <NextUIProvider>
         <Toaster richColors position="top-center" closeButton />
         <Header />

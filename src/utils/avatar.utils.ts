@@ -1,5 +1,6 @@
 "use server";
 
+import { ICallback } from "@/types";
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
@@ -19,8 +20,11 @@ const imageSchema = yup.object({
       }
     ),
 });
-
-export async function uploadAvatarAction(formData: FormData, userId: string) {
+// etendre le type de retour de la fonction avec data avatar
+export async function uploadAvatarAction(
+  formData: FormData,
+  userId: string
+): Promise<ICallback & { data: { avatar: string } | null }> {
   // Validation des données avec yup
   const formDataObject = Object.fromEntries(formData);
   try {
@@ -61,11 +65,16 @@ export async function uploadAvatarAction(formData: FormData, userId: string) {
       }
     }
 
-    return { success: true, path: avatarPath.replaceAll("\\", "/") };
+    return {
+      success: true,
+      data: { avatar: avatarPath.replaceAll("\\", "/") },
+      feedback: null,
+      error: null,
+    };
   } catch (err: any) {
     console.log("err", err);
     // Gérer les erreurs de validation
-    return { success: false, errors: err };
+    return { success: false, data: null, feedback: null, error: err };
   }
 }
 

@@ -1,8 +1,7 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -10,36 +9,54 @@ import googleCalendarPlugin from "@fullcalendar/google-calendar";
 
 /* COMPONENTS */
 import { ItemContainer, SecondaryButton } from "@/components";
+import { useProfile } from "@/store";
 
 type Props = {
   className?: string;
 };
 
 export const CalendarCard = (props: Props) => {
-  const { data: session } = useSession();
-
   const [events, setEvents] = React.useState([]);
   const [tokenIsValid, setTokenIsValid] = React.useState(false);
+  const { profile, updateProfile } = useProfile();
 
-  async function fetchIdCalendar() {
-    const fetcherIsValide = await fetch("/api/services/google/action/isValide");
-    const data = await fetcherIsValide.json();
-    if (data.expiry_date) {
-      setTokenIsValid(data.expiry_date > Date.now());
+  async function fetchCheckToken() {
+    const fetcherIsValide = await fetch(
+      `/api/services/google/check-token?token=${profile?.tokenCalendar}`
+    );
+    const { data } = await fetcherIsValide.json();
+
+    if (!data.valid && profile?.tokenCalendar) {
+      const fetcherRefreshToken = await fetch(
+        "/api/services/google/refresh-token",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            profile: profile,
+          }),
+        }
+      );
+      const refreshToken = await fetcherRefreshToken.json();
+      if (refreshToken.success && refreshToken.data) {
+        updateProfile(refreshToken.data);
+        setTokenIsValid(true);
+      }
     } else {
-      setTokenIsValid(false);
+      setTokenIsValid(data.valid);
     }
   }
 
   React.useEffect(() => {
-    fetchIdCalendar();
-  }, [session]);
+    fetchCheckToken();
+  }, []);
 
   return (
     <ItemContainer
       className={`flex flex-1 flex-col gap-4 min-w-[300px] min-h-[200px] items-center justify-around p-2 ${props.className}`}
     >
-      {tokenIsValid ? <Calendar events={events} /> : <ConnectToCalendar />}
+      <Suspense fallback={<div>Loading...</div>}>
+        {tokenIsValid ? <Calendar /> : <ConnectToCalendar />}
+      </Suspense>
     </ItemContainer>
   );
 };
@@ -80,12 +97,19 @@ const ConnectToCalendar = () => {
   );
 };
 
-function Calendar({ events }: { events: any[] }) {
+function Calendar() {
+  const { profile } = useProfile();
+  if (!profile) return null;
   return (
     <FullCalendar
       plugins={[dayGridPlugin, googleCalendarPlugin]}
       initialView="dayGridMonth"
-      events={events}
+      events={{
+        googleCalendarId: profile.email,
+        className: "bg-red-500 text-sm font-thin",
+      }}
+      googleCalendarApiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
+      themeSystem="United"
     />
   );
 }
