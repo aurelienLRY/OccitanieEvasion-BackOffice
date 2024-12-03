@@ -19,6 +19,10 @@ import {
   DeleteButton,
 } from "@/components";
 
+/*services*/
+import { fetcherUpdateEvent } from "@/services/GoogleCalendar/fetcherUpdateEvent";
+import { generateEvent } from "@/services/GoogleCalendar/generateEvent";
+
 /* types */
 import { ISessionWithDetails, ICustomerSession } from "@/types";
 
@@ -29,14 +33,14 @@ import {
 } from "@/libs/actions";
 
 /*store*/
-import { useSessionWithDetails } from "@/store";
+import { useSessionWithDetails, useProfile } from "@/store";
 
 /* Template Email  */
-import { customerConfirmation } from "@/libs/sendBox/template/RegistrationConfirmation";
-import { MailContent, HtmlBase } from "@/libs/sendBox/template/base";
+import { customerConfirmation } from "@/libs/nodeMailer/template/RegistrationConfirmation";
+import { MailContent, HtmlBase } from "@/libs/nodeMailer/template/base";
 
 /* NodeMailer */
-import { sendEmail } from "@/libs/sendBox/nodeMailer";
+import { nodeMailerSender } from "@/libs";
 
 /*icons */
 import { IoMdPersonAdd } from "react-icons/io";
@@ -80,7 +84,7 @@ type Props = {
 
 export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
   const { updateSessionWithDetails } = useSessionWithDetails();
-
+  const { profile } = useProfile();
   /* Form */
   const methods = useForm({
     resolver: yupResolver(createDynamicSchema([])),
@@ -152,6 +156,16 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
     if (result.success) {
       if (result.data) {
         updateSessionWithDetails(result.data);
+        const refreshToken = profile?.tokenRefreshCalendar;
+        if (refreshToken) {
+          const event = generateEvent(result.data);
+          await fetcherUpdateEvent(refreshToken, event, result.data._id);
+        } else {
+          toast.error(
+            "Votre calendrier n'est pas connecté, l'évènement n'a pas été mis à jour dans votre calendrier"
+          );
+        }
+
         if (
           window.confirm(
             "Client ajouté avec succès ! \n Voulez-vous envoyer un email au client ?"
@@ -165,7 +179,7 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
               sessionWithDetails
             );
             const mailHtml = HtmlBase(myContent.subject, myContent.content);
-            const envoi = await sendEmail(
+            const envoi = await nodeMailerSender(
               newCustomer.email,
               myContent.subject,
               mailHtml

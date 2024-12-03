@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleAuthorization } from "@/services";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   try {
     const origin = req.nextUrl.searchParams.get("origin") || "/dashboard";
     const authUrl = await GoogleAuthorization(origin);

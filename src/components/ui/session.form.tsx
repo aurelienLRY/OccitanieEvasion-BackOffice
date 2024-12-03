@@ -8,22 +8,33 @@ import { Spin } from "antd";
 /* ACTIONS */
 import { CREATE_SESSION, UPDATE_SESSION } from "@/libs/actions/session.actions";
 import { sessionSchema } from "@/libs/yup/session.schema";
+import { fetcherAddEvent } from "@/services/GoogleCalendar/fetcherInsertEvent";
+import { fetcherUpdateEvent } from "@/services/GoogleCalendar/fetcherUpdateEvent";
 
 /* STORES */
 import {
   useSessionWithDetails,
   useSpots,
   useActivities,
+  useProfile,
 } from "@/store";
 
 /* TYPES */
 import { ISession, ISessionWithDetails, IActivity } from "@/types";
 
 /* COMPONENTS */
-import { Modal , Input , SelectInput , ToasterAction , InfoTooltips } from "@/components";
+import {
+  Modal,
+  Input,
+  SelectInput,
+  ToasterAction,
+  InfoTooltips,
+} from "@/components";
 
 /* UTILS */
 import { formatDate } from "@/utils/date.utils";
+import { generateEvent } from "@/services/GoogleCalendar/generateEvent";
+import { toast } from "sonner";
 
 export type TSessionForm = {
   _id?: string;
@@ -60,6 +71,7 @@ export function SessionForm({
   );
   const activities = useActivities((state) => state.Activities);
   const spots = useSpots((state) => state.Spots);
+  const { profile } = useProfile();
 
   const [filteredActivities, setFilteredActivities] =
     useState<IActivity[]>(activities);
@@ -164,7 +176,10 @@ export function SessionForm({
         // Ne change la durée que si la formule change
         if (watchFormule === "half_day" && data?.type_formule !== "half_day") {
           methods.setValue("duration", isActivity?.duration?.half || "");
-        } else if (watchFormule === "full_day" && data?.type_formule !== "full_day") {
+        } else if (
+          watchFormule === "full_day" &&
+          data?.type_formule !== "full_day"
+        ) {
           methods.setValue("duration", isActivity?.duration?.full || "");
         }
       } else {
@@ -182,17 +197,31 @@ export function SessionForm({
 
   const onSubmit = async (data: TSessionForm) => {
     const result = isUpdate
-      ?  await UPDATE_SESSION(data!._id as string, data as ISession)
+      ? await UPDATE_SESSION(data!._id as string, data as ISession)
       : await CREATE_SESSION(data as ISession);
 
     if (result.success) {
       if (result.data) {
+        /* Gestion de l'événement dans le calendrier */
+        const event = generateEvent(result.data);
+        const sessionId = result.data._id;
+        const refreshToken = profile?.tokenRefreshCalendar;
+        if (refreshToken && sessionId) {
+          isUpdate
+            ? await fetcherUpdateEvent(refreshToken, event, sessionId)
+            : await fetcherAddEvent(refreshToken, event, sessionId);
+        } else {
+          toast.error(
+            "Votre calendrier n'est pas connecté, l'évènement n'a pas été mis à jour dans votre calendrier"
+          );
+        }
+        /* Gestion de la session dans le store */
         isUpdate
           ? updateSessionWithDetails(result.data)
           : addSessionWithDetails(result.data);
       }
-      reset();
       onClose();
+      reset();
     }
     ToasterAction({
       result,
@@ -268,7 +297,7 @@ export function SessionForm({
           <div className="flex flex-col items-center gap-1 w-full p-2 rounded-md border-2 border-sky-500 ">
             <p className="text-sky-500 text-xl font-bold">Créneau horaire</p>
             <div className="flex flex-col md:flex-row gap-2 w-full">
-                <Input name="date" type="date" label="Date" />
+              <Input name="date" type="date" label="Date" />
               <div className="flex  md:flex-col  items-center justify-between gap-2 w-full">
                 <Input name="startTime" type="time" label="Heure de début" />
                 <Input name="endTime" type="time" label="Heure de fin" />

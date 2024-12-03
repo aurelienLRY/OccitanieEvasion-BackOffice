@@ -12,6 +12,7 @@ export {
 
 export {
   formatDate,
+  formatDateTime,
   getMonthString,
   getMonthValue,
   getYearString,

@@ -32,8 +32,6 @@ export default function SessionDetailCard({
 }) {
   const detailsCustomerModal = useModal<ICustomerSession>();
 
-  console.log(detailsCustomerModal);
-
   const getPrice_total = calculateSessionIncome(data);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

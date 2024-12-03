@@ -8,3 +8,4 @@ export { useSessionWithDetails } from "@/store/sessionWithDetails.store"; // Ses
 export { useSpots } from "@/store/spots.store"; // Spots Store
 export { useActivities } from "@/store/activities.store"; // Activities Store
 export { useProfile } from "@/store/profile.store"; // Profile Store
+export { useCalendar } from "@/store/calendar.store"; // Calendar Store

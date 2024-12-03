@@ -30,19 +30,17 @@ const SpotSchema = new Schema<ISpot>({
     type: String,
     required: true,
   },
-  meetingPoint: 
-    {
-      half_day: {
-        type: String,
-        required: false,
-      },
-      full_day: {
-        type: String,
-        required: false,
-      },
+  meetingPoint: {
+    half_day: {
+      type: String,
+      required: false,
     },
-
+    full_day: {
+      type: String,
+      required: false,
+    },
+  },
 });
 
-const Spot = mongoose.models.Spot || mongoose.model<ISpot>("Spot", SpotSchema);
-export default Spot;
+export const Spot =
+  mongoose.models.Spot || mongoose.model<ISpot>("Spot", SpotSchema);

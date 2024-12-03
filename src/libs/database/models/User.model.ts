@@ -85,5 +85,4 @@ UserSchema.post("findOne", async function (doc) {
   }
 });
 
-const User = mongoose.models?.User || model<IUser>("User", UserSchema);
-export default User;
+export const User = mongoose.models?.User || model<IUser>("User", UserSchema);

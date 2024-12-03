@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 import { disconnectDB } from "@/libs/database/mongodb";
 import { IUser } from "@/types";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   try {
     const code = req.nextUrl.searchParams.get("code");
     const origin = req.nextUrl.searchParams.get("state") || "/dashboard"; // Récupérer l'URL d'origine

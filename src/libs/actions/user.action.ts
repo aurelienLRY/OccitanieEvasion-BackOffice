@@ -7,7 +7,7 @@ import xss from "xss";
 /* Database */
 import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 /* Models */
-import User from "@/libs/database/models/User";
+import { User } from "@/libs/database/models/User.model";
 /* Types */
 import { IUser, ICallbackForUser } from "@/types";
 /* Yup */

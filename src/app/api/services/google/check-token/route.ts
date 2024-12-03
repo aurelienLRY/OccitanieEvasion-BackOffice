@@ -13,7 +13,6 @@ import { ICallback } from "@/types";
  */
 export async function GET(
   req: NextRequest,
-  res: NextResponse
 ): Promise<NextResponse<ICallback>> {
   try {
     const token = req.nextUrl.searchParams.get("token");

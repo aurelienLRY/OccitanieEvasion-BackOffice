@@ -163,7 +163,7 @@ export const SelectInput = ({
         <select
           id={name}
           {...register(name)}
-          className={`border border-none rounded-md py-2 px-2 md:px-4 dark:text-black focus-visible:outline-none
+          className={`border border-none rounded-md py-2 px-2 md:px-4 text-black bg-white focus-visible:outline-none
         ${
           errorMessage
             ? "border-red-500 shadow-md shadow-red-500"

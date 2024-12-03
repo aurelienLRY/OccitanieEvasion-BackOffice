@@ -2,3 +2,8 @@ export * from "./oauth2Client";
 export * from "./authUrl";
 export * from "./refreshAcces";
 export * from "./checkToken";
+export * from "./generateEvent";
+export * from "./addEvent";
+export * from "./getEvent";
+export * from "./deleteEvent";
+export * from "./updateEvent";

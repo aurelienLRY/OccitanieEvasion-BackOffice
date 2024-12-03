@@ -8,7 +8,7 @@ import xss from "xss";
 import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 
 /* Models */
-import Spot from "@/libs/database/models/Spot";
+import { Spot } from "@/libs/database/models/Spot.model";
 import { spotSchema } from "@/libs/yup";
 
 /* Types */

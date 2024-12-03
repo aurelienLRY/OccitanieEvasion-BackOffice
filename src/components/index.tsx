@@ -21,7 +21,7 @@ export { CustomerCard } from "@/components/ui/CustomerCard";
 export { CustomerFiche } from "@/components/ui/CustomerFiche";
 export { DashboardNav } from "@/components/ui/DashboardNav";
 export { EmailTemplateEditor } from "@/components/ui/EmailTemplateEditor";
-export { Header } from "@/components/ui/Header";
+export { default as Header } from "@/components/ui/Header";
 export { InfoTooltips } from "@/components/ui/InfoTooltips";
 export {
   CheckboxInput,

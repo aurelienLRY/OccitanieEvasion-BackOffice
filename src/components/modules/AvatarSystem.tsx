@@ -64,7 +64,8 @@ export const AvatarSystem = () => {
       body: formData,
     });
     // Récupère le résultat de l'envoie de l'image
-    const { result } = await fetchAvatar.json();
+    const result = await fetchAvatar.json();
+    console.log("result", result);
     if (result.success) {
       setIsUploaded(true);
 
@@ -73,14 +74,14 @@ export const AvatarSystem = () => {
         profile?._id as string,
         {
           ...profile,
-          avatar: result.path as string,
+          avatar: result.data?.path as string,
         } as IUser
       );
 
       if (updateUser.success) {
         updateProfile({
           ...profile,
-          avatar: result.path as string,
+          avatar: result.data?.path as string,
         } as IUser);
       }
       setIsUploaded(false);
@@ -100,7 +101,6 @@ export const AvatarSystem = () => {
     if (profile?.avatar) {
       checkAvatarExists(`/${profile?.avatar}`).then((url) => {
         setAvatarUrl(url);
-        setImagePreview(null);
       });
     }
   }, [profile]);

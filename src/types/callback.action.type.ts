@@ -6,6 +6,7 @@ import {
   ICustomerSession,
   IEmailTemplate,
   IUser,
+  IEventModel,
 } from "@/types";
 
 /**
@@ -136,4 +137,11 @@ export interface ICallbackForEmailTemplates extends ICallback {
  */
 export interface ICallbackForUser extends ICallback {
   data: IUser | null;
+}
+
+/** @extends ICallback
+ * @property {IEventModel} data - The event
+ */
+export interface ICallbackForEvent extends ICallback {
+  data: IEventModel | null;
 }

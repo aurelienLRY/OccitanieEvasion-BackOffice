@@ -1,14 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { Spin } from "antd";
 
 /*Components*/
-import { ToasterAction, Modal } from "@/components";
+import { Modal } from "@/components";
 
-/*Actions*/
-import { CANCEL_CUSTOMER_SESSION } from "@/libs/actions";
-/*store*/
-import { useSessionWithDetails } from "@/store";
+/*hooks*/
+import { useCustomer } from "@/hook/useCustomer";
 
 /*Types*/
 import { ISessionWithDetails, ICustomerSession } from "@/types";
@@ -62,27 +60,7 @@ export const CustomerCanceled = ({
 }: {
   customer: ICustomerSession;
 }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { updateSessionWithDetails } = useSessionWithDetails();
-
-  const handleCancel = async () => {
-    window.confirm(
-      `Voulez-vous annuler ${customer.first_names} ${customer.last_name} ?`
-    );
-    {
-      setIsSubmitting(true);
-
-      const result = await CANCEL_CUSTOMER_SESSION(customer._id);
-      if (result.success) {
-        if (result.data) {
-          updateSessionWithDetails(result.data);
-        }
-      }
-      ToasterAction({ result, defaultMessage: "Client annulé avec succès" });
-      setIsSubmitting(false);
-    }
-  };
-
+  const { CancelCustomer, isSubmitting } = useCustomer();
   const displayStatus = {
     Validated: { icon: "👍", name: "Validé" },
     Canceled: { icon: "🖕", name: "Annulé" },
@@ -131,7 +109,7 @@ export const CustomerCanceled = ({
         </div>
         {customer.status !== "Canceled" && (
           <button
-            onClick={handleCancel}
+            onClick={() => CancelCustomer(customer)}
             className="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 transition-all duration-300 min-w-[100px] min-h-[40px] flex items-center justify-center "
             disabled={isSubmitting}
           >

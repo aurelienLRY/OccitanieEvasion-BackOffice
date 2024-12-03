@@ -50,7 +50,7 @@ export const DashboardNav = ({
   const isPathActive = (path: string) => {
     return cn(
       isActive(path) ? "font-semibold bg-sky-700 dark:bg-sky-900" : "",
-      "py-2 px-3 rounded-md transition-all hover:font-semibold "
+      "py-2 px-3 rounded-md transition-all hover:font-semibold relative"
     );
   };
 

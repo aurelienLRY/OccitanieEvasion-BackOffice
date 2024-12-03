@@ -22,10 +22,12 @@ export async function POST(
   }
 
   const userId = session.user._id as string;
+
   const formData = await request.formData();
 
   // Appeler la fonction pour traiter l'upload de l'avatar
   const result = await uploadAvatarAction(formData, userId);
+  console.log("result", result);
 
   if (result.success && result.data) {
     return NextResponse.json(
