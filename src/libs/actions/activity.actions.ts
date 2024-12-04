@@ -6,11 +6,10 @@ import xss from "xss";
 /* Database */
 import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 /* Models */
-import Activity from "@/libs/database/models/Activity";
-
+import { Activity } from "@/libs/database/models/Activity.model";
 
 /* YUP schema */
-import { activitySchema } from "@/libs/yup";  
+import { activitySchema } from "@/libs/yup";
 
 /* Types */
 import {
@@ -21,7 +20,6 @@ import {
 
 /* Actions */
 import { GET_SERVER_SESSIONS_WITH_DETAILS } from "@/libs/actions/sessionWithDetail.actions";
-
 
 /*
  * Validate the activity
@@ -68,7 +66,6 @@ export const CREATE_ACTIVITY = async (
   activity: IActivity
 ): Promise<ICallbackForActivity> => {
   try {
-    console.log("activity", activity)
     /* validation & cleaning */
     const yupActivity = (await validateActivity(activity)) as IActivity;
     const cleanActivity = (await xssActivity(yupActivity)) as IActivity;
@@ -171,12 +168,16 @@ export const UPDATE_ACTIVITY = async (
     const yupActivity = (await validateActivity(activity)) as IActivity;
     const cleanActivity = (await xssActivity(yupActivity)) as IActivity;
 
-    console.log("cleanActivity", cleanActivity)
+    console.log("cleanActivity", cleanActivity);
 
     await connectDB();
-    const updatedActivity = await Activity.findByIdAndUpdate(id, cleanActivity, {
-      new: true,
-    });
+    const updatedActivity = await Activity.findByIdAndUpdate(
+      id,
+      cleanActivity,
+      {
+        new: true,
+      }
+    );
     return {
       success: true,
       data: JSON.parse(JSON.stringify(updatedActivity)),
@@ -201,33 +202,43 @@ export const UPDATE_ACTIVITY = async (
   }
 };
 
-
 /*
  * Delete an activity
  * @param activityId - The id of the activity to delete
  * @returns The callback for the activity
  */
-export const DELETE_ACTIVITY = async (activityId: string): Promise<ICallbackForActivity> => {
-    try {
-        await connectDB()
-         const sessionsWithDetails = await GET_SERVER_SESSIONS_WITH_DETAILS()
-         const sessionsWithDetailsByActivity = sessionsWithDetails.filter(session => session.activity._id === activityId )
-         if(sessionsWithDetailsByActivity.length > 0){
-            return {success: false, error: "Cette activité est utilisée dans une session", data: null, feedback: null}
-         }
-        const result = await Activity.findByIdAndDelete(activityId)
-        if (!result) {
-            throw new Error("Activité non trouvée")
-        }
-        return {success: true, data: JSON.parse(JSON.stringify(result)) , error: null, feedback: ["Activité supprimée avec succès"]}
+export const DELETE_ACTIVITY = async (
+  activityId: string
+): Promise<ICallbackForActivity> => {
+  try {
+    await connectDB();
+    const sessionsWithDetails = await GET_SERVER_SESSIONS_WITH_DETAILS();
+    const sessionsWithDetailsByActivity = sessionsWithDetails.filter(
+      (session) => session.activity._id === activityId
+    );
+    if (sessionsWithDetailsByActivity.length > 0) {
+      return {
+        success: false,
+        error: "Cette activité est utilisée dans une session",
+        data: null,
+        feedback: null,
+      };
     }
-    catch (error) {
-     
-        const message = (error as Error).message;
-        console.error("Erreur lors de la suppression de l'activité:", error);
-        return {success: false, error: message, data: null, feedback: null}
+    const result = await Activity.findByIdAndDelete(activityId);
+    if (!result) {
+      throw new Error("Activité non trouvée");
     }
-    finally {
-        await disconnectDB()
-    }
-}
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(result)),
+      error: null,
+      feedback: ["Activité supprimée avec succès"],
+    };
+  } catch (error) {
+    const message = (error as Error).message;
+    console.error("Erreur lors de la suppression de l'activité:", error);
+    return { success: false, error: message, data: null, feedback: null };
+  } finally {
+    await disconnectDB();
+  }
+};

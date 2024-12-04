@@ -96,7 +96,6 @@ CustomerSessionSchema.post("findOne", async function (doc: ICustomerSession) {
   }
 });
 
-const CustomerSession =
+export const CustomerSession =
   mongoose.models.CustomerSession ||
   mongoose.model<ICustomerSession>("CustomerSession", CustomerSessionSchema);
-export default CustomerSession;

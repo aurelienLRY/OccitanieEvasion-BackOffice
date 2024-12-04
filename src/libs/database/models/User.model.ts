@@ -22,6 +22,7 @@ const UserSchema = new Schema<IUser>(
     username: { type: String, required: true, default: "username ?" },
     calendar: { type: Boolean, default: false },
     tokenCalendar: { type: String },
+    tokenRefreshCalendar: { type: String },
   },
   { timestamps: true }
 );
@@ -84,5 +85,4 @@ UserSchema.post("findOne", async function (doc) {
   }
 });
 
-const User = mongoose.models?.User || model<IUser>("User", UserSchema);
-export default User;
+export const User = mongoose.models?.User || model<IUser>("User", UserSchema);

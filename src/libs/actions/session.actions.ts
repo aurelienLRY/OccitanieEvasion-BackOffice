@@ -15,7 +15,7 @@ import {
 /* Database */
 import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 /* Models */
-import Session from "@/libs/database/models/Session";
+import { Session } from "@/libs/database/models/Session.model";
 /*  actions */
 import {
   GET_SERVER_SESSIONS_WITH_DETAILS,

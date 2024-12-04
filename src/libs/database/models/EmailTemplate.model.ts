@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 /* Types */
-import { IEmailTemplate } from "@/types"
-
+import { IEmailTemplate } from "@/types";
 
 const EmailTemplateSchema: Schema<IEmailTemplate> = new Schema({
   scenario: {
@@ -18,4 +17,6 @@ const EmailTemplateSchema: Schema<IEmailTemplate> = new Schema({
   },
 });
 
-export default mongoose.models.EmailTemplate || mongoose.model<IEmailTemplate>('EmailTemplate', EmailTemplateSchema);
+export const EmailTemplate =
+  mongoose.models?.EmailTemplate ||
+  mongoose.model<IEmailTemplate>("EmailTemplate", EmailTemplateSchema);

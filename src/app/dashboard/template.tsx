@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hook/useAuth";
 import { Spin } from "antd";
-
 /* Components */
 import { SingOutBtn, Dashboard } from "@/components";
 
@@ -13,6 +12,7 @@ import {
   useSpots,
   useActivities,
   useCustomerSessions,
+  useProfile,
 } from "@/store";
 
 /**
@@ -31,6 +31,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
           useSpots.getState().fetchSpots(),
           useActivities.getState().fetchActivities(),
           useCustomerSessions.getState().fetchCustomerSessions(),
+          useProfile.getState().fetchProfile(),
         ]);
       } catch (error) {
         console.error("Erreur lors de la récupération des données:", error);

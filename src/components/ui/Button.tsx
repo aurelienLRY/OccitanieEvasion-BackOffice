@@ -1,5 +1,5 @@
 import React from "react";
-import { Tooltip } from "antd";
+import { Tooltip, Spin } from "antd";
 
 /*icons */
 import { BiEditAlt } from "react-icons/bi";
@@ -120,16 +120,26 @@ export const DeleteButton = ({
   onClick,
   className,
   children,
+  isSubmitting = false,
 }: {
   title?: string;
   onClick: () => void;
   className?: string;
   children?: React.ReactNode;
+  isSubmitting?: boolean;
 }) => {
   return (
     <Tooltip title={`${title ? title : "Supprimer"}`}>
-      <button onClick={onClick} className={`text-2xl group ${className}`}>
-        <MdDelete className="group-hover:text-red-500 transition-all duration-300 " />
+      <button
+        onClick={onClick}
+        className={`text-2xl group ${className}`}
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? (
+          <Spin size="small" className="text-red-500" />
+        ) : (
+          <MdDelete className="group-hover:text-red-500 transition-all duration-300 " />
+        )}
         {children}
       </button>
     </Tooltip>

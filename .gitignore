@@ -38,5 +38,5 @@ next-env.d.ts
 .env
 
 
-# avatar
-/public/img/avatar/*
+#avatar 
+/public/img/avatar

@@ -8,7 +8,7 @@ import xss from "xss";
 import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 
 /* Models */
-import Spot from "@/libs/database/models/Spot";
+import { Spot } from "@/libs/database/models/Spot.model";
 import { spotSchema } from "@/libs/yup";
 
 /* Types */
@@ -47,8 +47,12 @@ export const xssSpot = async (spot: ISpot): Promise<ISpot | object> => {
       })),
       photo: xss(spot.photo),
       meetingPoint: {
-        half_day: spot.meetingPoint.half_day && xss(spot.meetingPoint.half_day),
-        full_day: spot.meetingPoint.full_day && xss(spot.meetingPoint.full_day),
+        half_day: spot.meetingPoint.half_day
+          ? xss(spot.meetingPoint.half_day)
+          : null,
+        full_day: spot.meetingPoint.full_day
+          ? xss(spot.meetingPoint.full_day)
+          : null,
       },
     };
     return JSON.parse(JSON.stringify(xssData));

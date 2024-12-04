@@ -21,3 +21,8 @@ export type {
   ICallbackForUser,
 } from "@/types/callback.action.type";
 export type { IEmailTemplate } from "@/types/emailTemplate.type";
+export type {
+  ICalendarTokenInfo,
+  ICalendarEvent,
+  IEventModel,
+} from "@/types/calendar.type";

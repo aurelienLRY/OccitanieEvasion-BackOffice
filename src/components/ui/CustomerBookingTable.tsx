@@ -36,6 +36,7 @@ type Props = {
     session: ISessionWithDetails;
   }) => void;
   deleteCustomer: (data: ICustomerSession) => void;
+  isSubmitting?: boolean;
 };
 
 const variants = {
@@ -56,6 +57,7 @@ export const CustomerBookingTable = ({
   customerFiche,
   editCustomer,
   deleteCustomer,
+  isSubmitting = false,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -191,24 +193,30 @@ export const CustomerBookingTable = ({
                       </div>
                     </td>
                     <td className="text-center px-2">
-                      <div className="flex gap-3 items-center justify-center ">
+                      <div className="flex gap-3 items-center justify-start ">
                         <DetailButton
                           title="Voir la fiche client"
                           onClick={() => customerFiche(customerSession)}
                         />
-                        <EditButton
-                          title="Modifier"
-                          onClick={() =>
-                            editCustomer({
-                              data: customerSession,
-                              session: data,
-                            })
-                          }
-                        />
-                        <DeleteButton
-                          title="Annuler"
-                          onClick={() => deleteCustomer(customerSession)}
-                        />
+                        {customerSession.status !== "Canceled" && (
+                          <>
+                            <EditButton
+                              title="Modifier"
+                              onClick={() =>
+                                editCustomer({
+                                  data: customerSession,
+                                  session: data,
+                                })
+                              }
+                            />
+
+                            <DeleteButton
+                              title="Annuler"
+                              onClick={() => deleteCustomer(customerSession)}
+                              isSubmitting={isSubmitting}
+                            />
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

@@ -7,13 +7,14 @@ import xss from "xss";
 /* Database */
 import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 /* Models */
-import User from "@/libs/database/models/User";
+import { User } from "@/libs/database/models/User.model";
 /* Types */
 import { IUser, ICallbackForUser } from "@/types";
 /* Yup */
 import { userSchema } from "@/libs/yup";
-
-/* auth */
+/* Next Auth */
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/auth";
 
 /**
  * Validate the user
@@ -109,3 +110,52 @@ export const UPDATE_USER = async (
     await disconnectDB();
   }
 };
+
+export async function GET_USER_BY_ID(id: string): Promise<ICallbackForUser> {
+  try {
+    await connectDB();
+    const user = await User.findById(id);
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(user)),
+      error: null,
+      feedback: null,
+    };
+  } catch (error) {
+    const message = (error as Error).message;
+    console.error("Erreur lors de la récupération du user:", error);
+    return {
+      success: false,
+      data: null,
+      error: message,
+      feedback: null,
+    };
+  } finally {
+    await disconnectDB();
+  }
+}
+
+export async function GET_USER_SESSION(): Promise<ICallbackForUser> {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("Session non trouvée");
+    }
+    const response = await GET_USER_BY_ID(session?.user.id as string);
+    return {
+      success: true,
+      data: response.data,
+      error: null,
+      feedback: null,
+    };
+  } catch (error) {
+    const message = (error as Error).message;
+    console.error("Erreur lors de la récupération du user:", error);
+    return {
+      success: false,
+      data: null,
+      error: message,
+      feedback: null,
+    };
+  }
+}

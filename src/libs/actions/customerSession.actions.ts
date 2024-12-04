@@ -6,8 +6,8 @@ import xss from "xss";
 /* Database */
 import { connectDB, disconnectDB } from "@/libs/database/mongodb";
 /* Models */
-import CustomerSession from "@/libs/database/models/CustomerSession";
-import Session from "@/libs/database/models/Session";
+import { CustomerSession } from "@/libs/database/models/CustomerSession.model";
+import { Session } from "@/libs/database/models/Session.model";
 import { customerSessionSchema } from "@/libs/yup";
 
 /* Types */
@@ -22,9 +22,6 @@ import {
 
 /* Actions */
 import { GET_SERVER_SESSION_WITH_DETAILS } from "@/libs/actions/sessionWithDetail.actions";
-
-
-
 
 /*
  * Validate the customerSession
@@ -73,7 +70,9 @@ export const xssCustomerSession = async (customerSession: ICustomerSession) => {
  * @param customer - The customer session to create
  * @returns the customer session created with details
  */
-export async function CREATE_CUSTOMER_SESSION(customer: ICustomerSession) {
+export async function CREATE_CUSTOMER_SESSION(
+  customer: ICustomerSession
+): Promise<ICallbackForSessionWithDetails> {
   try {
     /* validation & cleaning */
     const YupValidation = (await validateCustomerSession(
@@ -109,15 +108,11 @@ export async function CREATE_CUSTOMER_SESSION(customer: ICustomerSession) {
       UpdateSession._id
     )) as ISessionWithDetails;
 
- 
-
     return {
       success: true,
       data: JSON.parse(JSON.stringify(sessionWithDetails)),
       error: null,
-      feedback: [
-        "Client ajouté à la session avec succès",
-      ],
+      feedback: ["Client ajouté à la session avec succès"],
     };
   } catch (error) {
     console.error("Erreur lors de l'ajout du client à la session:", error);
@@ -303,14 +298,12 @@ export const UPDATE_CUSTOMER_SESSION = async (
   }
 };
 
-
-
 /*
  * Cancel a customer session
  * @param customerSessionId - The id of the customer session to cancel
  * @returns {success: boolean, data: ISessionWithDetails | null, error: string | null, feedback: string[] | null}
  * //TODO: Mettre en place l'envoi des mails lors de l'annulation
-*/
+ */
 export const CANCEL_CUSTOMER_SESSION = async (
   customerSessionId: string
 ): Promise<ICallbackForSessionWithDetails> => {
@@ -386,9 +379,9 @@ export const CANCEL_CUSTOMER_SESSION = async (
   }
 };
 
-
-
- export const DELETE_CUSTOMER_SESSION = async (customerSessionId: string): Promise<ICallbackForCustomerSession> => {
+export const DELETE_CUSTOMER_SESSION = async (
+  customerSessionId: string
+): Promise<ICallbackForCustomerSession> => {
   try {
     await connectDB();
     const result = await CustomerSession.findByIdAndDelete(customerSessionId);
@@ -401,8 +394,7 @@ export const CANCEL_CUSTOMER_SESSION = async (
       error: null,
       feedback: ["Customer session supprimée avec succès"],
     };
-  }
-  catch (error) {
+  } catch (error) {
     console.log("Erreur lors de la suppression de la customer session:", error);
     const message = (error as Error).message;
     return {
@@ -412,4 +404,4 @@ export const CANCEL_CUSTOMER_SESSION = async (
       feedback: ["Erreur lors de la suppression de la customer session"],
     };
   }
- }
+};
