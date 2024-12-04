@@ -30,7 +30,9 @@ export async function POST(
     const newData = {
       ...profile,
       tokenCalendar: credentials.access_token,
-      tokenRefreshCalendar: credentials.refresh_token,
+      ...(credentials.refresh_token && {
+        tokenRefreshCalendar: credentials.refresh_token,
+      }),
     };
     const updatedUser = await UPDATE_USER(
       profile._id as string,
