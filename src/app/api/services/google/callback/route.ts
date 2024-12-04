@@ -34,7 +34,9 @@ export async function GET(req: NextRequest) {
       const newUser = {
         ...user.data,
         tokenCalendar: tokens.access_token,
-        tokenRefreshCalendar: tokens.refresh_token,
+        ...(tokens.refresh_token && {
+          tokenRefreshCalendar: tokens.refresh_token,
+        }),
         calendar: true,
       };
 
