@@ -24,6 +24,7 @@ export async function POST(
   const userId = session.user._id as string;
 
   const formData = await request.formData();
+  console.log("formData server", formData);
 
   // Appeler la fonction pour traiter l'upload de l'avatar
   const result = await uploadAvatarAction(formData, userId);

@@ -88,6 +88,10 @@ export function SpotForm({
     ) as unknown as Resolver<TSpotForm>,
     defaultValues: {
       ...data,
+      meetingPoint: {
+        half_day: data?.meetingPoint.half_day || null,
+        full_day: data?.meetingPoint.full_day || null,
+      },
     },
   });
 

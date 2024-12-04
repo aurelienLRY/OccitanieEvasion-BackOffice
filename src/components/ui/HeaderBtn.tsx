@@ -22,9 +22,7 @@ import { SiAuthelia } from "react-icons/si";
 import { FaCalendarCheck } from "react-icons/fa";
 import { FaCalendarXmark } from "react-icons/fa6";
 
-type Props = {};
-
-export const HeaderBtn = ({}: Props) => {
+export const HeaderBtn = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>(
     "/img/default-avatar.webp"
