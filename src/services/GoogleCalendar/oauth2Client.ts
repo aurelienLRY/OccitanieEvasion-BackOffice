@@ -6,5 +6,5 @@ import { google } from "googleapis";
 export const oauth2Client = await new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  `${process.env.NEXTAUTH_URL}/api/services/google/callback` // URL de callback
+  process.env.GOOGLE_REDIRECT_URI // URL de callback
 );
