@@ -81,7 +81,7 @@ const Dashboard = () => {
     <section className="w-full md:p-4 flex flex-col gap-12 items-center">
       <article className="w-full md:p-4 flex flex-col gap-12 items-center">
         <div className="w-full flex flex-col xl:flex-row gap-4">
-          <ItemContainer title="Mes sessions à venir">
+          <ItemContainer title="Mes sessions à venir" className="items-center">
             {filteredSessions.length === 0 ? (
               <div className="flex flex-col gap-4 justify-center items-center h-full">
                 <p className="text-xl font-bold ">

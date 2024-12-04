@@ -9,7 +9,7 @@ import { DELETE_SESSION } from "@/libs/actions";
 import { UPDATE_SESSION } from "@/libs/actions";
 
 /*store*/
-import { useSessionWithDetails } from "@/store";
+import { useSessionWithDetails, useProfile } from "@/store";
 
 /*components*/
 import {
@@ -18,6 +18,7 @@ import {
   DetailButton,
   EditButton,
   DeleteButton,
+  ToasterAction,
 } from "@/components";
 
 /* utils */
@@ -34,6 +35,7 @@ import { ISessionWithDetails } from "@/types";
 /*icons*/
 import { RiCalendarCloseFill } from "react-icons/ri";
 import { IoMdPersonAdd } from "react-icons/io";
+import { fetcherDeleteEvent } from "@/services/GoogleCalendar/fetcherDeleteEvent";
 
 type Props = {
   sessionWithDetails: ISessionWithDetails;
@@ -61,6 +63,8 @@ export const SessionCard = ({
   const { updateSessionWithDetails, deleteSessionWithDetails } =
     useSessionWithDetails();
 
+  const { profile } = useProfile();
+
   // Statuts vérifiés
   const checked = {
     customerIsCancelled: customerIsCancelled(
@@ -82,11 +86,16 @@ export const SessionCard = ({
     if (window.confirm("Voulez-vous vraiment supprimer cette session ?")) {
       const result = await DELETE_SESSION(sessionId);
       if (result.success) {
-        toast.success("Session supprimée avec succès");
         deleteSessionWithDetails(sessionWithDetails);
-      } else {
-        toast.error("Erreur lors de la suppression de la session");
+        const deleteEvent = await fetcherDeleteEvent(
+          profile?.tokenRefreshCalendar as string,
+          sessionWithDetails._id as string
+        );
       }
+      ToasterAction({
+        result,
+        defaultMessage: "Session supprimée avec succès",
+      });
     }
   };
 

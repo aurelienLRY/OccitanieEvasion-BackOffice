@@ -1,6 +1,6 @@
 import mongoose, { Schema, model } from "mongoose";
 /* Types */
-import { IActivity } from "@/types"
+import { IActivity } from "@/types";
 
 const activitySchema = new Schema({
   name: {
@@ -25,11 +25,12 @@ const activitySchema = new Schema({
     standard: {
       type: Number,
       validate: {
-        validator: function(this: any, value: number) {
+        validator: function (this: any, value: number) {
           return !this.half_day || (this.half_day && value != null);
         },
-        message: "Le prix standard pour la demi-journée est requis si 'half_day' est sélectionné."
-      }
+        message:
+          "Le prix standard pour la demi-journée est requis si 'half_day' est sélectionné.",
+      },
     },
     reduced: {
       type: Number,
@@ -40,16 +41,17 @@ const activitySchema = new Schema({
       required: false,
     },
   },
-  
+
   price_full_day: {
     standard: {
       type: Number,
       validate: {
-        validator: function(this: any, value: number) {
+        validator: function (this: any, value: number) {
           return !this.full_day || (this.full_day && value != null);
         },
-        message: "Le prix standard pour la journée complète est requis si 'full_day' est sélectionné."
-      }
+        message:
+          "Le prix standard pour la journée complète est requis si 'full_day' est sélectionné.",
+      },
     },
     reduced: {
       type: Number,
@@ -85,5 +87,6 @@ const activitySchema = new Schema({
   },
 });
 
-const Activity = mongoose.models.Activity || mongoose.model<IActivity>('Activity', activitySchema);
-export default Activity;
+export const Activity =
+  mongoose.models.Activity ||
+  mongoose.model<IActivity>("Activity", activitySchema);

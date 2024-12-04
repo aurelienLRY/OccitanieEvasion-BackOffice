@@ -81,7 +81,7 @@ export const ItemContainer = ({
 }) => {
   return (
     <div
-      className={`w-full flex flex-1 flex-col gap-4 items-center text-white bg-slate-800 dark:bg-sky-950 p-4 rounded-lg border-2 border-slate-700 dark:border-sky-800 shadow-md shadow-slate-700/50 dark:shadow-sky-800/50 ${className}`}
+      className={`w-full flex flex-1 flex-col gap-4  text-white bg-slate-800 dark:bg-sky-950 p-4 rounded-lg border-2 border-slate-700 dark:border-sky-800 shadow-md shadow-slate-700/50 dark:shadow-sky-800/50 ${className}`}
     >
       {title && <h3 className="text-2xl font-bold">{title}</h3>}
       {children}

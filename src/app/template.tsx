@@ -4,7 +4,7 @@ import { NextUIProvider } from "@nextui-org/react";
 
 import { Toaster } from "sonner";
 
-import { Header } from "@/components/ui/Header";
+import { Header } from "@/components";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   return (

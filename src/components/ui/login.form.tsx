@@ -67,6 +67,7 @@ export const LoginForm = () => {
             id="email"
             type="email"
             placeholder="Email"
+            autoComplete="email"
             className={`w-full rounded-md border border-gray-300 bg-white py-3 px-6 text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
               errors.email
                 ? "border-red-500 shadow-md shadow-red-500"
@@ -87,6 +88,7 @@ export const LoginForm = () => {
             id="password"
             type="password"
             placeholder="Mot de passe"
+            autoComplete="current-password"
             className={`w-full rounded-md border border-gray-300 bg-white py-3 px-6 text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
               errors.password
                 ? "border-red-500 shadow-md shadow-red-500"

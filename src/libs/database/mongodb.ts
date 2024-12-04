@@ -10,7 +10,6 @@ export const connectDB = async () => {
   try {
     const { connection } = await mongoose.connect(MONGODB_URI);
     if (connection.readyState === 1) {
-      console.log("MongoDB Connected");
       return Promise.resolve(true);
     }
   } catch (error) {
@@ -19,9 +18,6 @@ export const connectDB = async () => {
   }
 };
 
-
 export const disconnectDB = async () => {
   await mongoose.disconnect();
-  console.log("MongoDB Disconnected");
-};  
-
+};
