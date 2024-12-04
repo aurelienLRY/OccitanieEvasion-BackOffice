@@ -68,7 +68,7 @@ export const DashboardNav = ({
           className={isPathActive("/dashboard/session")}
         >
           {sessionsWithDetails && sessionPendingCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 rounded-full text-white p-1 text-xs flex justify-center items-center opacity-80">
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 rounded-full text-white p-1 text-xs flex justify-center items-center opacity-80 z-20">
               {sessionPendingCount}
             </span>
           )}
@@ -79,7 +79,7 @@ export const DashboardNav = ({
           className={isPathActive("/dashboard/booking")}
         >
           {sessionsWithDetails && customerWaitingCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 rounded-full text-white p-1 text-xs flex justify-center items-center opacity-80">
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 rounded-full text-white p-1 text-xs flex justify-center items-center opacity-80 z-20">
               {customerWaitingCount}
             </span>
           )}

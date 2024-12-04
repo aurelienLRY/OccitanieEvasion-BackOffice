@@ -5,11 +5,10 @@ import React, { useState } from "react";
 import { useSessionWithDetails } from "@/store";
 
 /* Components */
-import { IconButton  , SessionForm  , AllSessionsCard  } from "@/components";
+import { IconButton, SessionForm, AllSessionsCard } from "@/components";
 
 /* Icons */
 import { IoMdAddCircle } from "react-icons/io";
-
 
 /**
  * SessionPage Component
@@ -30,10 +29,7 @@ const SessionPage = () => {
           onClick={() => setIsOpenCreate(true)}
         />
       </div>
-
-        <AllSessionsCard sessionsWithDetails={sessionsWithDetails} />
-
-
+      <AllSessionsCard sessionsWithDetails={sessionsWithDetails} />
       <SessionForm
         isOpen={isOpenCreate}
         onClose={() => setIsOpenCreate(false)}
