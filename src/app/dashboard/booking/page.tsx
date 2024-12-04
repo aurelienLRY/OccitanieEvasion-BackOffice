@@ -155,51 +155,6 @@ const BookingPage = () => {
   const detailCustomerModal = useModal<ICustomerSession>();
   const { CancelCustomer, isSubmitting } = useCustomer();
 
-  const filterByPeriod = useCallback(
-    (sessions: ISessionWithDetails[]): ISessionWithDetails[] => {
-      const now = new Date();
-      const currentYear = now.getFullYear();
-      const currentMonth = now.getMonth();
-
-      return sessions.filter((session) => {
-        const sessionDate = new Date(session.date);
-        const sessionMonth = sessionDate.getMonth();
-        const sessionYear = sessionDate.getFullYear();
-
-        switch (periodFilter) {
-          case "Q1":
-            return (
-              sessionMonth >= 0 &&
-              sessionMonth <= 2 &&
-              sessionYear === currentYear
-            );
-          case "Q2":
-            return (
-              sessionMonth >= 3 &&
-              sessionMonth <= 5 &&
-              sessionYear === currentYear
-            );
-          case "Q3":
-            return (
-              sessionMonth >= 6 &&
-              sessionMonth <= 8 &&
-              sessionYear === currentYear
-            );
-          case "Q4":
-            return (
-              sessionMonth >= 9 &&
-              sessionMonth <= 11 &&
-              sessionYear === currentYear
-            );
-          case "thisMonth":
-            return sessionMonth === currentMonth && sessionYear === currentYear;
-          default:
-            return true;
-        }
-      });
-    },
-    [periodFilter]
-  );
   const getButtonClassName = (isActive: boolean) => {
     const baseClass = "px-3 py-1 rounded-md transition-all";
     const activeClass = "bg-blue-500 text-white";
