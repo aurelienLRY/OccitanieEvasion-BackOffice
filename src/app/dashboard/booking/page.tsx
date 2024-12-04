@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 /* store */
 import { useSessionWithDetails } from "@/store";
@@ -59,6 +59,52 @@ const BookingPage = () => {
   const editCustomer = useModal<TEditData>();
   const detailCustomerModal = useModal<ICustomerSession>();
   const { CancelCustomer, isSubmitting } = useCustomer();
+
+  const filterByPeriod = useCallback(
+    (sessions: ISessionWithDetails[]): ISessionWithDetails[] => {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+
+      return sessions.filter((session) => {
+        const sessionDate = new Date(session.date);
+        const sessionMonth = sessionDate.getMonth();
+        const sessionYear = sessionDate.getFullYear();
+
+        switch (periodFilter) {
+          case "Q1":
+            return (
+              sessionMonth >= 0 &&
+              sessionMonth <= 2 &&
+              sessionYear === currentYear
+            );
+          case "Q2":
+            return (
+              sessionMonth >= 3 &&
+              sessionMonth <= 5 &&
+              sessionYear === currentYear
+            );
+          case "Q3":
+            return (
+              sessionMonth >= 6 &&
+              sessionMonth <= 8 &&
+              sessionYear === currentYear
+            );
+          case "Q4":
+            return (
+              sessionMonth >= 9 &&
+              sessionMonth <= 11 &&
+              sessionYear === currentYear
+            );
+          case "thisMonth":
+            return sessionMonth === currentMonth && sessionYear === currentYear;
+          default:
+            return true;
+        }
+      });
+    },
+    [periodFilter]
+  );
 
   return (
     <>
