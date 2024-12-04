@@ -85,6 +85,10 @@ const activitySchema = new Schema({
       required: false,
     },
   },
+  required_equipment: {
+    type: String,
+    required: false,
+  },
 });
 
 export const Activity =

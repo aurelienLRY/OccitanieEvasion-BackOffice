@@ -4,9 +4,8 @@
 import React, { useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { InferType } from 'yup'
+import { InferType } from "yup";
 import { Spin } from "antd";
-
 
 /* ACTIONS */
 import { CREATE_ACTIVITY, UPDATE_ACTIVITY } from "@/libs/actions";
@@ -19,11 +18,16 @@ import { useActivities } from "@/store";
 import { IActivity } from "@/types";
 
 /* COMPONENTS */
-import { Input, Textarea, SimpleCheckboxInput , Modal , ToasterAction , InfoTooltips } from "@/components";
+import {
+  Input,
+  Textarea,
+  SimpleCheckboxInput,
+  Modal,
+  ToasterAction,
+  InfoTooltips,
+} from "@/components";
 
 export type TActivityForm = InferType<typeof activitySchema>;
-
-
 
 type Props = {
   data?: IActivity;
@@ -37,12 +41,21 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
     defaultValues: {
       ...data,
       description: data?.description ?? "",
-      price_half_day: data?.price_half_day || { standard: 0, reduced: 0, ACM: 0 },
-      price_full_day: data?.price_full_day || { standard: 0, reduced: 0, ACM: 0 },
+      price_half_day: data?.price_half_day || {
+        standard: 0,
+        reduced: 0,
+        ACM: 0,
+      },
+      price_full_day: data?.price_full_day || {
+        standard: 0,
+        reduced: 0,
+        ACM: 0,
+      },
       duration: {
         half: data?.duration?.half ?? undefined,
         full: data?.duration?.full ?? undefined,
       },
+      required_equipment: data?.required_equipment ?? undefined,
     },
   });
 
@@ -59,12 +72,21 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
     reset({
       ...data,
       description: data?.description ?? "",
-      price_half_day: data?.price_half_day || { standard: 0, reduced: 0, ACM: 0 },
-      price_full_day: data?.price_full_day || { standard: 0, reduced: 0, ACM: 0 },
+      price_half_day: data?.price_half_day || {
+        standard: 0,
+        reduced: 0,
+        ACM: 0,
+      },
+      price_full_day: data?.price_full_day || {
+        standard: 0,
+        reduced: 0,
+        ACM: 0,
+      },
       duration: {
         half: data?.duration?.half ?? undefined,
         full: data?.duration?.full ?? undefined,
       },
+      required_equipment: data?.required_equipment ?? undefined,
     });
   }, [data, reset]);
 
@@ -83,26 +105,36 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
       reset();
       onClose();
     }
-    ToasterAction({ result, defaultMessage: data?._id ? "Activité modifiée avec succès" : "Activité créée avec succès" });
+    ToasterAction({
+      result,
+      defaultMessage: data?._id
+        ? "Activité modifiée avec succès"
+        : "Activité créée avec succès",
+    });
   };
 
   const watchHalfDay = watch("half_day", false);
   const watchFullDay = watch("full_day", false);
 
-
-
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center gap-4">
-          <h2 className="text-2xl font-bold text-center">{data?._id ? "Modifier l'activité" : "Créer une activité"}</h2>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col items-center gap-4"
+        >
+          <h2 className="text-2xl font-bold text-center">
+            {data?._id ? "Modifier l'activité" : "Créer une activité"}
+          </h2>
           <Input name="name" type="text" label="Nom de l'activité" />
           <Textarea name="description" label="Description" />
 
           <table className="w-full border-collapse border-2 rounded-md border-sky-500">
             <thead>
               <tr className="flex justify-center items-center gap-2 w-full">
-                <h3 className="text-sky-500 text-xl font-bold text-center ">Formule</h3>
+                <h3 className="text-sky-500 text-xl font-bold text-center ">
+                  Formule
+                </h3>
                 <InfoTooltips title="Sélectionner si l’activité peut être pratiquée en une demi-journée et/ou en une journée complète" />
               </tr>
             </thead>
@@ -111,25 +143,45 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
                 <td className="p-2 flex justify-center items-center">
                   <tr className="flex flex-col items-center  gap-2">
                     <SimpleCheckboxInput name="half_day" label="Demi-journée" />
-                    <Input name="duration.half" type="text" label="Durée estimée" disabled={!watchHalfDay} />
+                    <Input
+                      name="duration.half"
+                      type="text"
+                      label="Durée estimée"
+                      disabled={!watchHalfDay}
+                    />
                   </tr>
-                  
                 </td>
                 <td className="p-2 flex justify-center items-center">
                   <tr className="flex flex-col items-center  gap-2">
-                    <SimpleCheckboxInput name="full_day" label="Journée complète" />
-                    <Input name="duration.full" type="text" label="Durée estimée" disabled={!watchFullDay} />
+                    <SimpleCheckboxInput
+                      name="full_day"
+                      label="Journée complète"
+                    />
+                    <Input
+                      name="duration.full"
+                      type="text"
+                      label="Durée estimée"
+                      disabled={!watchFullDay}
+                    />
                   </tr>
                 </td>
               </tr>
 
               <tr className="flex justify-center items-center gap-2 w-full">
-                <h3 className="text-sky-500 text-xl font-bold text-center ">Tarification </h3>
+                <h3 className="text-sky-500 text-xl font-bold text-center ">
+                  Tarification{" "}
+                </h3>
                 <InfoTooltips title="Renseigner les prix pour les formules sélectionnées " />
               </tr>
               <tr className="flex flex-col justify-around items-center md:flex-row gap-4 w-full">
-                <td className={`p-2 flex flex-col justify-center items-center gap-1 ${!watchHalfDay && 'opacity-60'}`}>
-                  <div className="font-semibold text-center py-4">Prix demi-journée</div>
+                <td
+                  className={`p-2 flex flex-col justify-center items-center gap-1 ${
+                    !watchHalfDay && "opacity-60"
+                  }`}
+                >
+                  <div className="font-semibold text-center py-4">
+                    Prix demi-journée
+                  </div>
                   <Input
                     name="price_half_day.standard"
                     type="number"
@@ -149,8 +201,14 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
                     disabled={!watchHalfDay}
                   />
                 </td>
-                <td className={`p-2 flex flex-col justify-center items-center gap-1 ${!watchFullDay && 'opacity-60'}`}>
-                  <div className="font-semibold text-center py-4">Prix journée complète</div>
+                <td
+                  className={`p-2 flex flex-col justify-center items-center gap-1 ${
+                    !watchFullDay && "opacity-60"
+                  }`}
+                >
+                  <div className="font-semibold text-center py-4">
+                    Prix journée complète
+                  </div>
                   <Input
                     name="price_full_day.standard"
                     type="number"
@@ -200,7 +258,13 @@ export function ActivityForm({ data, isOpen, onClose }: Props) {
               className="bg-orange-500 hover:bg-orange-600 transition-all duration-300 text-white w-fit mx-auto p-3 rounded-md flex items-center justify-center min-w-[70px] min-h-[40px] disabled:opacity-80 disabled:cursor-not-allowed"
               disabled={isSubmitting}
             >
-              {isSubmitting ? <Spin size="default" /> : data?._id ? "Modifier" : "Créer"}
+              {isSubmitting ? (
+                <Spin size="default" />
+              ) : data?._id ? (
+                "Modifier"
+              ) : (
+                "Créer"
+              )}
             </button>
           </div>
         </form>

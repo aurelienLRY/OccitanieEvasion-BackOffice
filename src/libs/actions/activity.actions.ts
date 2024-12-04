@@ -49,6 +49,9 @@ export const xssActivity = async (
         half: activity.duration.half ? xss(activity.duration.half) : null,
         full: activity.duration.full ? xss(activity.duration.full) : null,
       },
+      required_equipment: activity.required_equipment
+        ? xss(activity.required_equipment)
+        : null,
     };
     return JSON.parse(JSON.stringify(xssData));
   } catch (error) {
