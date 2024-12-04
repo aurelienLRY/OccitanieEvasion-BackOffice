@@ -4,7 +4,12 @@
 import React, { useState } from "react";
 
 /* Components */
-import { IconButton , ActivityCard , ActivityForm } from "@/components";
+import {
+  IconButton,
+  ActivityCard,
+  ActivityForm,
+  ItemContainer,
+} from "@/components";
 
 /* Icons */
 import { IoMdAddCircle } from "react-icons/io";
@@ -44,7 +49,7 @@ function ActivityPage({}: Props) {
         />
       </div>
 
-      <div className=" flex flex-col gap-4 w-full min-h-60 border-2 border-sky-700 dark:border-sky-900 rounded-md px-2 md:px-4 py-6">
+      <ItemContainer className="flex flex-col gap-4 w-full min-h-60">
         <div className="flex gap-2 justify-between">
           <div className="w-full flex justify-end">
             <input
@@ -64,7 +69,7 @@ function ActivityPage({}: Props) {
             />
           ))}
         </div>
-      </div>
+      </ItemContainer>
 
       {updateActivity.data ? (
         <ActivityForm

@@ -2,9 +2,7 @@
 import React, { useState, useEffect } from "react";
 
 /* components */
-import { SpotCard } from "@/components";
-import { SpotForm } from "@/components";
-import { IconButton } from "@/components";
+import { SpotCard, ItemContainer, SpotForm, IconButton } from "@/components";
 
 /* Icons */
 import { IoMdAddCircle } from "react-icons/io";
@@ -53,8 +51,7 @@ function SpotPage({}: Props) {
           onClick={() => setOpenModalCreate(true)}
         />
       </div>
-
-      <div className=" flex flex-col gap-4 w-full min-h-60 border-2 border-sky-700 dark:border-sky-900 rounded-md px-2 md:px-4 py-6">
+      <ItemContainer className="flex flex-col gap-4 w-full min-h-60 ">
         <div className="flex flex-col-reverse items-center lg:flex-row gap-2 lg:justify-between">
           <div className="flex gap-0 flex-col  items-center md:items-start  md:justify-center ">
             <h3 className=" text-lg text-start ms-2 opacity-50">Activités</h3>
@@ -103,7 +100,7 @@ function SpotPage({}: Props) {
             />
           ))}
         </div>
-      </div>
+      </ItemContainer>
 
       {updateSpot.data ? (
         <SpotForm

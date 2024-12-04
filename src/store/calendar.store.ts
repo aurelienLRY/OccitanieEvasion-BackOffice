@@ -25,6 +25,7 @@ export const useCalendar = create<TuseCalendar>()(
   devtools((set, get) => ({
     tokenIsValid: false,
     expiryDate: 0,
+
     refreshToken: async () => {
       const { profile } = useProfile.getState();
       const updateProfile = useProfile.getState().updateProfile;
@@ -34,6 +35,9 @@ export const useCalendar = create<TuseCalendar>()(
           updateProfile({
             ...profile,
             tokenCalendar: rep.data.tokenCalendar,
+            ...(rep.data.tokenRefreshCalendar && {
+              tokenRefreshCalendar: rep.data.tokenRefreshCalendar,
+            }),
           });
           return rep;
         }
@@ -50,8 +54,11 @@ export const useCalendar = create<TuseCalendar>()(
             expiryDate: rep.data.tokenInfo.expiry_date as number,
           });
         } else {
-          await get().refreshToken();
-          await get().checkToken();
+          if (profile.tokenRefreshCalendar) {
+            await get().refreshToken();
+          } else {
+            return null;
+          }
         }
       }
       return null;
