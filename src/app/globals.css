@@ -43,3 +43,7 @@
   text-align: center;
   color: #fff;
 }
+
+.ql-editor {
+  min-height: 120px;
+}

@@ -88,6 +88,7 @@ const activitySchema = new Schema({
   required_equipment: {
     type: String,
     required: false,
+    default: null,
   },
 });
 

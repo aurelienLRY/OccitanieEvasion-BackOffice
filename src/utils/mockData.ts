@@ -42,6 +42,7 @@ export const mock_SessionWithDetails: ISessionWithDetails = {
   startTime: "10:00",
   endTime: "12:00",
   activity: {
+    required_equipment: "Raquettes, gants, casque, harnais, gilet de sauvetage",
     price_half_day: {
       ACM: 0,
       reduced: 40,

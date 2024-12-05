@@ -11,6 +11,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  title?: string;
 };
 
 /**
@@ -20,7 +21,7 @@ type Props = {
  * @param {React.ReactNode} children - Les enfants du composant.
  * @returns {JSX.Element} Le composant modal.
  */
-export const Modal = ({ isOpen, onClose, children }: Props) => {
+export const Modal = ({ isOpen, onClose, children, title }: Props) => {
   const handleClose = () => {
     onClose();
   };
@@ -55,11 +56,14 @@ export const Modal = ({ isOpen, onClose, children }: Props) => {
       >
         {/*modal*/}
         <div className="min-w-[300px] w-full max-w-[90vw] lg:max-w-[70vw] max-h-[90vh] overflow-y-auto bg-gray-800 dark:bg-sky-950 rounded-md shadow-md shadow-slate-400 dark:shadow-sky-400">
-          <div className="flex justify-between items-center bg-gray-600 rounded-t-md w-full">
-            <div className=" h-7 flex w-full items-center px-3">
+          <div className="flex justify-evenly items-center bg-gray-600 rounded-t-md w-full py-2">
+            <div className=" h-7 flex  items-center px-3">
               <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
               <span className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
               <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+            </div>
+            <div className="flex justify-center items-center w-full">
+              <h2 className="text-xl md:text-2xl md:font-bold">{title}</h2>
             </div>
 
             <Tooltip title="Fermer">
