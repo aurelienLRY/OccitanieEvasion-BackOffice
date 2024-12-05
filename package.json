@@ -40,7 +40,7 @@
     "googleapis": "^144.0.0",
     "immer": "^10.1.1",
     "leaflet": "^1.9.4",
-    "mongoose": "^8.5.2",
+    "mongoose": "^8.8.3",
     "motion": "^11.11.16",
     "next": "^15.0.3",
     "next-auth": "^4.24.10",
