@@ -14,7 +14,9 @@ export const customerConfirmation = (
   const emailContent = `
     <tr>
       <td style="padding-bottom: 20px;">
-        <p style="text-align: center; color: #fffff;">Bonjour ${customer.first_names},</p>
+        <p style="text-align: center; color: #fffff;">Bonjour ${
+          customer.first_names
+        },</p>
         <p style="text-align: center; color: #fffff;">Échauffez vos muscles et ${
           customer.number_of_people > 1 ? "vos esprits" : "votre esprit"
         }, car votre aventure commence bientôt ! 🚀 </p>
@@ -43,12 +45,30 @@ export const customerConfirmation = (
       <td >
         <h2 style="text-align: center; font-size: 1.5em; margin-bottom: 10px; font-weight: bold; color: #fffff;">Détails de la réservation</h2>
         
-            <p style="text-align: center; color: #fffff;"><strong>Date:</strong> ${new Date(sessionWithDetails.date).toLocaleDateString("fr-FR")} de ${sessionWithDetails.startTime} à ${sessionWithDetails.endTime}</p>
-            <p style="text-align: center; color: #fffff;"><strong>Lieu:</strong> ${sessionWithDetails.spot.name}</p>
+            <p style="text-align: center; color: #fffff;"><strong>Date:</strong> ${new Date(
+              sessionWithDetails.date
+            ).toLocaleDateString("fr-FR")} de ${
+    sessionWithDetails.startTime
+  } à ${sessionWithDetails.endTime}</p>
+            <p style="text-align: center; color: #fffff;"><strong>Lieu:</strong> ${
+              sessionWithDetails.spot.name
+            }</p>
             
-            <p style="text-align: center; color: #fffff;"><strong>Nombre de personnes:</strong> ${customer.number_of_people}</p>
-            <p style="text-align: center; color: #fffff;"><strong>Durée estimée:</strong> ${sessionWithDetails.spot.estimatedDuration}</p>
+            <p style="text-align: center; color: #fffff;"><strong>Nombre de personnes:</strong> ${
+              customer.number_of_people
+            }</p>
+            <p style="text-align: center; color: #fffff;"><strong>Durée estimée:</strong> ${
+              sessionWithDetails.spot.estimatedDuration
+            }</p>
           
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p style="text-align: center; color: #fffff;">Pour cette activité, nous vous invitons à vous munir de :</p>
+        <p style="text-align: center; color: #fffff;">${
+          sessionWithDetails.activity.required_equipment
+        }</p>
       </td>
     </tr>
 
