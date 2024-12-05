@@ -63,6 +63,7 @@ interface PricingSectionProps {
   watchFullDay: boolean;
 }
 
+
 interface PricingColumnProps {
   title: string;
   prefix: string;
@@ -83,6 +84,7 @@ export function ActivityForm({ data, isOpen, onClose }: ActivityFormProps) {
   const initialValue = data?.required_equipment || "";
   const [requiredEquipment, setRequiredEquipment] =
     useState<string>(initialValue);
+
 
   const methods = useForm<TActivityForm>({
     resolver: yupResolver(activitySchema),
@@ -308,6 +310,7 @@ function PricingColumn({ title, prefix, disabled }: PricingColumnProps) {
  * Section de l'équipement requis avec configuration externalisée
  */
 function RequiredEquipmentSection({
+
   initialValue,
   setRequiredEquipment,
 }: {
