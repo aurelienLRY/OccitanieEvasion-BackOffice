@@ -29,6 +29,7 @@ export {
   SelectInput,
   SimpleCheckboxInput,
   Textarea,
+  InputPhone,
 } from "@/components/ui/Inputs";
 export {
   ItemCard,
