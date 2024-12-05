@@ -2,6 +2,8 @@
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { getNestedValue } from "@/utils/customLoadash.utils";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 
 /**
  * ErrorMessage Component for Inputs
@@ -106,13 +108,9 @@ export const Input = ({
           placeholder={placeholder}
           {...register(name)}
           onChange={onChange}
-          className={` rounded-md border border-gray-300 bg-white py-2 px-2 md:px-6  text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
-            errorMessage
-              ? "border-red-500 shadow-md shadow-red-500"
-              : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
-          } ${disabled ? "opacity-70" : ""}  ${
-            type === "number" ? "max-w-40" : ""
-          }`}
+          className={`${ClassNameForInput(errorMessage)} ${
+            disabled ? "opacity-70" : ""
+          }  ${type === "number" ? "max-w-40" : ""}`}
           aria-invalid={errorMessage ? "true" : "false"}
           disabled={disabled}
           defaultValue={defaultValue}
@@ -163,12 +161,9 @@ export const SelectInput = ({
         <select
           id={name}
           {...register(name)}
-          className={`border border-none rounded-md py-2 px-2 md:px-4 text-black bg-white focus-visible:outline-none
-        ${
-          errorMessage
-            ? "border-red-500 shadow-md shadow-red-500"
-            : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
-        } ${disabled ? "bg-gray-100" : ""}`}
+          className={`${ClassNameForInput(errorMessage)} ${
+            disabled ? "bg-gray-100" : ""
+          }`}
           disabled={disabled}
         >
           <option value="">Sélectionnez une option</option>
@@ -337,11 +332,7 @@ export const Textarea = ({
         id={name}
         placeholder={placeholder}
         {...register(name)}
-        className={`min-w-60 w-full rounded-md border border-gray-300 bg-white py-2 px-2 md:px-6  text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
-          errorMessage
-            ? "border-red-500 shadow-md shadow-red-500"
-            : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
-        }`}
+        className={ClassNameForInput(errorMessage)}
         aria-invalid={errorMessage ? "true" : "false"}
         rows={rows}
         cols={cols}
@@ -349,4 +340,85 @@ export const Textarea = ({
       <ErrorMessage errorMessage={errorMessage} />
     </Wrapper>
   );
+};
+
+export const InputPhone = ({
+  name,
+  label,
+  className,
+  errorsName = name,
+  wIsRaw = true,
+}: TInputBase & {}) => {
+  const {
+    register,
+    formState: { errors },
+    setValue,
+    getValues,
+  } = useFormContext();
+
+  const errorMessage = getNestedValue(errors, errorsName)?.message as string;
+
+  return (
+    <Wrapper wIsRaw={wIsRaw} className={className && className}>
+      {label && (
+        <label
+          htmlFor={name}
+          className="text-sm font-light opacity-70 min-w-28 "
+        >
+          {label}
+        </label>
+      )}
+      <div className="flex flex-col flex-1 gap-0 w-full ">
+        <PhoneInput
+          {...register(name)}
+          name={name}
+          preferredCountries={[
+            "fr",
+            "en",
+            "be",
+            "it",
+            "de",
+            "es",
+            "pt",
+            "nl",
+            "pl",
+            "pt",
+            "ro",
+            "sk",
+            "tr",
+          ]}
+          forceDialCode={true}
+          defaultCountry="fr"
+          onChange={(value) => setValue(name, value)}
+          value={getValues(name)}
+          style={{
+            border: "none",
+            padding: "0",
+          }}
+          inputStyle={{
+            paddingTop: "0.5rem",
+            paddingBottom: "0.5rem",
+          }}
+          className={
+            errorMessage
+              ? "border-red-500 shadow-md shadow-red-500"
+              : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
+          }
+        />
+        <ErrorMessage errorMessage={errorMessage} />
+      </div>
+    </Wrapper>
+  );
+};
+/**
+ * ClassNameForInput Function
+ * @param errorMessage: string
+ * @returns string
+ */
+const ClassNameForInput = (errorMessage: string) => {
+  return `rounded-md border border-gray-300 bg-white py-2 px-2 md:px-6  text-base font-medium text-gray-700 outline-none transition-all duration-200 ${
+    errorMessage
+      ? "border-red-500 shadow-md shadow-red-500"
+      : "focus:border-sky-500 focus:shadow-md focus:shadow-sky-500"
+  }`;
 };

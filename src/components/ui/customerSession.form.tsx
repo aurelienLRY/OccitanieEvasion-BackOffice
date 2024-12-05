@@ -17,6 +17,7 @@ import {
   CheckboxInput,
   ToasterAction,
   DeleteButton,
+  InputPhone,
 } from "@/components";
 
 /*services*/
@@ -45,6 +46,7 @@ import { nodeMailerSender } from "@/libs";
 /*icons */
 import { IoMdPersonAdd } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
+import { error } from "console";
 
 /* Validation */
 const baseSchema = yup.object().shape({
@@ -54,7 +56,10 @@ const baseSchema = yup.object().shape({
     .string()
     .email("L'email est invalide")
     .required("L'email est obligatoire"),
-  phone: yup.string().required("Le numéro de téléphone est obligatoire"),
+  phone: yup
+    .string()
+    .required("Le numéro de téléphone est obligatoire")
+    .matches(/^.{7,}$/, "Le numéro est invalide"),
   tarification: yup.string().required("La tarification est obligatoire"),
 });
 
@@ -84,6 +89,7 @@ type Props = {
 
 export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
   const { updateSessionWithDetails } = useSessionWithDetails();
+  const [phone, setPhone] = useState<string>();
   const { profile } = useProfile();
   /* Form */
   const methods = useForm({
@@ -327,7 +333,7 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
 
               <div className="flex gap-2 flex-col md:flex-row">
                 <Input name="email" label="Email" type="email" />
-                <Input name="phone" label="Téléphone" type="tel" />
+                <InputPhone name="phone" label="Téléphone" />
               </div>
             </div>
 
