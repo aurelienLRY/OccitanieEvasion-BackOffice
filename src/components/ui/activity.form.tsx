@@ -63,6 +63,7 @@ interface PricingSectionProps {
   watchFullDay: boolean;
 }
 
+
 interface PricingColumnProps {
   title: string;
   prefix: string;
@@ -80,9 +81,11 @@ interface FormulaOptionProps {
  * @component
  */
 export function ActivityForm({ data, isOpen, onClose }: ActivityFormProps) {
-  const [requiredEquipment, setRequiredEquipment] = useState<string>(
-    data?.required_equipment || ""
-  );
+  const initialValue = data?.required_equipment || "";
+  const [requiredEquipment, setRequiredEquipment] =
+    useState<string>(initialValue);
+
+
   const methods = useForm<TActivityForm>({
     resolver: yupResolver(activitySchema),
     defaultValues: {
@@ -142,7 +145,6 @@ export function ActivityForm({ data, isOpen, onClose }: ActivityFormProps) {
       ...formData,
       required_equipment: requiredEquipment,
     };
-    console.log(COMPLETE_FORM_DATA);
 
     let result;
     if (data?._id) {
@@ -269,7 +271,7 @@ export function ActivityForm({ data, isOpen, onClose }: ActivityFormProps) {
             <Input name="min_age" type="number" label="Age minimum" />
           </div>
           <RequiredEquipmentSection
-            requiredEquipment={requiredEquipment}
+            initialValue={initialValue}
             setRequiredEquipment={setRequiredEquipment}
           />
 
@@ -308,10 +310,11 @@ function PricingColumn({ title, prefix, disabled }: PricingColumnProps) {
  * Section de l'équipement requis avec configuration externalisée
  */
 function RequiredEquipmentSection({
-  requiredEquipment,
+
+  initialValue,
   setRequiredEquipment,
 }: {
-  requiredEquipment: string;
+  initialValue: string;
   setRequiredEquipment: (content: string) => void;
 }) {
   return (
@@ -326,7 +329,7 @@ function RequiredEquipmentSection({
         <Editor
           textareaName="required_equipment"
           apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-          initialValue={requiredEquipment}
+          initialValue={initialValue}
           init={{ ...EDITOR_CONFIG }}
           onEditorChange={setRequiredEquipment}
         />
