@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { oauth2Client } from "@/services";
 import { authOptions } from "@/app/api/auth/auth";
-import { UPDATE_USER, GET_USER_BY_ID } from "@/libs/actions";
+import { UPDATE_USER, GET_USER_BY_ID } from "@/libs/ServerAction";
 import { getServerSession } from "next-auth";
-import { disconnectDB } from "@/libs/database/mongodb";
+import { disconnectDB } from "@/libs/database/setting.mongoose";
 import { IUser } from "@/types";
 
 export async function GET(req: NextRequest) {

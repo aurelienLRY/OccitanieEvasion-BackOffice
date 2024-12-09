@@ -1,9 +1,10 @@
 "use client";
 /* Libs */
 import React, { useEffect, useState } from "react";
-import { useAuth } from "@/hook/useAuth";
+import { useAuth } from "@/hooks";
 import { Spin } from "antd";
-/* Components */
+
+/* components */
 import { SingOutBtn, Dashboard } from "@/components";
 
 /* Store */
@@ -13,6 +14,7 @@ import {
   useActivities,
   useCustomerSessions,
   useProfile,
+  useCalendar,
 } from "@/store";
 
 /**
@@ -27,12 +29,13 @@ export default function Template({ children }: { children: React.ReactNode }) {
     const fetchData = async () => {
       try {
         await Promise.all([
+          useProfile.getState().fetchProfile(),
           useSessionWithDetails.getState().fetchSessionWithDetails(),
           useSpots.getState().fetchSpots(),
           useActivities.getState().fetchActivities(),
           useCustomerSessions.getState().fetchCustomerSessions(),
-          useProfile.getState().fetchProfile(),
         ]);
+        useCalendar.getState().initialize();
       } catch (error) {
         console.error("Erreur lors de la récupération des données:", error);
         setIsLoading(false);

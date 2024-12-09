@@ -4,10 +4,9 @@ import * as yup from "yup";
 import xss from "xss";
 
 /* Database */
-import { connectDB, disconnectDB } from "@/libs/database/mongodb";
+import { connectDB, disconnectDB } from "@/libs/database/setting.mongoose";
 /* Models */
-import { CustomerSession } from "@/libs/database/models/CustomerSession.model";
-import { Session } from "@/libs/database/models/Session.model";
+import { CustomerSession , Session } from "@/libs/database/models";
 import { customerSessionSchema } from "@/libs/yup";
 
 /* Types */
@@ -21,7 +20,7 @@ import {
 } from "@/types";
 
 /* Actions */
-import { GET_SERVER_SESSION_WITH_DETAILS } from "@/libs/actions/sessionWithDetail.actions";
+import { GET_SERVER_SESSION_WITH_DETAILS } from "@/libs/ServerAction";
 
 /*
  * Validate the customerSession

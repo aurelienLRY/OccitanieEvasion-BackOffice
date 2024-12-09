@@ -17,7 +17,7 @@ import { SearchInObject } from "@/utils/search.utils";
 import { ISpot, IActivity } from "@/types";
 /* hooks */
 
-import { useModal } from "@/hook";
+import { useModal } from "@/hooks";
 
 type Props = {};
 

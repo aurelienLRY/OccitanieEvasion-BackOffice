@@ -8,7 +8,6 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Spin } from "antd";
-import { ItemContainer } from "./ItemCard";
 
 export type LoginFormData = {
   email: string;

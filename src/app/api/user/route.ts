@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { User } from "@/libs/database/models/User.model";
-import { userSchema } from "@/libs/yup/user.schema";
-import { connectDB, disconnectDB } from "@/libs/database/mongodb";
+import { User } from "@/libs/database/models";
+import { userSchema } from "@/libs/yup";
+import { connectDB, disconnectDB } from "@/libs/database/setting.mongoose";
 import bcrypt from "bcryptjs";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/auth";
-
+import { createResponse } from "@/utils/ServerSide";
 /**
  * Fonction pour gérer les erreurs
  * @param message - Le message d'erreur
@@ -77,9 +77,13 @@ export const PUT = async (req: Request): Promise<NextResponse> => {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
-      return createResponse(401, "Unauthorized", [
-        "Vous devez être connecté pour modifier votre mot de passe",
-      ]);
+      return createResponse(
+        false,
+        null,
+        ["Vous devez être connecté pour modifier votre mot de passe"],
+        null,
+        401
+      );
     }
 
     const data = await req.json();
@@ -87,15 +91,23 @@ export const PUT = async (req: Request): Promise<NextResponse> => {
 
     const { password, confirmPassword } = data;
     if (!password || !confirmPassword) {
-      return createResponse(400, "Bad Request", [
-        "Tous les champs sont requis",
-      ]);
+      return createResponse(
+        false,
+        null,
+        ["Tous les champs sont requis"],
+        null,
+        400
+      );
     }
 
     if (password !== confirmPassword) {
-      return createResponse(400, "Bad Request", [
-        "Les mots de passe ne correspondent pas",
-      ]);
+      return createResponse(
+        false,
+        null,
+        ["Les mots de passe ne correspondent pas"],
+        null,
+        400
+      );
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -113,48 +125,32 @@ export const PUT = async (req: Request): Promise<NextResponse> => {
 
     if (!user) {
       console.log("user >>", user);
-      return createResponse(500, "Internal Server Error", [
-        "Une erreur est survenue lors de la modification du mot de passe",
-      ]);
+      return createResponse(
+        false,
+        null,
+        ["Une erreur est survenue lors de la modification du mot de passe"],
+        null,
+        500
+      );
     }
 
     return createResponse(
-      200,
+      true,
       null,
       ["Mot de passe modifié avec succès"],
-      true
+      null,
+      200
     );
-  } catch (error) {
+  } catch (error: any) {
     console.log("error catch >>", error);
-    return createResponse(500, "Internal Server Error", [
-      "Une erreur est survenue lors de la modification du mot de passe",
-    ]);
+    return createResponse(
+      false,
+      null,
+      ["Une erreur est survenue lors de la modification du mot de passe"],
+      error.message,
+      500
+    );
   } finally {
     await disconnectDB();
   }
 };
-
-/**
- * Fonction pour créer une réponse
- * @param status - Le statut de la réponse HTTP
- * @param error - Le message d'erreur, s'il y en a un
- * @param feedback - Le message de retour à l'utilisateur
- * @param success - Indique si l'opération a réussi (par défaut : false)
- * @returns NextResponse - La réponse formatée pour le client
- */
-function createResponse(
-  status: number,
-  error: string | null,
-  feedback: string[],
-  success: boolean = false
-): NextResponse {
-  return NextResponse.json(
-    {
-      success,
-      error,
-      feedback,
-      data: null,
-    },
-    { status }
-  );
-}

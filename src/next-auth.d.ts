@@ -4,9 +4,10 @@ import "next-auth";
 import { IUser } from "@/types";
 
 declare module "next-auth" {
-  interface User extends IUser {
-    password?: string;
-    username?: string;
+  interface User {
+    id: string;
+    _id: string;
+    email: string;
   }
 
   interface Session {

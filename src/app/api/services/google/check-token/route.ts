@@ -1,67 +1,65 @@
 import { NextRequest, NextResponse } from "next/server";
-
-/* services */
 import { checkToken } from "@/services";
-/* types */
 import { ICallback } from "@/types";
+import { createResponse } from "@/utils/ServerSide";
+/**
+ * Constantes pour les messages d'erreur et de statut
+ */
+const MESSAGES = {
+  NOT_AUTHENTICATED: "Not authenticated",
+  INVALID_TOKEN: "Invalid or expired token",
+  CHECK_ERROR: "Error during token check",
+} as const;
 
 /**
- * Vérifie si le token est valide.
- * @param {NextRequest} req - La requête entrante.
- * @param {NextResponse} res - La réponse sortante.
- * @returns {Promise<NextResponse<ICallback>>} - La réponse contenant le résultat de la vérification du token.
+ * Vérifie la validité d'un token Google
  */
-export async function GET(
-  req: NextRequest,
-): Promise<NextResponse<ICallback>> {
+const verifyToken = async (
+  token: string
+): Promise<{ valid: boolean; tokenInfo?: any }> => {
+  const tokenInfo = await checkToken(token);
+  const isTokenValid = tokenInfo.expiry_date > Date.now();
+
+  return {
+    valid: isTokenValid,
+    tokenInfo: isTokenValid ? tokenInfo : undefined,
+  };
+};
+
+/**
+ * Route GET pour vérifier la validité d'un token Google
+ * @param req - Requête entrante contenant le token à vérifier
+ * @returns Réponse avec le statut de validité du token
+ */
+export async function GET(req: NextRequest): Promise<NextResponse<ICallback>> {
   try {
     const token = req.nextUrl.searchParams.get("token");
+
     if (!token) {
-      return NextResponse.json(
-        {
-          success: false,
-          data: null,
-          feedback: null,
-          error: "Not authenticated",
-        },
-        { status: 400 }
-      );
+      return createResponse(false, null, null, MESSAGES.NOT_AUTHENTICATED, 400);
     }
 
     try {
-      // Vérification si le token est valide
-      const tokenInfo = await checkToken(token);
-      const isTokenValid = tokenInfo.expiry_date > Date.now();
-      return NextResponse.json(
-        {
-          success: true,
-          data: { valid: isTokenValid, tokenInfo: tokenInfo },
-          feedback: null,
-          error: null,
-        },
-        { status: 200 }
+      const { valid, tokenInfo } = await verifyToken(token);
+      return createResponse(
+        true,
+        { valid, ...(valid && { tokenInfo }) },
+        null,
+        null,
+        200
       );
     } catch (error) {
-      return NextResponse.json(
-        {
-          success: false,
-          data: { valid: false },
-          feedback: null,
-          error: "Invalid or expired token",
-        },
-        { status: 400 }
+      console.error("Token verification failed:", error);
+      return createResponse(
+        false,
+        { valid: false },
+        null,
+        MESSAGES.INVALID_TOKEN,
+        400
       );
     }
   } catch (error) {
-    console.error("API GOOGLE IS VALIDE - ERROR:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        data: null,
-        feedback: null,
-        error: "Error during token check",
-      },
-      { status: 500 }
-    );
+    console.error("Token check API error:", error);
+    return createResponse(false, null, null, MESSAGES.CHECK_ERROR, 500);
   }
 }

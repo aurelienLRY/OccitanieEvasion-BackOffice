@@ -5,6 +5,7 @@ import { Tooltip, Spin } from "antd";
 import { BiEditAlt } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { FiRefreshCcw } from "react-icons/fi";
 
 /**
  * Ce composant représente un bouton personnalisé avec une icône.
@@ -139,6 +140,33 @@ export const DeleteButton = ({
           <Spin size="small" className="text-red-500" />
         ) : (
           <MdDelete className="group-hover:text-red-500 transition-all duration-300 " />
+        )}
+        {children}
+      </button>
+    </Tooltip>
+  );
+};
+
+export const RefreshButton = ({
+  title,
+  onClick,
+  className,
+  children,
+  isLoading = false,
+}: {
+  title?: string;
+  onClick: () => void;
+  className?: string;
+  children?: React.ReactNode;
+  isLoading?: boolean;
+}) => {
+  return (
+    <Tooltip title={`${title ? title : "Rafraîchir"}`}>
+      <button onClick={onClick} className={`text-2xl group ${className}`}>
+        {isLoading ? (
+          <Spin size="small" className="text-slate-200" />
+        ) : (
+          <FiRefreshCcw className="group-hover:text-slate-200 transition-all duration-300" />
         )}
         {children}
       </button>

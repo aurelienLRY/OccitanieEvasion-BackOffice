@@ -1,7 +1,6 @@
-"use server";
 import { ICalendarEvent } from "@/types";
 import { google } from "googleapis";
-import { oauth2Client } from "@/services";
+import { refreshAccessToken } from "@/services/GoogleCalendar/ServerSide";
 
 /**
  * Update an event on the Google Calendar
@@ -15,7 +14,7 @@ export const updateEvent = async (
   event: ICalendarEvent,
   eventId: string
 ) => {
-  oauth2Client.setCredentials({ refresh_token: refreshToken });
+  const oauth2Client = await refreshAccessToken(refreshToken);
   const calendar = google.calendar({ version: "v3", auth: oauth2Client });
   const response = await calendar.events.update({
     calendarId: "primary",

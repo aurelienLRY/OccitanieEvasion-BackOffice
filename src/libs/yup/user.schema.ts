@@ -14,6 +14,6 @@ export const userSchema = yup.object().shape({
   username: yup.string().required("Le nom d'utilisateur est requis"),
   avatar: yup.string().default("/img/default-avatar.webp"),
   calendar: yup.boolean(),
-  tokenCalendar: yup.string(),
-  tokenRefreshCalendar: yup.string(),
+  tokenCalendar: yup.string().nullable(),
+  tokenRefreshCalendar: yup.string().nullable(),
 });

@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useRef, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuth } from "@/hook";
+import { useAuth } from "@/hooks";
 import { Tooltip } from "antd";
 import { Skeleton } from "@nextui-org/skeleton";
 

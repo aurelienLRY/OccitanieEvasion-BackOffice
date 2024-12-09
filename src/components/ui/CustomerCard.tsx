@@ -2,14 +2,12 @@
 import React, { useState } from "react";
 import { Tooltip } from "antd";
 import { toast } from "sonner";
-/* ACTIONS */
-import { CANCEL_CUSTOMER_SESSION } from "@/libs/actions";
-/* SERVICES */
-import { generateEvent } from "@/services/GoogleCalendar/generateEvent";
-import { fetcherUpdateEvent } from "@/services/GoogleCalendar/fetcherUpdateEvent";
-
-/* Types */
-import { ICustomerSession } from "@/types";
+/* actions & services */
+import { CANCEL_CUSTOMER_SESSION } from "@/libs/ServerAction";
+import {
+  generateEvent,
+  fetcherUpdateEvent,
+} from "@/services/GoogleCalendar/ClientSide";
 
 /* Components */
 import {
@@ -22,23 +20,24 @@ import {
   CustomerPriceBadge,
 } from "@/components";
 
-/* Utils */
+/* utils & types */
 import {
   getCustomerStatusDisplay,
   customerIsCancelled,
   customerIsWaiting,
 } from "@/utils";
+import { ICustomerSession } from "@/types";
 
-/* Hooks */
-import { useCustomer } from "@/hook/useCustomer";
+/* hooks */
 
 /* Icons */
 import { MdOutlineEmail } from "react-icons/md";
 import { FaPhoneAlt } from "react-icons/fa";
 import { MdPeopleAlt } from "react-icons/md";
 
-/* Store */
+/* stores & hooks */
 import { useSessionWithDetails, useProfile } from "@/store";
+import { useCustomer } from "@/hooks";
 /**
  * Composant CustomerCard
  * @param {ICustomerSession} customer - La session du client

@@ -1,4 +1,4 @@
-import { oauth2Client } from "@/services/GoogleCalendar";
+import { oauth2Client } from "@/services/GoogleCalendar/ServerSide";
 
 /**
  * Génération de l'URL d'autorisation Google

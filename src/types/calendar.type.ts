@@ -10,6 +10,14 @@ export interface ICalendarTokenInfo {
   access_type: string;
 }
 
+export interface ICredentials {
+  access_token: string;
+  refresh_token: string;
+  scope: string;
+  token_type: string;
+  expiry_date: number;
+}
+
 /**
  * Google Calendar event type
  */

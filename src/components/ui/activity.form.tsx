@@ -1,23 +1,23 @@
 "use client";
 
-/* LIBRAIRIES */
+/* libraries */
 import React, { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { InferType } from "yup";
 import { Spin } from "antd";
-
-/* ACTIONS */
-import { CREATE_ACTIVITY, UPDATE_ACTIVITY } from "@/libs/actions";
+import { Editor } from "@tinymce/tinymce-react";
+/* actions & services */
+import { CREATE_ACTIVITY, UPDATE_ACTIVITY } from "@/libs/ServerAction";
 import { activitySchema } from "@/libs/yup";
 
-/* STORE */
+/* stores */
 import { useActivities } from "@/store";
 
-/* TYPES */
+/* types */
 import { IActivity } from "@/types";
 
-/* COMPONENTS */
+/* components */
 import {
   Input,
   Textarea,
@@ -29,7 +29,6 @@ import {
   ItemCardHeader,
   ItemCardInner,
 } from "@/components";
-import { Editor } from "@tinymce/tinymce-react";
 
 export type TActivityForm = InferType<typeof activitySchema>;
 
@@ -63,7 +62,6 @@ interface PricingSectionProps {
   watchFullDay: boolean;
 }
 
-
 interface PricingColumnProps {
   title: string;
   prefix: string;
@@ -84,7 +82,6 @@ export function ActivityForm({ data, isOpen, onClose }: ActivityFormProps) {
   const initialValue = data?.required_equipment || "";
   const [requiredEquipment, setRequiredEquipment] =
     useState<string>(initialValue);
-
 
   const methods = useForm<TActivityForm>({
     resolver: yupResolver(activitySchema),
@@ -310,7 +307,6 @@ function PricingColumn({ title, prefix, disabled }: PricingColumnProps) {
  * Section de l'équipement requis avec configuration externalisée
  */
 function RequiredEquipmentSection({
-
   initialValue,
   setRequiredEquipment,
 }: {

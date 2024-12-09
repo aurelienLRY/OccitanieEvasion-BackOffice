@@ -1,8 +1,5 @@
 import * as yup from "yup";
 
-
-
-
 /**
  * Session Schema
  * @returns Session Schema

@@ -1,4 +1,4 @@
-import { connectDB } from "@/libs/database/mongodb";
+import { connectDB } from "@/libs/database/setting.mongoose";
 import { User } from "@/libs/database/models/User.model";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";

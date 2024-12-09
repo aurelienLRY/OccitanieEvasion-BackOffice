@@ -1,7 +1,7 @@
 "use server";
 
 /* Database */
-import { connectDB, disconnectDB } from "@/libs/database/mongodb";
+import { connectDB, disconnectDB } from "@/libs/database/setting.mongoose";
 /* Models */
 import { EmailTemplate } from "@/libs/database/models/EmailTemplate.model";
 /* Types */

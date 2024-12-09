@@ -1,13 +1,20 @@
-import { ICallbackForUser, IUser } from "@/types";
+"use client";
+import { ICallback, IUser, ICredentials } from "@/types";
 
+interface TCallback extends ICallback {
+  data: {
+    credentials: ICredentials | null;
+    profile: IUser | null;
+  };
+}
 /**
  * Récupère un nouveau token.
  * @param profile - Le profil de l'utilisateur.
- * @returns Un objet ICallbackForUser avec le nouveau token.
+ * @returns Un objet ICallback avec le nouveau token.
  */
 export const fetcherRefreshToken = async (
   profile: IUser
-): Promise<ICallbackForUser> => {
+): Promise<TCallback> => {
   try {
     const fetcherRefreshToken = await fetch(
       "/api/services/google/refresh-token",
@@ -34,7 +41,10 @@ export const fetcherRefreshToken = async (
       success: false,
       error: error.message as string,
       feedback: null,
-      data: null,
+      data: {
+        credentials: null,
+        profile: null,
+      },
     };
   }
 };

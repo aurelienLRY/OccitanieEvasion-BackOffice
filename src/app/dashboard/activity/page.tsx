@@ -10,21 +10,14 @@ import {
   ActivityForm,
   ItemContainer,
 } from "@/components";
-
+/* Utils  & types */
+import { SearchInObject } from "@/utils/search.utils";
+import { IActivity } from "@/types";
+/* store  & hooks */
+import { useActivities } from "@/store";
+import { useModal } from "@/hooks";
 /* Icons */
 import { IoMdAddCircle } from "react-icons/io";
-
-/* Utils */
-import { SearchInObject } from "@/utils/search.utils";
-
-/* store */
-import { useActivities } from "@/store";
-
-/* Types */
-import { IActivity } from "@/types";
-/*hooks*/
-
-import { useModal } from "@/hook";
 
 type Props = {};
 

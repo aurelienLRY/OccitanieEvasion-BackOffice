@@ -7,22 +7,17 @@ import { useSession } from "next-auth/react";
 import { Spin } from "antd";
 
 /* actions */
-import { UPDATE_USER } from "@/libs/actions";
-
+import { UPDATE_USER } from "@/libs/ServerAction";
 /*components*/
 import { ToasterAction } from "@/components";
-
-/* icons */
-import { FaCloudUploadAlt } from "react-icons/fa";
-import { FaRegCheckCircle } from "react-icons/fa";
 
 /* types */
 import { IUser } from "@/types";
 import { toast } from "sonner";
-
 /* store */
 import { useProfile } from "@/store";
-
+/* icons */
+import { FaCloudUploadAlt } from "react-icons/fa";
 /**
  * Ce composant gère le système d'avatar pour les utilisateurs.
  * Il permet aux utilisateurs de télécharger une nouvelle image d'avatar,

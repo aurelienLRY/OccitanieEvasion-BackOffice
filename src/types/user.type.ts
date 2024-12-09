@@ -14,7 +14,7 @@ export interface IUser {
   password?: string;
   avatar?: string;
   calendar?: boolean;
-  tokenCalendar?: string;
-  tokenRefreshCalendar?: string;
+  tokenCalendar: string | null;
+  tokenRefreshCalendar: string | null;
   phone?: string;
 }

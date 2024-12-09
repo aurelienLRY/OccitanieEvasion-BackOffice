@@ -1,3 +1,4 @@
+"use client";
 import { ICallback, ICalendarTokenInfo } from "@/types";
 
 /**
@@ -9,7 +10,7 @@ export const fetcherCheckToken = async (
   token: string
 ): Promise<
   ICallback & {
-    data: { valid: boolean; tokenInfo: ICalendarTokenInfo | undefined };
+    data: { valid: boolean; tokenInfo: ICalendarTokenInfo | null };
   }
 > => {
   try {
@@ -24,7 +25,7 @@ export const fetcherCheckToken = async (
       success: false,
       error: error.message as string,
       feedback: null,
-      data: { valid: false, tokenInfo: undefined },
+      data: { valid: false, tokenInfo: null },
     };
   }
 };
