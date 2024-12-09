@@ -247,15 +247,17 @@ export default function AllSessionsCard({
 
         {/* Grille des sessions avec navigation */}
         <div className="flex items-center justify-center gap-4">
-          <Tooltip title="Sessions précédentes">
-            <button
-              className="flex justify-end text-white hover:text-orange-600 rounded disabled:text-gray-300"
+          {totalPages > 1 && (
+            <Tooltip title="Sessions précédentes">
+              <button
+                className="flex justify-end text-white hover:text-orange-600 rounded disabled:text-gray-300"
               onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
               disabled={currentPage === 0}
             >
-              <FaChevronCircleLeft className="text-4xl h-10 w-10" />
-            </button>
-          </Tooltip>
+                <FaChevronCircleLeft className="text-4xl h-10 w-10" />
+              </button>
+            </Tooltip>
+          )}
 
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4 justify-items-center">
             {currentSessions.map((customerSession) => (
@@ -270,6 +272,9 @@ export default function AllSessionsCard({
             ))}
           </div>
 
+
+          {totalPages > 1 && (
+
           <Tooltip title="Sessions suivantes">
             <button
               className="flex justify-end text-white hover:text-orange-600 rounded disabled:text-gray-300"
@@ -279,12 +284,14 @@ export default function AllSessionsCard({
               disabled={currentPage >= totalPages - 1}
             >
               <FaChevronCircleRight className="text-4xl h-10 w-10" />
-            </button>
-          </Tooltip>
+              </button>
+            </Tooltip>
+          )}
         </div>
 
         {/* Dots de pagination améliorés */}
-        <div className="w-full flex justify-center gap-2 my-4">
+        {totalPages > 1 && (
+          <div className="w-full flex justify-center gap-2 my-4">
           {paginationRange.map((pageNumber, index) => (
             <React.Fragment key={index}>
               {pageNumber === -1 ? (
@@ -304,9 +311,10 @@ export default function AllSessionsCard({
                   </button>
                 </Tooltip>
               )}
-            </React.Fragment>
-          ))}
-        </div>
+              </React.Fragment>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Modal Details */}

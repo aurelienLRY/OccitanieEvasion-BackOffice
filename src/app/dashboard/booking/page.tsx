@@ -207,6 +207,7 @@ const BookingPage = () => {
         </div>
 
         <div className="flex  items-center justify-center">
+          {totalPages > 1 && (
           <Tooltip title="Mois précédents">
             <button
               className="max-w-1/6 flex justify-end  text-white hover:text-orange-600 rounded disabled:text-gray-300"
@@ -215,7 +216,8 @@ const BookingPage = () => {
             >
               <FaChevronCircleLeft className="text-4xl h-10 w-10" />
             </button>
-          </Tooltip>
+            </Tooltip>
+          )}
           {/* Affichage des données paginées */}
           <div className="flex flex-col gap-6  w-full items-center  ">
             {currentMonths.map(({ year, month }) => (
@@ -251,10 +253,11 @@ const BookingPage = () => {
                 </div>
               </div>
             ))}
-          </div>{" "}
-          <Tooltip title="Mois suivants">
-            <button
-              className="max-w-1/6 flex justify-end text-white hover:text-orange-600 rounded disabled:text-gray-300"
+          </div>
+          {totalPages > 1 && (
+            <Tooltip title="Mois suivants">
+              <button
+                className="max-w-1/6 flex justify-end text-white hover:text-orange-600 rounded disabled:text-gray-300"
               onClick={() =>
                 setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
               }
@@ -262,12 +265,14 @@ const BookingPage = () => {
             >
               <FaChevronCircleRight className="text-4xl h-10 w-10 " />
             </button>
-          </Tooltip>
+            </Tooltip>
+          )}
         </div>
-        <div className="w-full flex justify-center gap-2 my-4">
-          {Array.from({ length: totalPages }).map((_, index) => (
-            <Tooltip title={`Aller à la page ${index + 1}`} key={index}>
-              <button
+        {totalPages > 1 && (
+          <div className="w-full flex justify-center gap-2 my-4">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <Tooltip title={`Aller à la page ${index + 1}`} key={index}>
+                <button
                 onClick={() => setCurrentPage(index)}
                 className={`w-3 h-3 rounded-full transition-all duration-200 border-2 ${
                   currentPage === index
@@ -279,8 +284,9 @@ const BookingPage = () => {
                 <span className="sr-only">Page {index + 1}</span>
               </button>
             </Tooltip>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
         {/* les modals*/}
         {editCustomer.data && (
           <CustomerSessionForm
