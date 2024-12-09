@@ -11,7 +11,7 @@ import { Skeleton, card } from "@nextui-org/react";
 import { ISpot } from "@/types";
 
 /* Actions */
-import { DELETE_SPOT } from "@/libs/actions";
+import { DELETE_SPOT } from "@/libs/ServerAction";
 
 /* Components */
 import {

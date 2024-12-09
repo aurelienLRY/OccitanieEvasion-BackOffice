@@ -1,104 +1,96 @@
 "use client";
 
-/* LIBRAIRIES */
+/* libraries */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/utils/cn";
 
-/* TYPES */
+/* utils & types */
+import { getSessionByStatus, countAllWaitingCustomers } from "@/utils";
 import { ISessionWithDetails } from "@/types";
 
-/*utils*/
-import { getSessionByStatus, countAllWaitingCustomers } from "@/utils";
+/* types */
+interface NavLinkProps {
+  href: string;
+  label: string;
+  count?: number;
+}
 
 /**
  * DashboardNav Component
- * @param {ISessionWithDetails[]} sessionsWithDetails - Les données des sessions.
- * @returns {JSX.Element} Le composant barre de navigation du tableau de bord.
+ * Composant de navigation principal du tableau de bord
+ * Affiche les liens de navigation et les compteurs de notifications
+ *
+ * @param {ISessionWithDetails[]} sessionsWithDetails - Les données des sessions avec leurs détails
+ * @returns {JSX.Element} Composant de navigation
  */
 export const DashboardNav = ({
   sessionsWithDetails,
 }: {
   sessionsWithDetails: ISessionWithDetails[];
 }) => {
-  /*usePathname*/
   const pathname = usePathname();
 
-  /**
-   * isActive
-   * @param {string} path - Le chemin de la route.
-   * @returns {boolean} Si la route est active ou inactive.
-   */
-  const isActive = (path: string) => {
-    return pathname.toString() === path;
-  };
-
-  /*get session pending count*/
+  // Calcul des compteurs de notifications
   const sessionPendingCount = getSessionByStatus(
     sessionsWithDetails,
     "Pending"
   );
-
-  /*get customer waiting count*/
   const customerWaitingCount = countAllWaitingCustomers(sessionsWithDetails);
 
   /**
-   * isPathActive
-   * @param {string} path - Le chemin de la route.
-   * @returns {string} La classe CSS active ou inactive.
+   * Vérifie si le chemin actuel correspond au lien
+   * @param {string} path - Chemin à vérifier
+   * @returns {boolean} True si le chemin est actif
    */
-  const isPathActive = (path: string) => {
+  const isActive = (path: string): boolean => pathname === path;
+
+  /**
+   * Génère les classes CSS pour le style des liens
+   * @param {string} path - Chemin du lien
+   * @returns {string} Classes CSS concatenées
+   */
+  const isPathActive = (path: string): string => {
     return cn(
       isActive(path) ? "font-semibold bg-sky-700 dark:bg-sky-900" : "",
-      "py-2 px-3 rounded-md transition-all hover:font-semibold relative"
+      "py-2 px-3 rounded-md transition-all hover:font-semibold hover:bg-sky-600 relative"
     );
   };
 
+  /**
+   * Composant pour afficher un lien de navigation avec compteur optionnel
+   * @param {NavLinkProps} props - Propriétés du lien
+   * @returns {JSX.Element} Lien de navigation
+   */
+  const NavLink = ({ href, label, count }: NavLinkProps) => (
+    <Link href={href} className={isPathActive(href)}>
+      {count !== undefined && count > 0 && (
+        <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 rounded-full text-white p-1 text-xs flex justify-center items-center opacity-80 z-20">
+          {count}
+        </span>
+      )}
+      {label}
+    </Link>
+  );
+
   return (
-    <nav
-      className="flex flex-col sm:flex-row justify-center items-center gap-1 md:gap-2  bg-sky-950 dark:bg-sky-800 text-white text-xs font-light md:p-1 rounded-md
-    fixed md:relative bottom-10 translate-y-1/2 py-4 w-full md:w-auto  md:top-0 md:left-0 md:right-0 md:bottom-auto z-10"
-    >
-      <div className="flex relative  ">
-        <Link href="/dashboard" className={isPathActive("/dashboard")}>
-          Dashboard
-        </Link>
-        <Link
+    <nav className="flex flex-col sm:flex-row justify-center items-center gap-1 md:gap-2 bg-sky-950 dark:bg-sky-800 text-white text-xs font-light md:p-1 rounded-md fixed md:relative bottom-10 translate-y-1/2 py-4 w-full md:w-auto md:top-0 md:left-0 md:right-0 md:bottom-auto z-10">
+      <div className="flex relative">
+        <NavLink href="/dashboard" label="Dashboard" />
+        <NavLink
           href="/dashboard/session"
-          className={isPathActive("/dashboard/session")}
-        >
-          {sessionsWithDetails && sessionPendingCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 rounded-full text-white p-1 text-xs flex justify-center items-center opacity-80 z-20">
-              {sessionPendingCount}
-            </span>
-          )}
-          Sessions
-        </Link>
-        <Link
+          label="Sessions"
+          count={sessionPendingCount}
+        />
+        <NavLink
           href="/dashboard/booking"
-          className={isPathActive("/dashboard/booking")}
-        >
-          {sessionsWithDetails && customerWaitingCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 rounded-full text-white p-1 text-xs flex justify-center items-center opacity-80 z-20">
-              {customerWaitingCount}
-            </span>
-          )}
-          Réservations
-        </Link>
+          label="Réservations"
+          count={customerWaitingCount}
+        />
       </div>
-      <div className="flex relative  ">
-        <Link
-          href="/dashboard/spot"
-          className={isPathActive("/dashboard/spot")}
-        >
-          Lieux
-        </Link>
-        <Link
-          href="/dashboard/activity"
-          className={isPathActive("/dashboard/activity")}
-        >
-          Activités
-        </Link>
+      <div className="flex relative">
+        <NavLink href="/dashboard/spot" label="Lieux" />
+        <NavLink href="/dashboard/activity" label="Activités" />
       </div>
     </nav>
   );

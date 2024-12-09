@@ -5,9 +5,9 @@ import * as yup from "yup";
 import xss from "xss";
 
 /* Database */
-import { connectDB, disconnectDB } from "@/libs/database/mongodb";
+import { connectDB, disconnectDB } from "@/libs/database/setting.mongoose";
 /* Models */
-import { User } from "@/libs/database/models/User.model";
+import { User } from "@/libs/database/models";
 /* Types */
 import { IUser, ICallbackForUser } from "@/types";
 /* Yup */
@@ -60,7 +60,6 @@ export const UPDATE_USER = async (
     const cleanUser = await xssUser(YupValidation as IUser);
 
     await connectDB();
-
     const updatedUser: IUser | null = await User.findByIdAndUpdate(
       id,
       cleanUser,
@@ -142,9 +141,11 @@ export async function GET_USER_SESSION(): Promise<ICallbackForUser> {
       throw new Error("Session non trouvée");
     }
     const response = await GET_USER_BY_ID(session?.user.id as string);
+    const { password, ...userWithoutPassword } = response.data as IUser;
+
     return {
       success: true,
-      data: response.data,
+      data: JSON.parse(JSON.stringify(userWithoutPassword)),
       error: null,
       feedback: null,
     };

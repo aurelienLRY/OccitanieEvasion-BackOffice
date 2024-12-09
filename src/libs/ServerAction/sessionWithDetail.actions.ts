@@ -1,9 +1,11 @@
 "use server";
 /* Models */
-import { Activity } from "@/libs/database/models/Activity.model";
-import { Spot } from "@/libs/database/models/Spot.model";
-import { CustomerSession } from "@/libs/database/models/CustomerSession.model";
-import { Session } from "@/libs/database/models/Session.model";
+import {
+  Activity,
+  CustomerSession,
+  Spot,
+  Session,
+} from "@/libs/database/models";
 
 /*Types*/
 import {

@@ -16,10 +16,10 @@ import {
   DeleteButton,
 } from "@/components";
 
-/* Actions */
-import { DELETE_ACTIVITY } from "@/libs/actions";
+/* actions & services */
+import { DELETE_ACTIVITY } from "@/libs/ServerAction";
 
-/* Store */
+/* stores */
 import { useActivities, useSessionWithDetails } from "@/store";
 
 /* Icons */

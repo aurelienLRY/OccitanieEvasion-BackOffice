@@ -1,11 +1,13 @@
-/* LIBRAIRIES */
+/* libraries */
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-/* COMPONENTS */
-import { Input, SecondaryButton, ItemCard, ToasterAction } from "@/components";
 import { Spin } from "antd";
+
+/* components */
+import { Input, SecondaryButton, ItemCard, ToasterAction } from "@/components";
+
 
 type Props = {};
 

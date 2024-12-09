@@ -1,4 +1,4 @@
-import { oauth2Client } from "@/services";
+import { oauth2Client } from "@/services/GoogleCalendar/ServerSide";
 
 /**
  * Vérification si le token est valide

@@ -12,7 +12,7 @@ import { cn } from "@/utils/cn";
 import { calculateSessionIncome } from "@/utils/price.utils";
 
 /* Hooks */
-import { useModal } from "@/hook";
+import { useModal } from "@/hooks";
 
 /**
  * SessionDetailCard Component

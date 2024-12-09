@@ -1,17 +1,20 @@
 "use client";
-/* LIBRAIRIES */
+/* libraries */
 import React, { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Spin } from "antd";
+import { toast } from "sonner";
 
-/* ACTIONS */
-import { CREATE_SESSION, UPDATE_SESSION } from "@/libs/actions/session.actions";
-import { sessionSchema } from "@/libs/yup/session.schema";
-import { fetcherAddEvent } from "@/services/GoogleCalendar/fetcherInsertEvent";
-import { fetcherUpdateEvent } from "@/services/GoogleCalendar/fetcherUpdateEvent";
+/* actions & services */
+import { CREATE_SESSION, UPDATE_SESSION } from "@/libs/ServerAction";
+import { sessionSchema } from "@/libs/yup";
+import {
+  fetcherAddEvent,
+  fetcherUpdateEvent,
+} from "@/services/GoogleCalendar/ClientSide";
 
-/* STORES */
+/* stores */
 import {
   useSessionWithDetails,
   useSpots,
@@ -19,10 +22,7 @@ import {
   useProfile,
 } from "@/store";
 
-/* TYPES */
-import { ISession, ISessionWithDetails, IActivity } from "@/types";
-
-/* COMPONENTS */
+/* components */
 import {
   Modal,
   Input,
@@ -31,10 +31,10 @@ import {
   InfoTooltips,
 } from "@/components";
 
-/* UTILS */
+/* utils & types */
 import { formatDate } from "@/utils/date.utils";
-import { generateEvent } from "@/services/GoogleCalendar/generateEvent";
-import { toast } from "sonner";
+import { generateEvent } from "@/services/GoogleCalendar/ClientSide/generateEvent";
+import { ISession, ISessionWithDetails, IActivity } from "@/types";
 
 export type TSessionForm = {
   _id?: string;

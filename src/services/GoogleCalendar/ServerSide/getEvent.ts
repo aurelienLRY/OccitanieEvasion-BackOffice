@@ -1,10 +1,8 @@
-"use server";
-
 import { google } from "googleapis";
-import { oauth2Client } from "@/services";
+import { refreshAccessToken } from "@/services/GoogleCalendar/ServerSide";
 
 export const getEvent = async (token: string) => {
-  oauth2Client.setCredentials({ access_token: token });
+  const oauth2Client = await refreshAccessToken(token);
   const calendar = google.calendar({ version: "v3", auth: oauth2Client });
   const response = await calendar.events.list({
     calendarId: "primary",

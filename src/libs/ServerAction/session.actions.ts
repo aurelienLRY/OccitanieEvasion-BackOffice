@@ -13,14 +13,14 @@ import {
   ICallbackForSessionWithDetailsArray,
 } from "@/types";
 /* Database */
-import { connectDB, disconnectDB } from "@/libs/database/mongodb";
+import { connectDB, disconnectDB } from "@/libs/database/setting.mongoose";
 /* Models */
-import { Session } from "@/libs/database/models/Session.model";
+import { Session } from "@/libs/database/models";
 /*  actions */
 import {
   GET_SERVER_SESSIONS_WITH_DETAILS,
   GET_SERVER_SESSION_WITH_DETAILS,
-} from "@/libs/actions/sessionWithDetail.actions";
+} from "@/libs/ServerAction";
 import { sessionSchema } from "@/libs/yup";
 
 /**

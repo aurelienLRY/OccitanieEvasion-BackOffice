@@ -1,11 +1,11 @@
 "use client";
 
-import { generateEvent } from "@/services/GoogleCalendar/generateEvent";
-import { fetcherUpdateEvent } from "@/services/GoogleCalendar/fetcherUpdateEvent";
+import { generateEvent } from "@/services/GoogleCalendar/ClientSide/generateEvent";
+import { fetcherUpdateEvent } from "@/services/GoogleCalendar/ClientSide/fetcherUpdateEvent";
 import { useProfile, useSessionWithDetails } from "@/store";
 import { ICustomerSession } from "@/types";
 import { useState } from "react";
-import { CANCEL_CUSTOMER_SESSION } from "@/libs/actions";
+import { CANCEL_CUSTOMER_SESSION } from "@/libs/ServerAction";
 import { toast } from "sonner";
 import { ToasterAction } from "@/components";
 

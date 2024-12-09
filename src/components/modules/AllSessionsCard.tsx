@@ -2,10 +2,9 @@
 /* Librairies */
 import React, { useState, useEffect } from "react";
 import { Tooltip } from "antd";
-
 import { Spin } from "antd";
 
-/* Components */
+/* components */
 import {
   SessionCard,
   SessionForm,
@@ -15,17 +14,15 @@ import {
   ItemContainer,
 } from "@/components";
 
-/* Utils */
+/* Utils & types */
 import { getSessionByStatus } from "@/utils";
 import { SearchInObject } from "@/utils/search.utils";
 import { cn } from "@/utils/cn";
-
-/* Types */
 import { ISessionWithDetails } from "@/types";
 
-/* Hook */
-import { useModal } from "@/hook";
-
+/* hooks */
+import { useModal } from "@/hooks";
+/* icons */
 import { FaChevronCircleLeft, FaChevronCircleRight } from "react-icons/fa";
 
 /**

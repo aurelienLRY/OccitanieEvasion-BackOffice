@@ -3,10 +3,10 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { produce } from 'immer';
 
-/*actions */ 
-import { GET_EMAIL_TEMPLATE } from "@/libs/actions";
+/* actions */
+import { GET_EMAIL_TEMPLATE } from "@/libs/ServerAction";
 
-/*types */ 
+/* types */
 import { IEmailTemplate } from "@/types";
 
 /*data */ 
@@ -63,5 +63,7 @@ export const useEmailTemplates = create<TuseEmailTemplates>()(devtools((set, get
    
    
    
-    }
-})))
+    }   
+}),
+{ name: "EmailTemplatesStore" }
+))

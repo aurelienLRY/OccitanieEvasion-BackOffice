@@ -1,17 +1,26 @@
 "use client";
+/* libraries */
 import React from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
+import { Tooltip } from "antd";
 
+/* fullcalendar */
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import googleCalendarPlugin from "@fullcalendar/google-calendar";
 import timeGridPlugin from "@fullcalendar/timegrid";
-
 import frLocale from "@fullcalendar/core/locales/fr";
 
-/* COMPONENTS */
-import { ItemContainer, SecondaryButton } from "@/components";
+/* components */
+import {
+  ItemContainer,
+  SecondaryButton,
+  LoadingSpinner,
+  RefreshButton,
+} from "@/components";
+
+/* stores */
 import { useProfile, useCalendar } from "@/store";
 
 type Props = {
@@ -19,31 +28,19 @@ type Props = {
 };
 
 export const CalendarCard = (props: Props) => {
-  const { refreshToken, tokenIsValid, expiryDate, checkToken } = useCalendar();
-
-  React.useEffect(() => {
-    const intervalCalendar = setInterval(async () => {
-      const currentTime = Date.now();
-      const timeToExpiry = expiryDate - currentTime;
-      if (!tokenIsValid || timeToExpiry < 5 * 60 * 1000) {
-        await refreshToken();
-      }
-    }, 60 * 1000);
-
-    // Nettoyage de l'intervalle lors du démontage du composant
-    return () => clearInterval(intervalCalendar);
-  }, [tokenIsValid, expiryDate, refreshToken]);
-
-  React.useEffect(() => {
-    checkToken();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { tokenIsValid, isLoading } = useCalendar();
 
   return (
     <ItemContainer
-      className={` min-w-[300px] w-full min-h-[200px] p-2 ${props.className}`}
+      className={`min-w-[300px] w-full min-h-[200px] p-2 ${props.className}`}
     >
-      {tokenIsValid ? <Calendar /> : <ConnectToCalendar />}
+      {isLoading ? (
+        <LoadingSpinner text="Chargement du calendrier..." />
+      ) : tokenIsValid ? (
+        <Calendar />
+      ) : (
+        <ConnectToCalendar />
+      )}
     </ItemContainer>
   );
 };
@@ -63,8 +60,8 @@ const ConnectToCalendar = () => {
       });
   };
   return (
-    <>
-      <div className="flex flex-col items-center justify-center">
+    <div className="h-full flex flex-col items-center justify-center gap-4">
+      <div className="flex flex-col items-center justify-center ">
         <Image
           src="/img/googleCalendar.png"
           alt="Google Calendar"
@@ -80,34 +77,43 @@ const ConnectToCalendar = () => {
       <SecondaryButton onClick={googleCalendarConnect} className="px-4 py-2 ">
         Connecter mon calendrier
       </SecondaryButton>
-    </>
+    </div>
   );
 };
 
 function Calendar() {
   const { profile } = useProfile();
+  const { checkTokenValidity } = useCalendar();
   if (!profile) return null;
   return (
-    <FullCalendar
-      locale="fr"
-      locales={[frLocale]}
-      plugins={[dayGridPlugin, googleCalendarPlugin, timeGridPlugin]}
-      initialView="dayGridMonth"
-      events={{
-        googleCalendarId: profile.email,
-        className: "bg-orange-600 text-sm w-full h-fit",
-      }}
-      googleCalendarApiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
-      themeSystem="Cosmo"
-      headerToolbar={{
-        left: "prev,next today",
-        center: "title",
-        right: "dayGridMonth,timeGridWeek",
-      }}
-      titleFormat={{ day: "numeric", month: "short", year: "numeric" }}
-      //contentHeight="500px"
-      aspectRatio={1.4}
-      scrollTime="08:00:00 "
-    />
+    <div className="h-full w-full flex flex-col gap-4  justify-around min-w-[350px]">
+      <FullCalendar
+        locale="fr"
+        locales={[frLocale]}
+        plugins={[dayGridPlugin, googleCalendarPlugin, timeGridPlugin]}
+        initialView="dayGridMonth"
+        events={{
+          googleCalendarId: profile.email,
+          className: "bg-orange-600 text-sm w-full h-fit",
+        }}
+        googleCalendarApiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
+        themeSystem="Cosmo"
+        headerToolbar={{
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek",
+        }}
+        titleFormat={{ day: "numeric", month: "short", year: "numeric" }}
+        //contentHeight="500px"
+        aspectRatio={1.4}
+        scrollTime="08:00:00 "
+      />
+      <div className=" w-full flex justify-end items-center px-2 text-slate-400">
+        <RefreshButton
+          onClick={checkTokenValidity}
+          title="Rafraîchir le calendrier"
+        />
+      </div>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-import { connectDB } from "@/libs/database/mongodb";
+import { connectDB, disconnectDB } from "@/libs/database/setting.mongoose";
 import { User } from "@/libs/database/models/User.model";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -18,6 +18,7 @@ export const authOptions: NextAuthOptions = {
         const userFound = await User.findOne({
           email: credentials?.email,
         });
+        await disconnectDB();
         console.log("userFound", userFound);
 
         if (!userFound) throw new Error("Email inconnu");

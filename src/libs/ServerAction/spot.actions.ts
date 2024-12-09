@@ -5,17 +5,17 @@ import * as yup from "yup";
 import xss from "xss";
 
 /* Database */
-import { connectDB, disconnectDB } from "@/libs/database/mongodb";
+import { connectDB, disconnectDB } from "@/libs/database/setting.mongoose";
 
 /* Models */
-import { Spot } from "@/libs/database/models/Spot.model";
+import { Spot } from "@/libs/database/models";
 import { spotSchema } from "@/libs/yup";
 
 /* Types */
 import { ISpot, ICallbackForSpot, ICallbackForSpots } from "@/types";
 
 /* Actions */
-import { GET_SERVER_SESSIONS_WITH_DETAILS } from "@/libs/actions/sessionWithDetail.actions";
+import { GET_SERVER_SESSIONS_WITH_DETAILS } from "@/libs/ServerAction";
 
 /*
  * Validate the spot

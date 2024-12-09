@@ -24,7 +24,7 @@ import {
 /* Store & Types */
 import { useSessionWithDetails } from "@/store";
 import { ISessionWithDetails } from "@/types";
-import { useModal } from "@/hook";
+import { useModal } from "@/hooks";
 
 /**
  * Dashboard Component

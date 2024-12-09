@@ -13,7 +13,7 @@ import {
 } from "@/components";
 
 /*Hook*/
-import { useModal, useCustomer } from "@/hook";
+import { useModal, useCustomer } from "@/hooks";
 
 /* types */
 import { ICustomerSession, ISessionWithDetails } from "@/types";

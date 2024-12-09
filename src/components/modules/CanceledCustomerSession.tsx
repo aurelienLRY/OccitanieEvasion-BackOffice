@@ -6,7 +6,7 @@ import { Spin } from "antd";
 import { Modal } from "@/components";
 
 /*hooks*/
-import { useCustomer } from "@/hook/useCustomer";
+import { useCustomer } from "@/hooks/useCustomer";
 
 /*Types*/
 import { ISessionWithDetails, ICustomerSession } from "@/types";
