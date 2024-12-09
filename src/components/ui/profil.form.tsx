@@ -8,14 +8,17 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { userSchema } from "@/libs/yup";
 import { Spin } from "antd";
 
-/* STORE */
+/* stores */
 import { useProfile } from "@/store";
 
-/* COMPONENTS */
+/* components */
 import { Input, SecondaryButton, ToasterAction } from "@/components";
 
-/* ACTIONS */
-import { UPDATE_USER } from "@/libs/actions";
+/* actions */
+import { UPDATE_USER } from "@/libs/ServerAction";
+
+/* types */
+import { IUser } from "@/types";
 
 export const ProfilForm = () => {
   const { profile, updateProfile } = useProfile();
@@ -40,7 +43,7 @@ export const ProfilForm = () => {
   const onSubmit = async (data: InferType<typeof userSchema>) => {
     if (!profile || !profile._id) return;
     // update user in database
-    const result = await UPDATE_USER(profile._id as string, data);
+    const result = await UPDATE_USER(profile._id as string, data as IUser);
     if (result.success && result.data) {
       // update user in session
       updateProfile(result.data);

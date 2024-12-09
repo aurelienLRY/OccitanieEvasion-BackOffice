@@ -21,8 +21,8 @@ const UserSchema = new Schema<IUser>(
     password: { type: String, required: true },
     username: { type: String, required: true, default: "username ?" },
     calendar: { type: Boolean, default: false },
-    tokenCalendar: { type: String },
-    tokenRefreshCalendar: { type: String },
+    tokenCalendar: { type: String, default: null },
+    tokenRefreshCalendar: { type: String, default: null },
   },
   { timestamps: true }
 );

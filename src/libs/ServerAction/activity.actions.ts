@@ -4,9 +4,9 @@ import * as yup from "yup";
 import xss from "xss";
 
 /* Database */
-import { connectDB, disconnectDB } from "@/libs/database/mongodb";
+import { connectDB, disconnectDB } from "@/libs/database/setting.mongoose";
 /* Models */
-import { Activity } from "@/libs/database/models/Activity.model";
+import { Activity } from "@/libs/database/models";
 
 /* YUP schema */
 import { activitySchema } from "@/libs/yup";
@@ -19,7 +19,7 @@ import {
 } from "@/types";
 
 /* Actions */
-import { GET_SERVER_SESSIONS_WITH_DETAILS } from "@/libs/actions/sessionWithDetail.actions";
+import { GET_SERVER_SESSIONS_WITH_DETAILS } from "@/libs/ServerAction";
 
 /*
  * Validate the activity

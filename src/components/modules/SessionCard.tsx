@@ -4,9 +4,9 @@
 import { Tooltip } from "antd";
 import { toast } from "sonner";
 import React, { useState } from "react";
-/*actions*/
-import { DELETE_SESSION } from "@/libs/actions";
-import { UPDATE_SESSION } from "@/libs/actions";
+
+/* actions */
+import { DELETE_SESSION, UPDATE_SESSION } from "@/libs/ServerAction";
 
 /*store*/
 import { useSessionWithDetails, useProfile } from "@/store";
@@ -35,7 +35,7 @@ import { ISessionWithDetails } from "@/types";
 /*icons*/
 import { RiCalendarCloseFill } from "react-icons/ri";
 import { IoMdPersonAdd } from "react-icons/io";
-import { fetcherDeleteEvent } from "@/services/GoogleCalendar/fetcherDeleteEvent";
+import { fetcherDeleteEvent } from "@/services/GoogleCalendar/ClientSide";
 
 type Props = {
   sessionWithDetails: ISessionWithDetails;

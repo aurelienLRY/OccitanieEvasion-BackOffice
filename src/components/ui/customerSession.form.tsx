@@ -1,6 +1,6 @@
 "use client";
 
-/* LIBRAIRIES */
+/* libraries */
 import React, { useEffect, useState } from "react";
 import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -21,32 +21,33 @@ import {
 } from "@/components";
 
 /*services*/
-import { fetcherUpdateEvent } from "@/services/GoogleCalendar/fetcherUpdateEvent";
-import { generateEvent } from "@/services/GoogleCalendar/generateEvent";
 
 /* types */
 import { ISessionWithDetails, ICustomerSession } from "@/types";
 
-/* Actions */
+/* actions & services */
 import {
   CREATE_CUSTOMER_SESSION,
   UPDATE_CUSTOMER_SESSION,
-} from "@/libs/actions";
+} from "@/libs/ServerAction";
 
-/*store*/
+/* stores */
 import { useSessionWithDetails, useProfile } from "@/store";
+import {
+  fetcherUpdateEvent,
+  generateEvent,
+} from "@/services/GoogleCalendar/ClientSide";
 
-/* Template Email  */
+/* template email */
 import { customerConfirmation } from "@/libs/nodeMailer/template/RegistrationConfirmation";
 import { MailContent, HtmlBase } from "@/libs/nodeMailer/template/base";
 
 /* NodeMailer */
-import { nodeMailerSender } from "@/libs";
+import { nodeMailerSender } from "@/libs/nodeMailer";
 
 /*icons */
 import { IoMdPersonAdd } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
-import { error } from "console";
 
 /* Validation */
 const baseSchema = yup.object().shape({

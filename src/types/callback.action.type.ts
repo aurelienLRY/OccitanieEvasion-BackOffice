@@ -7,6 +7,7 @@ import {
   IEmailTemplate,
   IUser,
   IEventModel,
+  ICredentials,
 } from "@/types";
 
 /**
@@ -144,4 +145,8 @@ export interface ICallbackForUser extends ICallback {
  */
 export interface ICallbackForEvent extends ICallback {
   data: IEventModel | null;
+}
+
+export interface ICallbackForCredentials extends ICallback {
+  data: ICredentials | null;
 }

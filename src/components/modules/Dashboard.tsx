@@ -1,5 +1,5 @@
 "use client";
-/* LIBRAIRIES */
+/* libraries */
 import React from "react";
 import { usePathname } from "next/navigation";
 
@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { DashboardNav } from "@/components";
 import { getPathname } from "@/app/dashboard/template";
 
-/* TYPES */
+/* types */
 import { ISessionWithDetails } from "@/types";
 
 export const Dashboard = ({

@@ -19,10 +19,12 @@ export type {
   ICallbackForEmailTemplate,
   ICallbackForEmailTemplates,
   ICallbackForUser,
+  ICallbackForCredentials,
 } from "@/types/callback.action.type";
 export type { IEmailTemplate } from "@/types/emailTemplate.type";
 export type {
   ICalendarTokenInfo,
   ICalendarEvent,
   IEventModel,
+  ICredentials,
 } from "@/types/calendar.type";

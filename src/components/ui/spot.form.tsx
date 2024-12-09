@@ -1,6 +1,6 @@
 "use client";
 
-/* LIBRAIRIES */
+/* libraries */
 import React, { useEffect } from "react";
 import {
   useForm,
@@ -9,21 +9,20 @@ import {
   Resolver,
 } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import * as yup from "yup";
 import { Spin } from "antd";
 
-/* ACTIONS */
-import { CREATE_SPOT, UPDATE_SPOT } from "@/libs/actions";
+/* actions */
+import { CREATE_SPOT, UPDATE_SPOT } from "@/libs/ServerAction";
 import { spotSchema } from "@/libs/yup";
 
-/* STORES */
+/* stores */
 import { useSpots, useActivities } from "@/store";
 
-/* TYPES */
+/* types */
 import { ISpot } from "@/types";
 
-/* COMPONENTS */
+/* components */
 import {
   Input,
   CheckboxInput,
