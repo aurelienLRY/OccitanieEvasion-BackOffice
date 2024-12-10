@@ -1,71 +1,50 @@
-/* UI */
-export { default as ActivityCard } from "@/components/ui/ActivityCard";
+/* UI Components */
 
-export {
-  Badge,
-  CustomerPriceBadge,
-  GlobalPriceBadge,
-  StatusBadge,
-} from "@/components/ui/badge";
-export {
-  DeleteButton,
-  DetailButton,
-  EditButton,
-  IconButton,
-  PrimaryButton,
-  SecondaryButton,
-  RefreshButton,
-} from "@/components/ui/Button";
+// Buttons
+export * from "@/components/buttons/Buttons";
+export * from "@/components/buttons/NaviationAvatar.button";
+export * from "@/components/buttons/ThemeToggle.button";
 
-export { CustomerBookingTable } from "@/components/ui/CustomerBookingTable";
-export { CustomerCard } from "@/components/ui/CustomerCard";
-export { CustomerFiche } from "@/components/ui/CustomerFiche";
-export { DashboardNav } from "@/components/ui/DashboardNav";
-export { EmailTemplateEditor } from "@/components/ui/EmailTemplateEditor";
-export { default as Header } from "@/components/ui/Header";
-export { InfoTooltips } from "@/components/ui/InfoTooltips";
-export {
-  CheckboxInput,
-  Input,
-  SelectInput,
-  SimpleCheckboxInput,
-  Textarea,
-  InputPhone,
-} from "@/components/ui/Inputs";
-export {
-  ItemCard,
-  ItemCardInner,
-  ItemCardHeader,
-  ItemContainer,
-} from "@/components/ui/ItemCard";
-//export { default as MapCustomer } from "@/components/ui/MapCustomer";
-export { Modal } from "@/components/ui/Modal";
-export { HeaderBtn } from "@/components/ui/HeaderBtn";
+// Cards
+export * from "@/components/cards/Activity.Card";
+export * from "@/components/cards/Customer.Card";
+export * from "@/components/cards/CustomerFiche.card";
+export * from "@/components/cards/DetailSession.Card";
+export * from "@/components/cards/Items.Card";
+export * from "@/components/cards/Session.Card";
+export * from "@/components/cards/Spot.Card";
 
-export { default as EmailCard } from "@/components/ui/EmailCard";
-export { default as SingOutBtn } from "@/components/ui/singOut";
-export { default as ThemeToggle } from "@/components/ui/ThemeToggle";
-export { default as ToasterAction } from "@/components/ui/ToasterAction";
-export { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+// Feedback
+export * from "@/components/feedback/Badge.feedback";
+export * from "@/components/feedback/InfoTooltips.feedback";
+export * from "@/components/feedback/LoadingSpinner.feedback";
+export * from "@/components/feedback/ToasterAction.feedback";
 
-/*  UI Forms */
-export { ActivityForm } from "@/components/ui/activity.form";
-export { CustomerSessionForm } from "@/components/ui/customerSession.form";
-export { LoginForm } from "@/components/ui/login.form";
-export { SessionForm } from "@/components/ui/session.form";
-export { SpotForm } from "@/components/ui/spot.form";
-export { ProfilForm } from "@/components/ui/profil.form";
-export { ChangePassword } from "@/components/ui/ChangePassword.form";
+// Forms
+export * from "@/components/form/Activity.form";
+export * from "@/components/form/CustomerSession.form";
+export * from "@/components/form/Session.form";
+export * from "@/components/form/Spot.form";
+export * from "@/components/form/Login.form";
+export * from "@/components/form/Profil.form";
+export * from "@/components/form/ChangePassword.form";
 
-/* Modules */
-export { Dashboard } from "@/components/modules/Dashboard";
-export {
-  CanceledCustomerSession,
-  CustomerCanceled,
-} from "@/components/modules/CanceledCustomerSession";
-export { SessionCard } from "@/components/modules/SessionCard";
-export { default as SpotCard } from "@/components/modules/SpotCard";
-export { default as SessionDetailCard } from "@/components/modules/SessionDetailCard";
-export { default as AllSessionsCard } from "@/components/modules/AllSessionsCard";
-export { AvatarSystem } from "@/components/modules/AvatarSystem";
-export { CalendarCard } from "@/components/modules/CalendarCard";
+// Inputs
+export * from "@/components/input/Inputs";
+
+// Layout
+export * from "@/components/layout/Dashboard.layout";
+export * from "@/components/layout/Header.layout";
+export * from "@/components/layout/Modal.layout";
+export * from "@/components/layout/Navigation.layout";
+export * from "@/components/layout/SingOut.layout";
+
+/* Module Components */
+
+// Session
+export * from "@/components/modules/AvatarSystem";
+export * from "@/components/modules/Calendar.modules";
+export * from "@/components/modules/CanceledCustomer.modules";
+export * from "@/components/modules/CustomerBookingTable.modules";
+export * from "@/components/modules/DisplaySessions.modules";
+export * from "@/components/modules/MailerEditor.modules";

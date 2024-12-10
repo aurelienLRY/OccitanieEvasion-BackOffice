@@ -10,7 +10,7 @@ import { FaSignOutAlt } from "react-icons/fa";
  * SingOutBtn Component
  * @returns {JSX.Element} Le composant bouton de déconnexion.
  */
-export default function SingOutBtn() {
+export function SingOutBtn() {
   return (
     <div className="flex justify-center items-center fixed bottom-10 translate-y-1/2 left-0 rotate-180 md:rotate-0 md:left-auto md:right-0 p-1 bg-stone-700 rounded-s-lg opacity-70 hover:opacity-100 transition-opacity duration-300 z-20">
       <div className="group relative">

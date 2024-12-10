@@ -1,7 +1,7 @@
 "use client";
 
 /* libraries */
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -18,6 +18,7 @@ import {
   ToasterAction,
   DeleteButton,
   InputPhone,
+  EmailTemplateEditor,
 } from "@/components";
 
 /*services*/
@@ -39,11 +40,7 @@ import {
 } from "@/services/GoogleCalendar/ClientSide";
 
 /* template email */
-import { customerConfirmation } from "@/libs/nodeMailer/template/RegistrationConfirmation";
-import { MailContent, HtmlBase } from "@/libs/nodeMailer/template/base";
-
-/* NodeMailer */
-import { nodeMailerSender } from "@/libs/nodeMailer";
+import { EMAIL_SCENARIOS } from "@/libs/nodeMailer/TemplateV2/constants";
 
 /*icons */
 import { IoMdPersonAdd } from "react-icons/io";
@@ -88,9 +85,11 @@ type Props = {
   onClose: () => void;
 };
 
+/* Ajouter l'import */
+import { useMailer } from "@/hooks/useMailer";
+
 export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
   const { updateSessionWithDetails } = useSessionWithDetails();
-  const [phone, setPhone] = useState<string>();
   const { profile } = useProfile();
   /* Form */
   const methods = useForm({
@@ -125,6 +124,20 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
     });
   }, [data, reset, session]);
 
+  /* Ajouter le hook */
+  const mailer = useMailer({
+    onSuccess: () => {
+      toast.success("Client et email envoyés avec succès");
+      onClose();
+      methods.reset();
+    },
+    onError: () => {
+      toast.error("Client créé mais erreur lors de l'envoi de l'email");
+      onClose();
+      methods.reset();
+    },
+  });
+
   /* Submit Form */
   const onSubmit = async (formData: any) => {
     const newCustomer: ICustomerSession = {
@@ -145,7 +158,6 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
         0
       ),
     };
-
     let result;
     if (data?._id && newCustomer) {
       result = await UPDATE_CUSTOMER_SESSION(data._id, newCustomer);
@@ -159,7 +171,6 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
         feedback: null,
       };
     }
-
     if (result.success) {
       if (result.data) {
         updateSessionWithDetails(result.data);
@@ -169,37 +180,30 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
           await fetcherUpdateEvent(refreshToken, event, result.data._id);
         } else {
           toast.error(
-            "Votre calendrier n'est pas connecté, l'évènement n'a pas été mis à jour dans votre calendrier"
+            "Votre calendrier n'est pas connecté, l'évènement n'a pas été mis à jour"
           );
         }
-
-        if (
-          window.confirm(
-            "Client ajouté avec succès ! \n Voulez-vous envoyer un email au client ?"
-          )
-        ) {
-          alert("je dois coder l'envoi d'email ");
-          /*
-          if (sessionWithDetails && customer) {
-            const myContent = customerConfirmation(
-              customer,
-              sessionWithDetails
-            );
-            const mailHtml = HtmlBase(myContent.subject, myContent.content);
-            const envoi = await nodeMailerSender(
-              newCustomer.email,
-              myContent.subject,
-              mailHtml
-            );
-            if (envoi) {
-              toast.success("Email envoyé avec succès");
-            } else {
-              toast.error("Erreur lors de l'envoi de l'email");
-            }
-          }*/
+        const wantToSendEmail = window.confirm(
+          `${
+            data?._id ? "Client modifié" : "Client ajouté"
+          } avec succès ! \nVoulez-vous envoyer un email au client ?`
+        );
+        if (wantToSendEmail && !data?._id) {
+          mailer.prepareEmail(EMAIL_SCENARIOS.ADD_CUSTOMER, {
+            customer: newCustomer,
+            session: session,
+            profile_from: profile!,
+          });
+        } else if (wantToSendEmail && data?._id) {
+          mailer.prepareEmail(EMAIL_SCENARIOS.UPDATE_CUSTOMER, {
+            customer: newCustomer,
+            session: session,
+            profile_from: profile!,
+          });
+        } else {
+          onClose();
+          methods.reset();
         }
-        onClose();
-        methods.reset();
       }
     }
     ToasterAction({
@@ -307,16 +311,16 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={data?._id ? "Modifier le client" : "Ajouter un client"}
+      >
         <FormProvider {...methods}>
           <form
             onSubmit={methods.handleSubmit(onSubmit)}
-            className="flex flex-col items-center  gap-4 text-white"
+            className="flex flex-col items-center  gap-4 text-white py-4"
           >
-            <h2 className="text-2xl font-bold text-center">
-              {data?._id ? "Modifier le client" : "Ajouter un client"}
-            </h2>
-
             <SelectInput
               name="tarification"
               label="Type de tarification"
@@ -469,6 +473,18 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
           </form>
         </FormProvider>
       </Modal>
+
+      <EmailTemplateEditor
+        isOpen={mailer.isEditorOpen}
+        onClose={() => {
+          mailer.closeEditor();
+          onClose();
+          methods.reset();
+        }}
+        Mail={mailer.initialEmailContent}
+        EmailContent={mailer.handleEmailContent}
+        onSend={mailer.sendEmail}
+      />
     </>
   );
 }

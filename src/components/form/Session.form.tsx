@@ -237,19 +237,16 @@ export function SessionForm({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleOnClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={handleOnClose}
+      title={isUpdate ? "Modifier la session" : "Créer une session"}
+    >
       <FormProvider {...methods}>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col w-full justify-center items-center gap-6 text-white "
+          className="flex flex-col w-full justify-center items-center gap-6 text-white  py-4"
         >
-          {/* HEADER */}
-          <div className="flex flex-col justify-center items-center gap-1">
-            <h2 className="text-2xl font-bold">
-              {isUpdate ? "Modifier la session" : "Créer une session"}
-            </h2>
-          </div>
-
           {/* FORM */}
           <div className="flex flex-col gap-3 items-center md:justify-evenly border-2 rounded-md border-sky-500 w-full p-2">
             <p className="text-sky-500 text-xl font-bold flex items-center gap-2">

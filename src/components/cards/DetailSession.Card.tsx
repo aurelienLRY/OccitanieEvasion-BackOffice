@@ -21,7 +21,7 @@ import { useModal } from "@/hooks";
  * @param {() => void} onClose - Fonction de fermeture de la modal.
  * @returns {JSX.Element} Le composant carte de détail de session.
  */
-export default function SessionDetailCard({
+export function SessionDetailCard({
   data,
   isOpen,
   onClose,

@@ -178,3 +178,10 @@ export const mock_SessionWithDetails: ISessionWithDetails = {
     },
   ],
 };
+
+export const getMockData = () => {
+  return {
+    mock_Customer,
+    mock_SessionWithDetails,
+  };
+};

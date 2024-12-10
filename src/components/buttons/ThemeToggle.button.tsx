@@ -9,7 +9,7 @@ import { IoMoon } from "react-icons/io5";
  * ThemeToggle Component
  * @returns {JSX.Element} Le composant toggleur de thème.
  */
-export default function ThemeToggle() {
+export function ThemeToggle() {
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {

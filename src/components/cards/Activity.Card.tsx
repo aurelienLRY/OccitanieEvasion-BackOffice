@@ -34,7 +34,7 @@ interface Props {
  * Composant pour afficher une carte d'activité avec ses détails
  * @component
  */
-export default function ActivityCard({ activity, updateActivityModal }: Props) {
+export function ActivityCard({ activity, updateActivityModal }: Props) {
   const [isDelete, setIsDelete] = useState(false);
   const { deleteActivities } = useActivities();
   const { SessionWithDetails } = useSessionWithDetails();

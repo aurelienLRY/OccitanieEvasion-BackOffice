@@ -13,7 +13,7 @@ type Props = {};
 
 const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
 
-export const schema = yup.object({
+ const schema = yup.object({
   password: yup
     .string()
     .required("Le mot de passe est requis")

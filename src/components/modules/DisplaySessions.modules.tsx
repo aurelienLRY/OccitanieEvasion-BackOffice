@@ -30,7 +30,7 @@ import { FaChevronCircleLeft, FaChevronCircleRight } from "react-icons/fa";
  * @param sessionsWithDetails: ISessionWithDetails[]
  * @returns  JSX.Element
  */
-export default function AllSessionsCard({
+export function AllSessionsCard({
   sessionsWithDetails,
 }: {
   sessionsWithDetails: ISessionWithDetails[];
