@@ -7,7 +7,7 @@ import { Modal } from "@/components";
 
 /*hooks*/
 import { useCustomer } from "@/hooks/useCustomer";
-
+import { useMailer, MailerStore } from "@/hooks/useMailer";
 /*Types*/
 import { ISessionWithDetails, ICustomerSession } from "@/types";
 
@@ -30,21 +30,18 @@ type Props = {
  * @returns {JSX.Element} Le composant fenêtre d'annulation des clients.
  */
 export const CanceledCustomerSession = ({ isOpen, onClose, data }: Props) => {
+  const mailer = useMailer();
+  mailer.onClose = onClose;
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="flex flex-col gap-6">
-        <div className=" text-center text-white">
-          <h3 className="text-2xl font-bold">Panneau d&apos;annulation</h3>
-          <p className="text-sm">
-            Attention, lors du processus d&apos;annulation, les clients sont
-            notifiés par email !
-          </p>
-        </div>
-        <div className="flex flex-col gap-2">
-          {data.customerSessions.map((customer) => (
-            <CustomerCanceled key={customer._id} customer={customer} />
-          ))}
-        </div>
+    <Modal isOpen={isOpen} onClose={onClose} title="Panneau d'annulation">
+      <div className="flex flex-col gap-2 mt-4">
+        {data.customerSessions.map((customer) => (
+          <CustomerCanceled
+            key={customer._id}
+            customer={customer}
+            onClose={onClose}
+          />
+        ))}
       </div>
     </Modal>
   );
@@ -59,11 +56,12 @@ export const CustomerCanceled = ({
   customer,
 }: {
   customer: ICustomerSession;
+  onClose: () => void;
 }) => {
   const { CancelCustomer, isSubmitting } = useCustomer();
   const displayStatus = {
     Validated: { icon: "👍", name: "Validé" },
-    Canceled: { icon: "🖕", name: "Annulé" },
+    Canceled: { icon: "🙄", name: "Annulé" },
     Waiting: { icon: "🕒", name: "En attente" },
   };
 

@@ -15,10 +15,8 @@ import {
   Input,
   SelectInput,
   CheckboxInput,
-  ToasterAction,
   DeleteButton,
   InputPhone,
-  EmailTemplateEditor,
 } from "@/components";
 
 /*services*/
@@ -26,21 +24,9 @@ import {
 /* types */
 import { ISessionWithDetails, ICustomerSession } from "@/types";
 
-/* actions & services */
-import {
-  CREATE_CUSTOMER_SESSION,
-  UPDATE_CUSTOMER_SESSION,
-} from "@/libs/ServerAction";
-
-/* stores */
-import { useSessionWithDetails, useProfile } from "@/store";
-import {
-  fetcherUpdateEvent,
-  generateEvent,
-} from "@/services/GoogleCalendar/ClientSide";
-
-/* template email */
-import { EMAIL_SCENARIOS } from "@/libs/nodeMailer/TemplateV2/constants";
+/* stores  & hooks */
+import { useCustomer } from "@/hooks/useCustomer";
+import { useMailer } from "@/hooks/useMailer";
 
 /*icons */
 import { IoMdPersonAdd } from "react-icons/io";
@@ -85,12 +71,8 @@ type Props = {
   onClose: () => void;
 };
 
-/* Ajouter l'import */
-import { useMailer } from "@/hooks/useMailer";
-
 export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
-  const { updateSessionWithDetails } = useSessionWithDetails();
-  const { profile } = useProfile();
+  const { addCustomer, updateCustomer } = useCustomer();
   /* Form */
   const methods = useForm({
     resolver: yupResolver(createDynamicSchema([])),
@@ -124,24 +106,19 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
     });
   }, [data, reset, session]);
 
-  /* Ajouter le hook */
-  const mailer = useMailer({
-    onSuccess: () => {
-      toast.success("Client et email envoyés avec succès");
-      onClose();
-      methods.reset();
-    },
-    onError: () => {
-      toast.error("Client créé mais erreur lors de l'envoi de l'email");
-      onClose();
-      methods.reset();
-    },
-  });
+  const mailer = useMailer();
+  mailer.onClose = () => {
+    reset();
+    onClose();
+  };
 
-  /* Submit Form */
+  /*
+   * Submit Form
+   */
   const onSubmit = async (formData: any) => {
     const newCustomer: ICustomerSession = {
       ...formData,
+      _id: data?._id || undefined,
       sessionId: session._id,
       date: session.date,
       status: "Validated",
@@ -158,65 +135,15 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
         0
       ),
     };
-    let result;
     if (data?._id && newCustomer) {
-      result = await UPDATE_CUSTOMER_SESSION(data._id, newCustomer);
+      await updateCustomer(newCustomer);
     } else if (newCustomer) {
-      result = await CREATE_CUSTOMER_SESSION(newCustomer);
-    } else {
-      result = {
-        success: false,
-        data: null,
-        error: "Les informations du client sont invalides",
-        feedback: null,
-      };
+      await addCustomer(newCustomer);
     }
-    if (result.success) {
-      if (result.data) {
-        updateSessionWithDetails(result.data);
-        const refreshToken = profile?.tokenRefreshCalendar;
-        if (refreshToken) {
-          const event = generateEvent(result.data);
-          await fetcherUpdateEvent(refreshToken, event, result.data._id);
-        } else {
-          toast.error(
-            "Votre calendrier n'est pas connecté, l'évènement n'a pas été mis à jour"
-          );
-        }
-        const wantToSendEmail = window.confirm(
-          `${
-            data?._id ? "Client modifié" : "Client ajouté"
-          } avec succès ! \nVoulez-vous envoyer un email au client ?`
-        );
-        if (wantToSendEmail && !data?._id) {
-          mailer.prepareEmail(EMAIL_SCENARIOS.ADD_CUSTOMER, {
-            customer: newCustomer,
-            session: session,
-            profile_from: profile!,
-          });
-        } else if (wantToSendEmail && data?._id) {
-          mailer.prepareEmail(EMAIL_SCENARIOS.UPDATE_CUSTOMER, {
-            customer: newCustomer,
-            session: session,
-            profile_from: profile!,
-          });
-        } else {
-          onClose();
-          methods.reset();
-        }
-      }
-    }
-    ToasterAction({
-      result,
-      defaultMessage: data?._id
-        ? "Client modifié avec succès"
-        : "Client ajouté avec succès",
-    });
   };
 
   /*
    * Option Tarif
-   *
    */
   const optionTarif = () => {
     if (session.type_formule === "half_day") {
@@ -275,9 +202,6 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
     return 0;
   };
 
-  /*
-   *
-   */
   useEffect(() => {
     if (watch.tarification === "reduced") {
       watch.people_list?.forEach((person, index) => {
@@ -309,47 +233,69 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
     session.type_formule,
   ]);
 
-  return (
-    <>
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        title={data?._id ? "Modifier le client" : "Ajouter un client"}
-      >
-        <FormProvider {...methods}>
-          <form
-            onSubmit={methods.handleSubmit(onSubmit)}
-            className="flex flex-col items-center  gap-4 text-white py-4"
-          >
-            <SelectInput
-              name="tarification"
-              label="Type de tarification"
-              options={optionTarif()}
-              className="w-fit"
-            />
-            <div className="flex flex-col gap-4 items-center border-2 border-sky-500 p-4 rounded-md">
-              <h3 className="text-xl font-bold text-sky-500">
-                Informations du client
-              </h3>
-              <div className="flex gap-2 flex-col  md:flex-row">
-                <Input name="last_name" label="Nom" type="text" />
-                <Input name="first_names" label="Prénoms" type="text" />
-              </div>
+  const handleClose = () => {
+    mailer.closeEditor();
+    reset();
+    onClose();
+  };
 
-              <div className="flex gap-2 flex-col md:flex-row">
-                <Input name="email" label="Email" type="email" />
-                <InputPhone name="phone" label="Téléphone" />
-              </div>
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={data?._id ? "Modifier le client" : "Ajouter un client"}
+    >
+      <FormProvider {...methods}>
+        <form
+          onSubmit={methods.handleSubmit(onSubmit)}
+          className="flex flex-col items-center  gap-4 text-white py-4"
+        >
+          <SelectInput
+            name="tarification"
+            label="Type de tarification"
+            options={optionTarif()}
+            className="w-fit"
+          />
+
+          <div className="flex flex-col gap-4 items-center border-2 border-sky-500 p-4 rounded-md">
+            <h3 className="text-xl font-bold text-sky-500">
+              Informations du client
+            </h3>
+            <div className="flex gap-2 flex-col  md:flex-row">
+              <Input name="last_name" label="Nom" type="text" />
+              <Input name="first_names" label="Prénoms" type="text" />
             </div>
 
-            <div className="flex flex-col items-center gap-2">
-              <Tooltip title="Ajouter une personne">
-                <IoMdPersonAdd
-                  className="text-4xl hover:text-orange-500 cursor-pointer transition-all"
-                  onClick={() => {
+            <div className="flex gap-2 flex-col md:flex-row">
+              <Input name="email" label="Email" type="email" />
+              <InputPhone name="phone" label="Téléphone" />
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-2">
+            <Tooltip title="Ajouter une personne">
+              <IoMdPersonAdd
+                className="text-4xl hover:text-orange-500 cursor-pointer transition-all"
+                onClick={() => {
+                  if (
+                    fields?.length &&
+                    fields.length < session.placesMax - session.placesReserved
+                  ) {
+                    append({
+                      size: ``,
+                      weight: ``,
+                      isReduced: false,
+                      price_applicable: getPriceApplicable(
+                        false,
+                        session.type_formule,
+                        session.activity
+                      ),
+                    });
+                  } else {
                     if (
-                      fields?.length &&
-                      fields.length < session.placesMax - session.placesReserved
+                      window.confirm(
+                        "Nombre de personnes maximum atteint ! \n Voulez-vous tout de même ajouter une personne ?"
+                      )
                     ) {
                       append({
                         size: ``,
@@ -362,129 +308,101 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
                         ),
                       });
                     } else {
-                      if (
-                        window.confirm(
-                          "Nombre de personnes maximum atteint ! \n Voulez-vous tout de même ajouter une personne ?"
-                        )
-                      ) {
-                        append({
-                          size: ``,
-                          weight: ``,
-                          isReduced: false,
-                          price_applicable: getPriceApplicable(
-                            false,
-                            session.type_formule,
-                            session.activity
-                          ),
-                        });
-                      } else {
-                        toast.error("Nombre de personnes maximum atteint");
-                      }
+                      toast.error("Nombre de personnes maximum atteint");
                     }
-                  }}
-                />
-              </Tooltip>
-              <div className="flex flex-col gap-2 ">
-                {fields.map((field, index) => (
-                  <div
-                    key={field.id}
-                    className="flex flex-col md:flex-row gap-2 items-center border-2 border-sky-500 p-4 rounded-md"
-                  >
-                    <span className="flex items-center gap-1 text-sm">
-                      <FaUser className="text-xl" />
-                      {index + 1}
-                    </span>
-                    <div className="flex items-center  gap-4 h-full">
-                      <div className="flex flex-col md:flex-row gap-2">
-                        <Input
-                          name={`people_list[${index}].size`}
-                          label="Taille en cm"
-                          type="number"
-                          errorsName={`people_list.${index}.size`}
+                  }
+                }}
+              />
+            </Tooltip>
+            <div className="flex flex-col gap-2 ">
+              {fields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="flex flex-col md:flex-row gap-2 items-center border-2 border-sky-500 p-4 rounded-md"
+                >
+                  <span className="flex items-center gap-1 text-sm">
+                    <FaUser className="text-xl" />
+                    {index + 1}
+                  </span>
+                  <div className="flex items-center  gap-4 h-full">
+                    <div className="flex flex-col md:flex-row gap-2">
+                      <Input
+                        name={`people_list[${index}].size`}
+                        label="Taille en cm"
+                        type="number"
+                        errorsName={`people_list.${index}.size`}
+                      />
+                      <Input
+                        name={`people_list[${index}].weight`}
+                        label="Poids"
+                        type="number"
+                        errorsName={`people_list.${index}.weight`}
+                      />
+                    </div>
+                    <div className="flex flex-col md:flex-row gap-1">
+                      {index > 0 && (
+                        <CheckboxInput
+                          name={`people_list.${index}.isReduced`}
+                          label="prix réduit"
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const price = getPriceApplicable(
+                              isChecked,
+                              session.type_formule,
+                              session.activity
+                            );
+                            methods.setValue(
+                              `people_list.${index}.price_applicable`,
+                              price
+                            );
+                          }}
                         />
-                        <Input
-                          name={`people_list[${index}].weight`}
-                          label="Poids"
-                          type="number"
-                          errorsName={`people_list.${index}.weight`}
-                        />
-                      </div>
-                      <div className="flex flex-col md:flex-row gap-1">
-                        {index > 0 && (
-                          <CheckboxInput
-                            name={`people_list.${index}.isReduced`}
-                            label="prix réduit"
-                            onChange={(e) => {
-                              const isChecked = e.target.checked;
-                              const price = getPriceApplicable(
-                                isChecked,
-                                session.type_formule,
-                                session.activity
-                              );
-                              methods.setValue(
-                                `people_list.${index}.price_applicable`,
-                                price
-                              );
-                            }}
-                          />
-                        )}
+                      )}
 
-                        {index > 0 && (
-                          <DeleteButton
-                            title="Retirer"
-                            onClick={() => {
-                              remove(index);
-                            }}
-                          />
-                        )}
-                      </div>
+                      {index > 0 && (
+                        <DeleteButton
+                          title="Retirer"
+                          onClick={() => {
+                            remove(index);
+                          }}
+                        />
+                      )}
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-            <div className="flex w-full items-center justify-end flex-col gap-2">
-              <h3>
-                Prix total:{" "}
-                {methods
-                  .getValues("people_list")
-                  ?.reduce(
-                    (acc: number, person: { price_applicable?: number }) =>
-                      acc + (person.price_applicable || 0),
-                    0
-                  )}{" "}
-                €
-              </h3>
-            </div>
+          </div>
 
-            <button
-              type="submit"
-              className="bg-orange-500 hover:bg-orange-600 transition-all duration-300 text-white w-fit mx-auto p-3 rounded-md flex items-center justify-center min-w-[70px] min-h-[40px] disabled:opacity-80 disabled:cursor-not-allowed"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <Spin size="default" />
-              ) : data?._id ? (
-                "Modifier"
-              ) : (
-                "Ajouter"
-              )}
-            </button>
-          </form>
-        </FormProvider>
-      </Modal>
+          <div className="flex w-full items-center justify-end flex-col gap-2">
+            <h3>
+              Prix total:{" "}
+              {methods
+                .getValues("people_list")
+                ?.reduce(
+                  (acc: number, person: { price_applicable?: number }) =>
+                    acc + (person.price_applicable || 0),
+                  0
+                )}{" "}
+              €
+            </h3>
+          </div>
 
-      <EmailTemplateEditor
-        isOpen={mailer.isEditorOpen}
-        onClose={() => {
-          mailer.closeEditor();
-          onClose();
-          methods.reset();
-        }}
-        Mail={mailer.initialEmailContent}
-        EmailContent={mailer.handleEmailContent}
-        onSend={mailer.sendEmail}
-      />
-    </>
+          <button
+            type="submit"
+            className="bg-orange-500 hover:bg-orange-600 transition-all duration-300 text-white w-fit mx-auto p-3 rounded-md flex items-center justify-center min-w-[70px] min-h-[40px] disabled:opacity-80 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Spin size="default" />
+            ) : data?._id ? (
+              "Modifier"
+            ) : (
+              "Ajouter"
+            )}
+          </button>
+        </form>
+      </FormProvider>
+    </Modal>
   );
 }

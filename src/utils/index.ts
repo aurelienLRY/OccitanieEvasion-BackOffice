@@ -16,6 +16,7 @@ export {
   getMonthString,
   getMonthValue,
   getYearString,
+  formatDateToLocaleDateString,
 } from "@/utils/date.utils";
 
 export {

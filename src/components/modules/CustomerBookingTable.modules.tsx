@@ -14,6 +14,9 @@ import {
   StatusBadge,
 } from "@/components";
 
+/* Hooks */
+import { useCustomer } from "@/hooks";
+
 /* Utils */
 import {
   cn,
@@ -35,7 +38,6 @@ type Props = {
     data: ICustomerSession;
     session: ISessionWithDetails;
   }) => void;
-  deleteCustomer: (data: ICustomerSession) => void;
   isSubmitting?: boolean;
 };
 
@@ -56,8 +58,6 @@ export const CustomerBookingTable = ({
   data,
   customerFiche,
   editCustomer,
-  deleteCustomer,
-  isSubmitting = false,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -65,6 +65,8 @@ export const CustomerBookingTable = ({
     setIsOpen(!isOpen);
   };
   const C_WaitingCount = customerWaitingCount(data.customerSessions);
+
+  const { CancelCustomer, isSubmitting } = useCustomer();
 
   return (
     <article
@@ -209,10 +211,9 @@ export const CustomerBookingTable = ({
                                 })
                               }
                             />
-
                             <DeleteButton
                               title="Annuler"
-                              onClick={() => deleteCustomer(customerSession)}
+                              onClick={() => CancelCustomer(customerSession)}
                               isSubmitting={isSubmitting}
                             />
                           </>

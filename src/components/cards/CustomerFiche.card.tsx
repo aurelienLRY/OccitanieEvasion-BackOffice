@@ -3,17 +3,23 @@ import React from "react";
 import { Tooltip } from "antd";
 import { toast } from "sonner";
 
-/* actions & services */
-import { UPDATE_CUSTOMER_SESSION } from "@/libs/ServerAction";
-
 /* components */
-import { DeleteButton, Modal, ToasterAction } from "@/components";
+import {
+  DeleteButton,
+  Modal,
+  EmailDisplay,
+  PhoneDisplay,
+  BookingDateDisplay,
+  ItemCardInner,
+  TotalPriceDisplay,
+} from "@/components";
 
 /* utils & types */
 import { getCustomerStatusDisplay } from "@/utils";
 import { ICustomerSession } from "@/types";
-/* stores */
-import { useSessionWithDetails } from "@/store";
+
+/* stores & hooks */
+import { useCustomer, useMailer } from "@/hooks";
 
 /**
  * CustomerFiche Component
@@ -29,53 +35,59 @@ export const CustomerFiche = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const { updateSessionWithDetails } = useSessionWithDetails();
+  const mailer = useMailer();
+  const { updateCustomer } = useCustomer();
+  const [isSubmitting, setIsSubmitting] = React.useState<boolean[]>(
+    new Array(customer?.people_list?.length || 0).fill(false)
+  );
+
   if (!customer) return null;
+  mailer.onClose = () => {
+    onClose();
+  };
 
   const removePerson = async (index: number) => {
-    if (customer.number_of_people === 1) {
+    if (customer.people_list.length === 1) {
       toast.error(
         "Vous ne pouvez pas retirer la dernière personne de la réservation, veuillez annuler la réservation."
       );
       return;
     }
     if (window.confirm("Voulez-vous vraiment retirer cette personne ?")) {
-      const people_list = [...customer.people_list];
-      if (people_list.length > 1) {
+      let people_list = [...customer.people_list];
+
+      try {
+        setIsSubmitting((prev) =>
+          prev.map((value, i) => (i === index ? true : value))
+        );
+
         people_list.splice(index, 1);
+
+        const data = {
+          ...customer,
+          people_list,
+          number_of_people: people_list.length,
+          price_total: people_list.reduce(
+            (acc, person) => acc + person.price_applicable,
+            0
+          ),
+        };
+        await updateCustomer(data);
+      } catch (error) {
+        toast.error("Une erreur est survenue lors de la suppression");
+        people_list = [...customer.people_list];
+      } finally {
+        setIsSubmitting(new Array(people_list.length).fill(false));
       }
-      const data = {
-        ...customer,
-        people_list,
-        number_of_people: people_list.length,
-        price_total: people_list.reduce(
-          (acc, person) => acc + person.price_applicable,
-          0
-        ),
-      };
-      const result = await UPDATE_CUSTOMER_SESSION(
-        customer._id,
-        data as ICustomerSession
-      );
-      console.log(result);
-      if (result.success) {
-        if (result.data) {
-          updateSessionWithDetails(result.data);
-        }
-      }
-      ToasterAction({
-        result,
-        defaultMessage: "Participant retiré avec succès",
-      });
     }
   };
 
   const IsCanceled = customer.status === "Canceled";
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="flex flex-col gap-6 min-w-[300px] w-[80vw] max-w-[600px]">
-        <div className="flex justify-between items-center">
+    <Modal isOpen={isOpen} onClose={onClose} title="Fiche client">
+      <div className="flex flex-col gap-6 min-w-[300px] w-[80vw] max-w-[600px] mt-4">
+        <ItemCardInner className="flex justify-between items-center px-4">
           <p className="text-2xl font-bold">
             {customer.first_names} {customer.last_name.toUpperCase()}
           </p>
@@ -84,35 +96,17 @@ export const CustomerFiche = ({
               {getCustomerStatusDisplay(customer.status).icon}
             </span>
           </Tooltip>
+        </ItemCardInner>
+
+        <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-8">
+          <EmailDisplay email={customer.email} />
+          <PhoneDisplay phone={customer.phone} />
+          <BookingDateDisplay date={customer.createdAt} />
+          <TotalPriceDisplay totalPrice={customer.price_total} />
         </div>
 
-        <div>
-          <p>
-            <span className="font-bold">Email:</span>{" "}
-            <a href={`mailto:${customer.email}`}>{customer.email}</a>
-          </p>
-          <p>
-            <span className="font-bold">Téléphone:</span>{" "}
-            <a href={`tel:${customer.phone}`}>{customer.phone}</a>
-          </p>
-          <p>
-            <span className="font-bold">Date de réservation :</span>{" "}
-            {new Date(customer.createdAt).toLocaleDateString("fr-FR", {
-              day: "2-digit",
-              month: "long",
-              year: "numeric",
-            })}
-          </p>
-          <p>
-            <span className="font-bold">Total à payer:</span>{" "}
-            {customer.price_total} €
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <p className="text-center text-xl font-bold">
-            Nombre de participants: {customer.number_of_people}
-          </p>
+        <ItemCardInner className="flex flex-col gap-4  w-full p-4 ">
+          <p className="text-center text-2xl">Détails du groupe</p>
           {customer.people_list.map((person, index) => (
             <div
               key={index}
@@ -138,13 +132,14 @@ export const CustomerFiche = ({
               </p>
               {!IsCanceled && (
                 <DeleteButton
+                  isSubmitting={isSubmitting[index]}
                   title="Retirer"
                   onClick={() => removePerson(index)}
                 />
               )}
             </div>
           ))}
-        </div>
+        </ItemCardInner>
       </div>
     </Modal>
   );

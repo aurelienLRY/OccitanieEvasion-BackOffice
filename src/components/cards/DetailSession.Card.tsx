@@ -5,14 +5,24 @@ import React from "react";
 import { ICustomerSession, ISessionWithDetails } from "@/types";
 
 /*components*/
-import { CustomerCard, Modal, CustomerFiche } from "@/components";
+import {
+  Modal,
+  CustomerFiche,
+  DateDisplay,
+  TimeDisplay,
+  LocationDisplay,
+  RemainingBookingsDisplay,
+  PlanDisplay,
+  ItemCardInner,
+  CustomerTables_Session,
+} from "@/components";
 
 /*utils*/
-import { cn } from "@/utils/cn";
 import { calculateSessionIncome } from "@/utils/price.utils";
 
-/* Hooks */
+/* Hooks & stores */
 import { useModal } from "@/hooks";
+import { useMailer } from "@/hooks/useMailer";
 
 /**
  * SessionDetailCard Component
@@ -31,12 +41,18 @@ export function SessionDetailCard({
   onClose: () => void;
 }) {
   const detailsCustomerModal = useModal<ICustomerSession>();
-
   const getPrice_total = calculateSessionIncome(data);
+
+  const mailer = useMailer();
+
+  mailer.onClose = () => {
+    onClose();
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="flex flex-col gap-10 justify-evenly min-w-fit    text-white relative ">
-        <div className=" w-full flex flex-col items-center   ">
+    <Modal isOpen={isOpen} onClose={onClose} title="Détail de la session">
+      <div className="flex flex-col gap-10 justify-evenly min-w-fit    text-white relative  ">
+        <ItemCardInner className="w-full flex flex-col items-center">
           <p className="text-center text-2xl font-semibold m-0">
             {data.activity.name}
           </p>
@@ -50,44 +66,22 @@ export function SessionDetailCard({
               💲 {getPrice_total}€ 💲
             </p>
           )}
-        </div>
-        <div className="flex flex-col">
-          <p>
-            <span className="font-semibold">Date : </span>
-            {new Date(data.date).toLocaleDateString()}
-          </p>
-          <p>
-            <span className="font-semibold">Horaire : </span>
-            {`de ${data.startTime} à ${data.endTime}`}
-          </p>
-          <p>
-            <span className="font-semibold">Lieu : </span> {data.spot.name}
-          </p>
+        </ItemCardInner>
 
-          <p>
-            <span className="font-semibold">Places disponibles : </span>
-            {+data.placesMax - +data.placesReserved}
-          </p>
-          <p>
-            <span className="font-semibold">Formule : </span>
-            {data.type_formule === "half_day" ? "demi-journée" : "journée"}
-          </p>
+        <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-8 ">
+          <DateDisplay date={new Date(data.date)} />
+          <TimeDisplay startTime={data.startTime} endTime={data.endTime} />
+          <LocationDisplay location={data.spot.name} />
+          <RemainingBookingsDisplay
+            remainingBookings={+data.placesMax - +data.placesReserved}
+          />
+          <PlanDisplay plan={data.type_formule} />
         </div>
-        <div
-          className={cn(
-            data.customerSessions.length >= 4
-              ? `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2  `
-              : `grid grid-cols-1 md:grid-cols-2  gap-2`
-          )}
-        >
-          {data.customerSessions.map((customerSession) => (
-            <CustomerCard
-              customer={customerSession}
-              key={customerSession._id}
-              detailsCustomer={detailsCustomerModal.openModal}
-            />
-          ))}
-        </div>
+
+        <CustomerTables_Session
+          data={data}
+          detailsCustomer={detailsCustomerModal.openModal}
+        />
       </div>
       {detailsCustomerModal && (
         <CustomerFiche

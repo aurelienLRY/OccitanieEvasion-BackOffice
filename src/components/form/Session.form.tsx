@@ -34,7 +34,9 @@ import {
 /* utils & types */
 import { formatDate } from "@/utils/date.utils";
 import { generateEvent } from "@/services/GoogleCalendar/ClientSide/generateEvent";
-import { ISession, ISessionWithDetails, IActivity } from "@/types";
+import { ISession, ISessionWithDetails, IActivity, IUser } from "@/types";
+import { useMailer, MailerStore } from "@/hooks/useMailer";
+import { EMAIL_SCENARIOS } from "@/libs/nodeMailer/TemplateV2/constants";
 
 export type TSessionForm = {
   _id?: string;
@@ -60,6 +62,9 @@ export function SessionForm({
   onClose: () => void;
 }) {
   const isUpdate = !!data;
+  const [oldSession, setOldSession] = useState<ISessionWithDetails | undefined>(
+    data
+  );
   const addSessionWithDetails = useSessionWithDetails(
     (state) => state.addSessionWithDetails
   );
@@ -94,6 +99,7 @@ export function SessionForm({
       duration: data ? data.duration : "",
     },
   });
+  const mailer: MailerStore = useMailer();
 
   const {
     handleSubmit,
@@ -219,9 +225,21 @@ export function SessionForm({
         isUpdate
           ? updateSessionWithDetails(result.data)
           : addSessionWithDetails(result.data);
+
+        // Modification ici : on attend la vérification d'envoi d'email avant de fermer
+        const shouldSendEmail = await MailerForUpdate(
+          oldSession!,
+          result.data,
+          isUpdate,
+          mailer,
+          profile!
+        );
+
+        // On ne ferme le formulaire que si on n'envoie pas d'email
+        if (!shouldSendEmail) {
+          handleOnClose();
+        }
       }
-      onClose();
-      reset();
     }
     ToasterAction({
       result,
@@ -348,3 +366,72 @@ export function SessionForm({
     </Modal>
   );
 }
+
+/**
+ *  function to send email to customer when session is update
+ * @param oldSession
+ * @param newSession
+ * @param isUpdate
+ * @param mailer
+ * @returns
+ */
+const MailerForUpdate = async (
+  oldSession: ISessionWithDetails,
+  newSession: ISessionWithDetails,
+  isUpdate: boolean,
+  mailer: MailerStore,
+  profile: IUser
+): Promise<boolean> => {
+  if (!isUpdate || oldSession.customerSessions.length === 0) return false;
+
+  const hasImportantChanges =
+    oldSession.date !== newSession.date ||
+    oldSession.startTime !== newSession.startTime ||
+    oldSession.spot._id !== newSession.spot._id;
+
+  if (hasImportantChanges) {
+    const wantToSendEmail = window.confirm(
+      `La session a été modifiée ! \nVoulez-vous envoyer un email aux clients ?`
+    );
+
+    if (wantToSendEmail) {
+      const changes = {
+        oldDate: oldSession?.date,
+        oldStartTime: oldSession?.startTime,
+        oldSpot: oldSession?.spot.name,
+      };
+
+      // filtrer les customer qui on un status annulé
+      const customerSessions = newSession.customerSessions.filter(
+        (customer) => customer.status !== "Canceled"
+      );
+
+      // On prépare le premier email seulement
+      if (customerSessions.length > 0) {
+        mailer.prepareEmail(EMAIL_SCENARIOS.UPDATE_CUSTOMER, {
+          customer: customerSessions[0],
+          session: newSession,
+          profile_from: profile,
+          changes: changes,
+        });
+
+        // On stocke les informations pour les prochains emails
+        mailer.setQueuedEmails(
+          customerSessions.slice(1).map((customer) => ({
+            scenario: EMAIL_SCENARIOS.UPDATE_CUSTOMER,
+            data: {
+              customer,
+              session: newSession,
+              profile_from: profile,
+              changes: changes,
+            },
+          }))
+        );
+      }
+
+      return true;
+    }
+  }
+
+  return false;
+};

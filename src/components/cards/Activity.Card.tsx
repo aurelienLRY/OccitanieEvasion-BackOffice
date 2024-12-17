@@ -256,7 +256,7 @@ export function ActivityCard({ activity, updateActivityModal }: Props) {
               Préconisations
             </h3>
             <div
-              className="w-full h-full p-4"
+              className="w-full h-full p-4 "
               dangerouslySetInnerHTML={{ __html: activity.required_equipment }}
             />
           </ItemCardInner>

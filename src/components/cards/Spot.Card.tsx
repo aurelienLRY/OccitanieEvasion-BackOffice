@@ -5,7 +5,7 @@ import { Spin } from "antd";
 import { useState } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
-import { Skeleton, card } from "@nextui-org/react";
+import { Skeleton } from "@nextui-org/react";
 
 /* Types */
 import { ISpot } from "@/types";
@@ -26,7 +26,7 @@ import {
 /* store */
 import { useSpots, useSessionWithDetails } from "@/store";
 
-export default function SpotCard({
+export function SpotCard({
   spot,
   updateSpotModal,
 }: {

@@ -246,16 +246,18 @@ export function AllSessionsCard({
         </div>
 
         {/* Grille des sessions avec navigation */}
-        <div className="flex items-center justify-center gap-4">
-          <Tooltip title="Sessions précédentes">
-            <button
-              className="flex justify-end text-white hover:text-orange-600 rounded disabled:text-gray-300"
-              onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
-              disabled={currentPage === 0}
-            >
-              <FaChevronCircleLeft className="text-4xl h-10 w-10" />
-            </button>
-          </Tooltip>
+        <div className="flex items-center justify-center gap-4 md:min-h-[540px] relative">
+          {totalPages > 1 && (
+            <Tooltip title="Sessions précédentes">
+              <button
+                className="  text-white hover:text-orange-600 rounded disabled:text-gray-300"
+                onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
+                disabled={currentPage === 0}
+              >
+                <FaChevronCircleLeft className="text-4xl h-10 w-10" />
+              </button>
+            </Tooltip>
+          )}
 
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4 justify-items-center">
             {currentSessions.map((customerSession) => (
@@ -270,43 +272,47 @@ export function AllSessionsCard({
             ))}
           </div>
 
-          <Tooltip title="Sessions suivantes">
-            <button
-              className="flex justify-end text-white hover:text-orange-600 rounded disabled:text-gray-300"
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
-              }
-              disabled={currentPage >= totalPages - 1}
-            >
-              <FaChevronCircleRight className="text-4xl h-10 w-10" />
-            </button>
-          </Tooltip>
+          {totalPages > 1 && (
+            <Tooltip title="Sessions suivantes">
+              <button
+                className=" text-white hover:text-orange-600 rounded disabled:text-gray-300"
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))
+                }
+                disabled={currentPage >= totalPages - 1}
+              >
+                <FaChevronCircleRight className="text-4xl h-10 w-10" />
+              </button>
+            </Tooltip>
+          )}
         </div>
 
         {/* Dots de pagination améliorés */}
-        <div className="w-full flex justify-center gap-2 my-4">
-          {paginationRange.map((pageNumber, index) => (
-            <React.Fragment key={index}>
-              {pageNumber === -1 ? (
-                <span className="w-3 text-white opacity-50">...</span>
-              ) : (
-                <Tooltip title={`Aller à la page ${pageNumber + 1}`}>
-                  <button
-                    onClick={() => setCurrentPage(pageNumber)}
-                    className={`w-3 h-3 rounded-full transition-all duration-200 border-2 ${
-                      currentPage === pageNumber
-                        ? "bg-orange-600 border-orange-600"
-                        : "border-white hover:border-orange-600"
-                    }`}
-                    aria-label={`Aller à la page ${pageNumber + 1}`}
-                  >
-                    <span className="sr-only">Page {pageNumber + 1}</span>
-                  </button>
-                </Tooltip>
-              )}
-            </React.Fragment>
-          ))}
-        </div>
+        {totalPages > 1 && (
+          <div className="w-full flex justify-center gap-2 my-4">
+            {paginationRange.map((pageNumber, index) => (
+              <React.Fragment key={index}>
+                {pageNumber === -1 ? (
+                  <span className="w-3 text-white opacity-50">...</span>
+                ) : (
+                  <Tooltip title={`Aller à la page ${pageNumber + 1}`}>
+                    <button
+                      onClick={() => setCurrentPage(pageNumber)}
+                      className={`w-3 h-3 rounded-full transition-all duration-200 border-2 ${
+                        currentPage === pageNumber
+                          ? "bg-orange-600 border-orange-600"
+                          : "border-white hover:border-orange-600"
+                      }`}
+                      aria-label={`Aller à la page ${pageNumber + 1}`}
+                    >
+                      <span className="sr-only">Page {pageNumber + 1}</span>
+                    </button>
+                  </Tooltip>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Modal Details */}

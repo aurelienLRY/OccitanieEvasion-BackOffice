@@ -1,17 +1,8 @@
 /* LIBRAIRIES */
-import React, { useState } from "react";
+import React from "react";
 import { Tooltip } from "antd";
-import { toast } from "sonner";
-/* actions & services */
-import { CANCEL_CUSTOMER_SESSION } from "@/libs/ServerAction";
-import {
-  generateEvent,
-  fetcherUpdateEvent,
-} from "@/services/GoogleCalendar/ClientSide";
-
 /* Components */
 import {
-  ToasterAction,
   ItemCard,
   ItemCardInner,
   DeleteButton,
@@ -36,8 +27,8 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { MdPeopleAlt } from "react-icons/md";
 
 /* stores & hooks */
-import { useSessionWithDetails, useProfile } from "@/store";
 import { useCustomer } from "@/hooks";
+
 /**
  * Composant CustomerCard
  * @param {ICustomerSession} customer - La session du client
@@ -48,15 +39,15 @@ export const CustomerCard = ({
   customer,
   className,
   detailsCustomer,
+  handleEmail,
 }: {
   customer: ICustomerSession;
   className?: string;
   detailsCustomer: (data: ICustomerSession) => void;
+  handleEmail: (thisCustomer: ICustomerSession) => void;
 }) => {
   const IsCanceled = customerIsCancelled([customer]);
   const IsWaiting = customerIsWaiting([customer]);
-  const { updateSessionWithDetails } = useSessionWithDetails();
-  const { profile } = useProfile();
   const { CancelCustomer, isSubmitting } = useCustomer();
 
   return (
@@ -104,6 +95,7 @@ export const CustomerCard = ({
             </div>
           </ItemCardInner>
         </div>
+
         <div
           id="customer-card-footer"
           className="flex justify-end gap-4 p-1 text-slate-400"
@@ -112,7 +104,13 @@ export const CustomerCard = ({
 
           {!IsCanceled && (
             <DeleteButton
-              onClick={() => CancelCustomer(customer)}
+              title="Annuler"
+              onClick={async () => {
+                const act = await CancelCustomer(customer);
+                if (act?.success) {
+                  handleEmail(customer);
+                }
+              }}
               isSubmitting={isSubmitting}
             />
           )}

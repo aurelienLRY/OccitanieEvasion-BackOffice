@@ -13,7 +13,18 @@ export * from "@/components/cards/DetailSession.Card";
 export * from "@/components/cards/Items.Card";
 export * from "@/components/cards/Session.Card";
 export * from "@/components/cards/Spot.Card";
-
+export * from "@/components/cards/CustomerTables_Session.card";
+// Data Display
+export * from "@/components/DataDisplay/Item.display";
+export * from "@/components/DataDisplay/Date.display";
+export * from "@/components/DataDisplay/Time.display";
+export * from "@/components/DataDisplay/Location.display";
+export * from "@/components/DataDisplay/RemainingBookings.display";
+export * from "@/components/DataDisplay/Plan.display";
+export * from "@/components/DataDisplay/Email.display";
+export * from "@/components/DataDisplay/Phone.display";
+export * from "@/components/DataDisplay/BookingDate.display";
+export * from "@/components/DataDisplay/Prices.display";
 // Feedback
 export * from "@/components/feedback/Badge.feedback";
 export * from "@/components/feedback/InfoTooltips.feedback";

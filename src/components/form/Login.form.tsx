@@ -102,7 +102,7 @@ export const LoginForm = () => {
         </div>
         <button
           type="submit"
-          className="bg-sky-500 text-white px-4 py-1 rounded-md"
+          className="bg-sky-500 text-white px-4 py-1 rounded-md min-w-20 min-h-10"
           disabled={isSubmitting}
         >
           {isSubmitting ? <Spin /> : "Se connecter"}
