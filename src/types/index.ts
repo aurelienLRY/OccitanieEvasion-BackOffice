@@ -1,9 +1,9 @@
-export type * from "@/types/session.type";
-export type * from "@/types/user.type";
-export type * from "@/types/activity.type";
-export type * from "@/types/spot.type";
-export type * from "@/types/customerSession.type";
-export type * from "@/types/sessionWithDetails.type";
-export type * from "@/types/callback.action.type";
-export type * from "@/types/emailTemplate.type";
+export type * from "@/types/Session.type";
+export type * from "@/types/User.type";
+export type * from "@/types/Activity.type";
+export type * from "@/types/Spot.type";
+export type * from "@/types/CustomerSession.type";
+export type * from "@/types/SessionWithDetails.type";
+export type * from "@/types/Callback.action.type";
+export type * from "@/types/EmailTemplate.type";
 export type * from "@/types/Calendar.type";
