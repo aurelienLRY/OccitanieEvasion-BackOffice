@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React from "react";
 import { getMockData } from "@/utils";
@@ -6,7 +7,7 @@ import { useProfile } from "@/store";
 /*components*/
 import { EmailTemplateEditor } from "@/components";
 import { EMAIL_SCENARIOS } from "@/libs/nodeMailer/TemplateV2/constants";
-import { IUser } from "@/types";
+
 export default function EmailPage() {
   const { mock_Customer, mock_SessionWithDetails } = getMockData();
   const mailer = useMailer();
