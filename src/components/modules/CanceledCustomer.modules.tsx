@@ -21,6 +21,15 @@ type Props = {
   data: ISessionWithDetails;
 };
 
+type CustomerStatus = "Validated" | "Canceled" | "Waiting";
+
+type StatusDisplay = {
+  [key in CustomerStatus]: {
+    icon: string;
+    name: string;
+  };
+};
+
 /**
  * Ce composant représente la fenêtre d'annulation des clients.
  * @param {object} props - Les propriétés du composant.
@@ -56,12 +65,13 @@ export const CanceledCustomerSession = ({ isOpen, onClose, data }: Props) => {
  */
 export const CustomerCanceled = ({
   customer,
+  onClose,
 }: {
   customer: ICustomerSession;
   onClose: () => void;
 }) => {
   const { CancelCustomer, isSubmitting } = useCustomer();
-  const displayStatus = {
+  const displayStatus: StatusDisplay = {
     Validated: { icon: "👍", name: "Validé" },
     Canceled: { icon: "🙄", name: "Annulé" },
     Waiting: { icon: "🕒", name: "En attente" },

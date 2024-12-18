@@ -28,60 +28,62 @@ const UserSchema = new Schema<IUser>(
 );
 
 UserSchema.pre("save", async function (next) {
-  if (this.firstName) {
+  if (this.firstName && typeof this.firstName === "string") {
     this.firstName = capitalizeFirstLetter(this.firstName);
     this.firstName = await crypto.encrypt(this.firstName);
   }
-  if (this.lastName) {
+  if (this.lastName && typeof this.lastName === "string") {
     this.lastName = capitalizeFirstLetter(this.lastName);
     this.lastName = await crypto.encrypt(this.lastName);
   }
-  if (this.phone) {
+  if (this.phone && typeof this.phone === "string") {
     this.phone = await crypto.encrypt(this.phone);
   }
-
   next();
 });
 
 UserSchema.pre("findOneAndUpdate", async function (next) {
-  const update: any = this.getUpdate();
-  if (update.firstName) {
+  const update = this.getUpdate() as Record<string, unknown>;
+  if (update.firstName && typeof update.firstName === "string") {
     update.firstName = await crypto.encrypt(update.firstName);
   }
-  if (update.lastName) {
+  if (update.lastName && typeof update.lastName === "string") {
     update.lastName = await crypto.encrypt(update.lastName);
   }
-  if (update.phone) {
+  if (update.phone && typeof update.phone === "string") {
     update.phone = await crypto.encrypt(update.phone);
   }
-
   next();
 });
 
-UserSchema.post("findOneAndUpdate", async function (doc) {
-  if (doc.firstName !== null) {
-    doc.firstName = await crypto.decrypt(doc.firstName);
-  }
-  if (doc.lastName !== null) {
-    doc.lastName = await crypto.decrypt(doc.lastName);
-  }
-  if (doc.phone !== null) {
-    doc.phone = await crypto.decrypt(doc.phone);
-  }
-  if (doc?.password) {
-    delete doc.password;
+UserSchema.post("findOneAndUpdate", async function (doc: IUser) {
+  if (doc) {
+    if (doc.firstName && typeof doc.firstName === "string") {
+      doc.firstName = await crypto.decrypt(doc.firstName);
+    }
+    if (doc.lastName && typeof doc.lastName === "string") {
+      doc.lastName = await crypto.decrypt(doc.lastName);
+    }
+    if (doc.phone && typeof doc.phone === "string") {
+      doc.phone = await crypto.decrypt(doc.phone);
+    }
+    if (doc?.password) {
+      delete doc.password;
+    }
   }
 });
 
-UserSchema.post("findOne", async function (doc) {
-  if (doc.firstName !== null) {
-    doc.firstName = await crypto.decrypt(doc.firstName);
-  }
-  if (doc.lastName !== null) {
-    doc.lastName = await crypto.decrypt(doc.lastName);
-  }
-  if (doc.phone !== null) {
-    doc.phone = await crypto.decrypt(doc.phone);
+UserSchema.post("findOne", async function (doc: IUser) {
+  if (doc) {
+    if (doc.firstName && typeof doc.firstName === "string") {
+      doc.firstName = await crypto.decrypt(doc.firstName);
+    }
+    if (doc.lastName && typeof doc.lastName === "string") {
+      doc.lastName = await crypto.decrypt(doc.lastName);
+    }
+    if (doc.phone && typeof doc.phone === "string") {
+      doc.phone = await crypto.decrypt(doc.phone);
+    }
   }
 });
 

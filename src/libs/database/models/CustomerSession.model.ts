@@ -38,33 +38,38 @@ const CustomerSessionSchema = new mongoose.Schema<ICustomerSession>({
 
 CustomerSessionSchema.pre("save", async function (next) {
   if (this.isModified("last_name") || this.isModified("first_names")) {
-    this.last_name = capitalizeFirstLetter(this.last_name);
-    this.first_names = capitalizeFirstLetter(this.first_names);
-    this.last_name = await crypto.encrypt(this.last_name);
-    this.first_names = await crypto.encrypt(this.first_names);
+    if (
+      typeof this.last_name === "string" &&
+      typeof this.first_names === "string"
+    ) {
+      this.last_name = capitalizeFirstLetter(this.last_name);
+      this.first_names = capitalizeFirstLetter(this.first_names);
+      this.last_name = await crypto.encrypt(this.last_name);
+      this.first_names = await crypto.encrypt(this.first_names);
+    }
   }
-  if (this.isModified("email")) {
+  if (this.isModified("email") && typeof this.email === "string") {
     this.email = this.email.toLowerCase();
     this.email = await crypto.encrypt(this.email);
   }
-  if (this.isModified("phone")) {
+  if (this.isModified("phone") && typeof this.phone === "string") {
     this.phone = await crypto.encrypt(this.phone);
   }
   next();
 });
 
 CustomerSessionSchema.pre("findOneAndUpdate", async function (next) {
-  const update: any = this.getUpdate();
-  if (update.last_name) {
+  const update = this.getUpdate() as Record<string, unknown>;
+  if (update.last_name && typeof update.last_name === "string") {
     update.last_name = await crypto.encrypt(update.last_name);
   }
-  if (update.first_names) {
+  if (update.first_names && typeof update.first_names === "string") {
     update.first_names = await crypto.encrypt(update.first_names);
   }
-  if (update.email) {
+  if (update.email && typeof update.email === "string") {
     update.email = await crypto.encrypt(update.email);
   }
-  if (update.phone) {
+  if (update.phone && typeof update.phone === "string") {
     update.phone = await crypto.encrypt(update.phone);
   }
   next();
@@ -73,26 +78,36 @@ CustomerSessionSchema.pre("findOneAndUpdate", async function (next) {
 CustomerSessionSchema.post("find", async function (docs: ICustomerSession[]) {
   await Promise.all(
     docs.map(async (doc: ICustomerSession) => {
-      doc.last_name = (await crypto.decrypt(doc.last_name)) as string;
-      doc.first_names = (await crypto.decrypt(doc.first_names)) as string;
-      doc.email = (await crypto.decrypt(doc.email)) as string;
-      doc.phone = (await crypto.decrypt(doc.phone)) as string;
+      if (typeof doc.last_name === "string") {
+        doc.last_name = await crypto.decrypt(doc.last_name);
+      }
+      if (typeof doc.first_names === "string") {
+        doc.first_names = await crypto.decrypt(doc.first_names);
+      }
+      if (typeof doc.email === "string") {
+        doc.email = await crypto.decrypt(doc.email);
+      }
+      if (typeof doc.phone === "string") {
+        doc.phone = await crypto.decrypt(doc.phone);
+      }
     })
   );
 });
 
 CustomerSessionSchema.post("findOne", async function (doc: ICustomerSession) {
-  if (doc.last_name !== null) {
-    doc.last_name = (await crypto.decrypt(doc.last_name)) as string;
-  }
-  if (doc.first_names !== null) {
-    doc.first_names = (await crypto.decrypt(doc.first_names)) as string;
-  }
-  if (doc.email !== null) {
-    doc.email = (await crypto.decrypt(doc.email)) as string;
-  }
-  if (doc.phone !== null) {
-    doc.phone = (await crypto.decrypt(doc.phone)) as string;
+  if (doc) {
+    if (doc.last_name && typeof doc.last_name === "string") {
+      doc.last_name = await crypto.decrypt(doc.last_name);
+    }
+    if (doc.first_names && typeof doc.first_names === "string") {
+      doc.first_names = await crypto.decrypt(doc.first_names);
+    }
+    if (doc.email && typeof doc.email === "string") {
+      doc.email = await crypto.decrypt(doc.email);
+    }
+    if (doc.phone && typeof doc.phone === "string") {
+      doc.phone = await crypto.decrypt(doc.phone);
+    }
   }
 });
 
