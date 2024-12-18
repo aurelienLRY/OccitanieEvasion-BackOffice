@@ -44,16 +44,16 @@ CustomerSessionSchema.pre("save", async function (next) {
     ) {
       this.last_name = capitalizeFirstLetter(this.last_name);
       this.first_names = capitalizeFirstLetter(this.first_names);
-      this.last_name = await crypto.encrypt(this.last_name);
-      this.first_names = await crypto.encrypt(this.first_names);
+      this.last_name = (await crypto.encrypt(this.last_name)) as string;
+      this.first_names = (await crypto.encrypt(this.first_names)) as string;
     }
   }
   if (this.isModified("email") && typeof this.email === "string") {
     this.email = this.email.toLowerCase();
-    this.email = await crypto.encrypt(this.email);
+    this.email = (await crypto.encrypt(this.email)) as string;
   }
   if (this.isModified("phone") && typeof this.phone === "string") {
-    this.phone = await crypto.encrypt(this.phone);
+    this.phone = (await crypto.encrypt(this.phone)) as string;
   }
   next();
 });
@@ -61,16 +61,16 @@ CustomerSessionSchema.pre("save", async function (next) {
 CustomerSessionSchema.pre("findOneAndUpdate", async function (next) {
   const update = this.getUpdate() as Record<string, unknown>;
   if (update.last_name && typeof update.last_name === "string") {
-    update.last_name = await crypto.encrypt(update.last_name);
+    update.last_name = (await crypto.encrypt(update.last_name)) as string;
   }
   if (update.first_names && typeof update.first_names === "string") {
-    update.first_names = await crypto.encrypt(update.first_names);
+    update.first_names = (await crypto.encrypt(update.first_names)) as string;
   }
   if (update.email && typeof update.email === "string") {
-    update.email = await crypto.encrypt(update.email);
+    update.email = (await crypto.encrypt(update.email)) as string;
   }
   if (update.phone && typeof update.phone === "string") {
-    update.phone = await crypto.encrypt(update.phone);
+    update.phone = (await crypto.encrypt(update.phone)) as string;
   }
   next();
 });
@@ -79,16 +79,16 @@ CustomerSessionSchema.post("find", async function (docs: ICustomerSession[]) {
   await Promise.all(
     docs.map(async (doc: ICustomerSession) => {
       if (typeof doc.last_name === "string") {
-        doc.last_name = await crypto.decrypt(doc.last_name);
+        doc.last_name = (await crypto.decrypt(doc.last_name)) as string;
       }
       if (typeof doc.first_names === "string") {
-        doc.first_names = await crypto.decrypt(doc.first_names);
+        doc.first_names = (await crypto.decrypt(doc.first_names)) as string;
       }
       if (typeof doc.email === "string") {
-        doc.email = await crypto.decrypt(doc.email);
+        doc.email = (await crypto.decrypt(doc.email)) as string;
       }
       if (typeof doc.phone === "string") {
-        doc.phone = await crypto.decrypt(doc.phone);
+        doc.phone = (await crypto.decrypt(doc.phone)) as string;
       }
     })
   );

@@ -86,10 +86,10 @@ export const CustomerCanceled = ({
       {customer.status === "Canceled" && (
         <div className="absolute top-2/3 right-1/2 transform translate-x-1/2 -translate-y-1/2">
           <p className="text-2xl text-center">
-            {displayStatus[customer.status].icon}
+            {displayStatus[customer.status as CustomerStatus].icon}
           </p>
           <p className="text-4xl text-center">
-            {displayStatus[customer.status].name}
+            {displayStatus[customer.status as CustomerStatus].name}
           </p>
         </div>
       )}

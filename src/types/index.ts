@@ -8,6 +8,24 @@ export type {
   ICalendarEvent,
   ICalendarTokenInfo,
   ICredentials,
+  IEventModel,
 } from "./Calendar.type";
-export type { ICallback } from "./Callback.action.type";
+export type {
+  ICallback,
+  ICallbackForCredentials,
+  ICallbackForUser,
+  ICallbackForActivity,
+  ICallbackForActivities,
+  ICallbackForCustomerSession,
+  ICallbackForCustomerSessions,
+  ICallbackForEmailTemplate,
+  ICallbackForEmailTemplates,
+  ICallbackForSession,
+  ICallbackForSessions,
+  ICallbackForSessionWithDetails,
+  ICallbackForSessionWithDetailsArray,
+  ICallbackForSpot,
+  ICallbackForSpots,
+  ICallbackForEvent,
+} from "./Callback.action.type";
 export type { IEmailTemplate } from "./EmailTemplate.type";
