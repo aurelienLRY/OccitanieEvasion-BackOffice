@@ -30,14 +30,23 @@ const UserSchema = new Schema<IUser>(
 UserSchema.pre("save", async function (next) {
   if (this.firstName && typeof this.firstName === "string") {
     this.firstName = capitalizeFirstLetter(this.firstName);
-    this.firstName = (await crypto.encrypt(this.firstName)) as string;
+    const encryptedFirstName = await crypto.encrypt(this.firstName);
+    if (typeof encryptedFirstName === "string") {
+      this.firstName = encryptedFirstName;
+    }
   }
   if (this.lastName && typeof this.lastName === "string") {
     this.lastName = capitalizeFirstLetter(this.lastName);
-    this.lastName = (await crypto.encrypt(this.lastName)) as string;
+    const encryptedLastName = await crypto.encrypt(this.lastName);
+    if (typeof encryptedLastName === "string") {
+      this.lastName = encryptedLastName;
+    }
   }
   if (this.phone && typeof this.phone === "string") {
-    this.phone = (await crypto.encrypt(this.phone)) as string;
+    const encryptedPhone = await crypto.encrypt(this.phone);
+    if (typeof encryptedPhone === "string") {
+      this.phone = encryptedPhone;
+    }
   }
   next();
 });

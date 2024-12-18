@@ -44,16 +44,29 @@ CustomerSessionSchema.pre("save", async function (next) {
     ) {
       this.last_name = capitalizeFirstLetter(this.last_name);
       this.first_names = capitalizeFirstLetter(this.first_names);
-      this.last_name = (await crypto.encrypt(this.last_name)) as string;
-      this.first_names = (await crypto.encrypt(this.first_names)) as string;
+      const encryptedLastName = await crypto.encrypt(this.last_name);
+      const encryptedFirstNames = await crypto.encrypt(this.first_names);
+      if (
+        typeof encryptedLastName === "string" &&
+        typeof encryptedFirstNames === "string"
+      ) {
+        this.last_name = encryptedLastName;
+        this.first_names = encryptedFirstNames;
+      }
     }
   }
   if (this.isModified("email") && typeof this.email === "string") {
     this.email = this.email.toLowerCase();
-    this.email = (await crypto.encrypt(this.email)) as string;
+    const encryptedEmail = await crypto.encrypt(this.email);
+    if (typeof encryptedEmail === "string") {
+      this.email = encryptedEmail;
+    }
   }
   if (this.isModified("phone") && typeof this.phone === "string") {
-    this.phone = (await crypto.encrypt(this.phone)) as string;
+    const encryptedPhone = await crypto.encrypt(this.phone);
+    if (typeof encryptedPhone === "string") {
+      this.phone = encryptedPhone;
+    }
   }
   next();
 });
