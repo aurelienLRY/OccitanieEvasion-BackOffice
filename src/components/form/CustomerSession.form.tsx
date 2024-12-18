@@ -200,7 +200,7 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
 
   useEffect(() => {
     if (watch.tarification === "reduced") {
-      watch.people_list?.forEach((person, index) => {
+      watch.people_list?.forEach((_, index) => {
         const price = getPriceApplicable(
           true,
           session.type_formule,
@@ -209,17 +209,27 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
         methods.setValue(`people_list.${index}.price_applicable`, price);
       });
     } else {
-      watch.people_list?.forEach((person, index) => {
-        if (person.isReduced === undefined) {
-          return;
+      watch.people_list?.forEach(
+        (
+          person: {
+            price_applicable?: number | undefined;
+            isReduced?: boolean | undefined;
+            size: string;
+            weight: string;
+          },
+          index: number
+        ) => {
+          if (person.isReduced === undefined) {
+            return;
+          }
+          const price = getPriceApplicable(
+            person.isReduced,
+            session.type_formule,
+            session.activity
+          );
+          methods.setValue(`people_list.${index}.price_applicable`, price);
         }
-        const price = getPriceApplicable(
-          person.isReduced,
-          session.type_formule,
-          session.activity
-        );
-        methods.setValue(`people_list.${index}.price_applicable`, price);
-      });
+      );
     }
   }, [
     watch.tarification,
