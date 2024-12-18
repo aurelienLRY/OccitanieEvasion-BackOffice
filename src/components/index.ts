@@ -18,7 +18,12 @@ export { ActivityCard } from "@/components/cards/Activity.Card";
 export { CustomerCard } from "@/components/cards/Customer.Card";
 export { CustomerFiche } from "@/components/cards/CustomerFiche.card";
 export { SessionDetailCard } from "@/components/cards/DetailSession.Card";
-export { ItemCard } from "@/components/cards/Items.Card";
+export {
+  ItemCard,
+  ItemCardHeader,
+  ItemCardInner,
+  ItemContainer,
+} from "@/components/cards/Items.Card";
 export { SessionCard } from "@/components/cards/Session.Card";
 export { SpotCard } from "@/components/cards/Spot.Card";
 export { CustomerTables_Session } from "@/components/cards/CustomerTables_Session.card";
