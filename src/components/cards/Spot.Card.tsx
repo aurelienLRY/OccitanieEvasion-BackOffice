@@ -111,7 +111,7 @@ export function SpotCard({
             <ItemCardInner className="flex gap-3 w-full items-center ">
               <h3 className=" font-bold text-center">Activités pratiquées:</h3>
               <div className={`grid grid-cols-1 gap-2  w-full`}>
-                {spot.practicedActivities.map((activity) => (
+                {spot.practicedActivities.map((activity: { activityName: string; activityId: string }) => (
                   <p key={activity.activityId}>{activity.activityName}</p>
                 ))}
               </div>

@@ -35,13 +35,15 @@ export const CanceledCustomerSession = ({ isOpen, onClose, data }: Props) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Panneau d'annulation">
       <div className="flex flex-col gap-2 mt-4">
-        {data.customerSessions.map((customer) => (
-          <CustomerCanceled
-            key={customer._id}
-            customer={customer}
-            onClose={onClose}
-          />
-        ))}
+        {data.customerSessions.map(
+          (customer: ICustomerSession, index: number) => (
+            <CustomerCanceled
+              key={index}
+              customer={customer}
+              onClose={onClose}
+            />
+          )
+        )}
       </div>
     </Modal>
   );

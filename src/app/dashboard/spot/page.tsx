@@ -92,7 +92,7 @@ function SpotPage({}: Props) {
         </div>
 
         <div className=" grid grid-cols-1 xl:grid-cols-2 justify-items-center  gap-4">
-          {filteredSpots.map((spot) => (
+          {filteredSpots.map((spot: ISpot) => (
             <SpotCard
               key={spot._id}
               spot={spot}

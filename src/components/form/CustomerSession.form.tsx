@@ -148,8 +148,8 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
   const optionTarif = () => {
     if (session.type_formule === "half_day") {
       return Object.entries(session.activity.price_half_day)
-        .filter(([key, value]) => value > 0)
-        .map(([key, value]) => ({
+        .filter(([key, value] : [string, number]) => value > 0)
+        .map(([key, value] : [string, number]) => ({
           id: key,
           name:
             key == "standard"
@@ -162,8 +162,8 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
         }));
     } else {
       return Object.entries(session.activity.price_full_day)
-        .filter(([key, value]) => value > 0)
-        .map(([key, value]) => ({
+        .filter(([key, value]: [string, number]) => value > 0)
+        .map(([key, value]: [string, number]) => ({
           id: key,
           name:
             key == "standard"

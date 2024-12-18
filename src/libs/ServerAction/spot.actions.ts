@@ -40,7 +40,7 @@ export const xssSpot = async (spot: ISpot): Promise<ISpot> => {
       name: xss(spot.name),
       description: xss(spot.description),
       gpsCoordinates: xss(spot.gpsCoordinates),
-      practicedActivities: spot.practicedActivities.map((activity) => ({
+      practicedActivities: spot.practicedActivities.map((activity: { activityId: string; activityName: string ;  _id: string }) => ({
         ...activity,
         activityId: xss(activity.activityId),
         activityName: xss(activity.activityName),

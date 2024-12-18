@@ -39,7 +39,7 @@ export const calculateInscrit = (
   let total = 0;
   if (type === "month") {
     const month = now.getMonth();
-    sessions.map((session) => {
+    sessions.map((session: ISessionWithDetails) => {
       const sessionDate = new Date(session.date);
       if (sessionDate.getMonth() === month) {
         session.customerSessions.forEach(
@@ -55,7 +55,7 @@ export const calculateInscrit = (
   }
 
   const year = now.getFullYear();
-  sessions.map((session) => {
+  sessions.map((session: ISessionWithDetails) => {
     const sessionDate = new Date(session.date);
     if (sessionDate.getFullYear() === year) {
       session.customerSessions.forEach((customerSession: ICustomerSession) => {
@@ -75,7 +75,7 @@ export const calculateInscrit = (
  */
 export const filterSessionsForDashboard = (sessions: ISessionWithDetails[]) => {
   return sessions
-    .filter((session) => {
+    .filter((session: ISessionWithDetails) => {
       const sessionDate = new Date(session.date);
       const now = new Date();
       return sessionDate >= now && session.status === "Actif";
@@ -91,7 +91,7 @@ export const filterSessionsForDashboard = (sessions: ISessionWithDetails[]) => {
  */
 export const classifySpots = (sessions: ISessionWithDetails[]) => {
   let lieux: { [key: string]: number } = {};
-  sessions.map((session) => {
+  sessions.map((session: ISessionWithDetails) => {
     if (lieux[session.spot.name]) {
       lieux[session.spot.name]++;
     } else {
@@ -108,7 +108,7 @@ export const classifySpots = (sessions: ISessionWithDetails[]) => {
  */
 export const classifyActivities = (sessions: ISessionWithDetails[]) => {
   let activities: { [key: string]: number } = {};
-  sessions.map((session) => {
+  sessions.map((session: ISessionWithDetails) => {
     if (activities[session.activity.name]) {
       activities[session.activity.name]++;
     } else {

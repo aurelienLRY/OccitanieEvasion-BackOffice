@@ -34,7 +34,14 @@ import {
 /* utils & types */
 import { formatDate } from "@/utils/date.utils";
 import { generateEvent } from "@/services/GoogleCalendar/ClientSide/generateEvent";
-import { ISession, ISessionWithDetails, IActivity, IUser } from "@/types";
+import {
+  ISession,
+  ISessionWithDetails,
+  IActivity,
+  IUser,
+  ISpot,
+  ICustomerSession,
+} from "@/types";
 import { useMailer, MailerStore } from "@/hooks/useMailer";
 import { EMAIL_SCENARIOS } from "@/libs/nodeMailer/TemplateV2/constants";
 
@@ -129,8 +136,11 @@ export function SessionForm({
       spots.find((spot) => spot._id === watchSpot)?.practicedActivities || [];
     const filteredActivities = activities.filter((activity) =>
       interActivities
-        .map((interActivity) => interActivity.activityId)
-        .filter((activityId): activityId is string => !!activityId) // Ajout de cette ligne pour filtrer les 'undefined'
+        .map(
+          (interActivity: { activityId: string; activityName: string }) =>
+            interActivity.activityId
+        )
+        .filter((activityId: string) => !!activityId) // Ajout de cette ligne pour filtrer les 'undefined'
         .includes(activity._id as string)
     );
     setFilteredActivities(filteredActivities);
@@ -274,7 +284,7 @@ export function SessionForm({
             <div className="flex flex-col md:flex-row gap-2 justify-around w-full">
               <SelectInput
                 name="spot"
-                options={spots.map((spot) => ({
+                options={spots.map((spot: ISpot) => ({
                   id: spot._id,
                   name: spot.name,
                 }))}
@@ -282,7 +292,7 @@ export function SessionForm({
               />
               <SelectInput
                 name="activity"
-                options={filteredActivities.map((activity) => ({
+                options={filteredActivities.map((activity: IActivity) => ({
                   id: activity._id || "", // Ajout de '|| ""' pour s'assurer que 'id' est une chaîne de caractères
                   name: activity.name,
                 }))}
@@ -417,7 +427,7 @@ const MailerForUpdate = async (
 
         // On stocke les informations pour les prochains emails
         mailer.setQueuedEmails(
-          customerSessions.slice(1).map((customer) => ({
+          customerSessions.slice(1).map((customer: ICustomerSession) => ({
             scenario: EMAIL_SCENARIOS.UPDATE_CUSTOMER,
             data: {
               customer,
