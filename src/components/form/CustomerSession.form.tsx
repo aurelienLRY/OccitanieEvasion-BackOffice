@@ -71,6 +71,13 @@ type Props = {
   onClose: () => void;
 };
 
+interface PriceStructure {
+  standard: number;
+  reduced: number;
+  ACM: number;
+  [key: string]: number;
+}
+
 export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
   const { addCustomer, updateCustomer } = useCustomer();
   /* Form */
@@ -146,35 +153,24 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
    * Option Tarif
    */
   const optionTarif = () => {
-    if (session.type_formule === "half_day") {
-      return Object.entries(session.activity.price_half_day)
-        .filter(([key, value] : [string, number]) => value > 0)
-        .map(([key, value] : [string, number]) => ({
-          id: key,
-          name:
-            key == "standard"
-              ? "Tarif normal"
-              : key == "acm"
-              ? "Tarif acm"
-              : key == "reduced"
-              ? "Tarif réduit"
-              : key,
-        }));
-    } else {
-      return Object.entries(session.activity.price_full_day)
-        .filter(([key, value]: [string, number]) => value > 0)
-        .map(([key, value]: [string, number]) => ({
-          id: key,
-          name:
-            key == "standard"
-              ? "Tarif normal"
-              : key == "acm"
-              ? "Tarif acm"
-              : key == "reduced"
-              ? "Tarif réduit"
-              : key,
-        }));
-    }
+    const prices =
+      session.type_formule === "half_day"
+        ? (session.activity.price_half_day as PriceStructure)
+        : (session.activity.price_full_day as PriceStructure);
+
+    return Object.entries(prices)
+      .filter(([_, value]) => value > 0)
+      .map(([key]) => ({
+        id: key,
+        name:
+          key === "standard"
+            ? "Tarif normal"
+            : key === "ACM"
+            ? "Tarif acm"
+            : key === "reduced"
+            ? "Tarif réduit"
+            : key,
+      }));
   };
 
   /*
