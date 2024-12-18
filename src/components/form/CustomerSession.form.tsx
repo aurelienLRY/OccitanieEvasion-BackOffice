@@ -200,7 +200,7 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
 
   useEffect(() => {
     if (watch.tarification === "reduced") {
-      watch.people_list?.forEach((_, index) => {
+      watch.people_list?.forEach((_: any, index: number) => {
         const price = getPriceApplicable(
           true,
           session.type_formule,
