@@ -18,7 +18,7 @@ import { ICustomerSession , ISessionWithDetails } from "@/types"
    * @returns {number} - Retourne le nombre de clients en attente
    */
   export const customerWaitingCount = (data: ICustomerSession[]) => 
-    data.filter((cs) => cs.status === "Waiting").length;
+    data.filter((cs : ICustomerSession) => cs.status === "Waiting").length;
 
 
   /**
@@ -26,7 +26,7 @@ import { ICustomerSession , ISessionWithDetails } from "@/types"
    * @param {ICustomerSession[]} data - Liste des sessions clients
    * @returns {boolean} - Retourne vrai si un client est en attente, sinon faux
    */
-  export const customerIsWaiting = (data: ICustomerSession[]) => data.some((cs) => cs.status === "Waiting");
+  export const customerIsWaiting = (data: ICustomerSession[]) => data.some((cs : ICustomerSession) => cs.status === "Waiting");
   
 
 

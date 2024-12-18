@@ -47,7 +47,7 @@ const ThisDescription = (session: ISessionWithDetails) => {
   let group: string[] = [];
   if (session.customerSessions) {
     const filteredCustomerSessions = session.customerSessions.filter(
-      (customerSession) => customerSession.status !== "Canceled"
+      (customerSession: ICustomerSession) => customerSession.status !== "Canceled"
     );
     group = filteredCustomerSessions?.map(
       (customerSession: ICustomerSession, index: number) => {

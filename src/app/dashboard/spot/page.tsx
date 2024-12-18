@@ -124,7 +124,7 @@ export default SpotPage;
 function filterSpotsByActivities(spots: ISpot[], activityId: string) {
   if (!activityId) return spots;
   if (activityId === "all") return spots;
-  return spots.filter((spot) => {
+  return spots.filter((spot: ISpot) => {
     return spot.practicedActivities.some(
       (activity: any) => activity.activityId === activityId
     );

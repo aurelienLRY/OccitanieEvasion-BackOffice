@@ -159,7 +159,7 @@ export function CustomerSessionForm({ session, data, isOpen, onClose }: Props) {
         : (session.activity.price_full_day as PriceStructure);
 
     return Object.entries(prices)
-      .filter(([_, value]) => value > 0)
+      .filter(([_, value]: [string, number]) => value > 0)
       .map(([key]) => ({
         id: key,
         name:

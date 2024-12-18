@@ -7,8 +7,10 @@ import { ISessionWithDetails, ICustomerSession } from "@/types";
 */
 const getValidPrices = (customerSessions: ICustomerSession[]): number[] => {
   return customerSessions
-    .filter((cs) => cs.price_total > 0 && cs.status !== "Canceled")
-    .map((cs) => cs.price_total);
+    .filter(
+      (cs: ICustomerSession) => cs.price_total > 0 && cs.status !== "Canceled"
+    )
+    .map((cs: ICustomerSession) => cs.price_total);
 };
 
 /*

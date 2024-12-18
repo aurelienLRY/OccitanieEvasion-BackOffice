@@ -13,14 +13,14 @@ export const calculateNumberOfSessions = (
 
   if (type === "month") {
     const month = now.getMonth();
-    return sessions.filter((session) => {
+    return sessions.filter((session: ISessionWithDetails) => {
       const sessionDate = new Date(session.date);
       return sessionDate.getMonth() === month;
     }).length;
   }
 
   const year = now.getFullYear();
-  return sessions.filter((session) => {
+  return sessions.filter((session: ISessionWithDetails) => {
     const sessionDate = new Date(session.date);
     return sessionDate.getFullYear() === year;
   }).length;
@@ -128,5 +128,7 @@ export const getSessionByStatus = (
   sessions: ISessionWithDetails[],
   status: "Pending" | "Validated" | "Archived"
 ) => {
-  return sessions.filter((session) => session.status === status).length;
+  return sessions.filter(
+    (session: ISessionWithDetails) => session.status === status
+  ).length;
 };

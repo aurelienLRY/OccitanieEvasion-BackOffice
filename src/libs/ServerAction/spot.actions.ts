@@ -12,7 +12,7 @@ import { Spot } from "@/libs/database/models";
 import { spotSchema } from "@/libs/yup";
 
 /* Types */
-import { ISpot, ICallbackForSpot, ICallbackForSpots } from "@/types";
+import { ISpot, ICallbackForSpot, ICallbackForSpots, ISessionWithDetails } from "@/types";
 
 /* Actions */
 import { GET_SERVER_SESSIONS_WITH_DETAILS } from "@/libs/ServerAction";
@@ -234,7 +234,7 @@ export const DELETE_SPOT = async (
     await connectDB();
     const sessionsWithDetails = await GET_SERVER_SESSIONS_WITH_DETAILS();
     const sessionsWithDetailsBySpot = sessionsWithDetails.filter(
-      (session) => session.spot._id === spotId
+      (session: ISessionWithDetails) => session.spot._id === spotId
     );
     if (sessionsWithDetailsBySpot.length > 0) {
       return {

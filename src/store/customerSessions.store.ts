@@ -55,7 +55,7 @@ export const useCustomerSessions = create<TuseCustomerSessions>()(
         set(
           produce((state: { CustomerSessions: ICustomerSession[] }) => {
             state.CustomerSessions = state.CustomerSessions.filter(
-              (s) => s._id !== deletedCustomerSession._id
+              (s: ICustomerSession) => s._id !== deletedCustomerSession._id
             );
           }),
           false,

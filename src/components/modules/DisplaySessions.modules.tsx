@@ -375,7 +375,7 @@ function filterSessions(
   endOfWeek.setDate(startOfWeek.getDate() + 6);
   endOfWeek.setHours(23, 59, 59, 999);
 
-  return sessions.filter((session) => {
+  return sessions.filter((session: ISessionWithDetails) => {
     const sessionDate = new Date(session.date);
 
     // Filtrer par statut si spécifié

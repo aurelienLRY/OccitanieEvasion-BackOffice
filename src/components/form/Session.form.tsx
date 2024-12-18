@@ -134,7 +134,7 @@ export function SessionForm({
   useEffect(() => {
     const interActivities =
       spots.find((spot) => spot._id === watchSpot)?.practicedActivities || [];
-    const filteredActivities = activities.filter((activity) =>
+    const filteredActivities = activities.filter((activity: IActivity) =>
       interActivities
         .map(
           (interActivity: { activityId: string; activityName: string }) =>
@@ -148,7 +148,7 @@ export function SessionForm({
 
   useEffect(() => {
     const thisActivity = activities.find(
-      (activity) => activity._id === watchActivity
+      (activity: IActivity) => activity._id === watchActivity
     );
     if (thisActivity) {
       const typeFormuleOptions = [];
@@ -413,7 +413,7 @@ const MailerForUpdate = async (
 
       // filtrer les customer qui on un status annulé
       const customerSessions = newSession.customerSessions.filter(
-        (customer) => customer.status !== "Canceled"
+        (customer: ICustomerSession) => customer.status !== "Canceled"
       );
 
       // On prépare le premier email seulement
